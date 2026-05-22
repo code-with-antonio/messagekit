@@ -1,0 +1,15 @@
+{
+  "name": "starter-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "dev:cli": "bun --filter @starter/cli dev",
+    "dev:mcp": "bun --filter @starter/mcp dev",
+    "test": "bun test",
+    "typecheck": "bun run --filter '*' typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
