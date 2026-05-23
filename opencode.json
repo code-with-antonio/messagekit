@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "starter": {
+      "type": "local",
+      "command": [
+        "bun",
+        "run",
+        "/Users/antonioerdeljac/Work/cli-auth/packages/mcp/src/index.ts"
+      ],
+      "enabled": true
+    }
+  }
+}
