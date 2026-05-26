@@ -6,7 +6,7 @@
       "command": [
         "bun",
         "run",
-        "/Users/antonioerdeljac/Work/cli-auth/packages/mcp/src/index.ts"
+        "/Users/antonioerdeljac/Work/mcp-starter/packages/mcp/src/index.ts"
       ],
       "enabled": true
     }

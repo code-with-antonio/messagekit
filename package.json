@@ -4,9 +4,8 @@
   "type": "module",
   "workspaces": ["packages/*"],
   "scripts": {
-    "dev:cli": "bun --filter @starter/cli dev",
-    "dev:mcp": "bun --filter @starter/mcp dev",
-    "test": "bun test",
+    "dev:cli": "bun --env-file=.env --filter @starter/cli dev",
+    "dev:mcp": "bun --env-file=.env --filter @starter/mcp dev",
     "typecheck": "bun run --filter '*' typecheck"
   },
   "devDependencies": {

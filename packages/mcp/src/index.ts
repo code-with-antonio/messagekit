@@ -1,42 +1,35 @@
 #!/usr/bin/env bun
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { echo, echoInputSchema, getStatus } from "@starter/core";
+import { sendTelegramMessage, telegramMessageInputSchema } from "@starter/core";
 
 const server = new McpServer({
   name: "starter",
   version: "0.1.0",
 });
 
-server.registerTool(
-  "status",
-  {
-    title: "Status",
-    description: "Show starter service status.",
-    inputSchema: {},
-  },
-  async () => {
-    const result = await getStatus();
+function getTelegramBotToken() {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
 
-    return {
-      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-      structuredContent: result,
-    };
-  },
-);
+  if (!token) {
+    throw new Error("TELEGRAM_BOT_TOKEN is required");
+  }
+
+  return token;
+}
 
 server.registerTool(
-  "echo",
+  "telegram",
   {
-    title: "Echo",
-    description: "Echo a message.",
-    inputSchema: echoInputSchema.shape,
+    title: "Telegram",
+    description: "Send a Telegram message.",
+    inputSchema: telegramMessageInputSchema.shape,
   },
   async (input) => {
-    const result = await echo(input);
+    const result = await sendTelegramMessage({ ...input, botToken: getTelegramBotToken() });
 
     return {
-      content: [{ type: "text", text: result.message }],
+      content: [{ type: "text", text: `Sent Telegram message ${result.messageId} to chat ${result.chatId}` }],
       structuredContent: result,
     };
   },

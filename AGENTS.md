@@ -75,41 +75,36 @@ Business logic must live in `packages/core`. The CLI, MCP server, and Skill must
 
 ## Canonical Operation
 
-The canonical tutorial operation is `getWeather`.
+The canonical tutorial operation is `sendTelegramMessage`.
 
 Public interface names:
 
 ```text
-core function: getWeather
-CLI command:   starter weather <city>
-MCP tool:      weather
-Skill usage:   weather
+core function: sendTelegramMessage
+CLI command:   starter telegram <chatId> <message>
+MCP tool:      telegram
+Skill usage:   telegram
 ```
 
 The repository should stay named `starter` so viewers can rename it to match their own product during the tutorial.
 
-## Weather Behavior
+## Telegram Behavior
 
-The weather operation should be mocked and deterministic.
+The Telegram operation should send a message through the Telegram Bot API.
 
-It should not call a real weather API in the starter version.
+The CLI and MCP adapters should read the bot token from `TELEGRAM_BOT_TOKEN` and pass it to `@starter/core`.
 
-The same city should consistently produce the same result. This keeps the tutorial stable for demos, docs, and manual verification.
+The MCP tool input should not include the bot token. Agents should provide only the chat ID and message text.
 
 Recommended output shape:
 
 ```json
 {
-  "city": "London",
-  "temperature": 18,
-  "unit": "celsius",
-  "condition": "Cloudy"
+  "ok": true,
+  "chatId": "123456789",
+  "messageId": 42
 }
 ```
-
-The output should not include a timestamp because the tutorial operation is intentionally deterministic.
-
-Unknown cities are not an important teaching point. They may return a generic deterministic weather result.
 
 ## Package Responsibilities
 
@@ -121,7 +116,7 @@ It should contain:
 
 - Zod input schemas.
 - Zod output schemas.
-- Operation functions such as `getWeather`.
+- Operation functions such as `sendTelegramMessage`.
 - Type exports derived from schemas.
 
 It should not contain:
@@ -138,13 +133,13 @@ It should not contain:
 
 It should:
 
-- Define `starter weather <city>`.
+- Define `starter telegram <chatId> <message>`.
 - Parse command arguments with Commander.
 - Call `@starter/core`.
 - Print readable output by default.
 - Support `--json` for scriptable and agent-readable output.
 
-It should not duplicate weather logic.
+It should not duplicate Telegram logic.
 
 ### `packages/mcp`
 
@@ -153,12 +148,12 @@ It should not duplicate weather logic.
 It should:
 
 - Create an MCP stdio server.
-- Register a `weather` tool.
-- Use the shared weather input schema.
+- Register a `telegram` tool.
+- Use the shared Telegram message input schema.
 - Call `@starter/core`.
 - Return both `content` and `structuredContent`.
 
-It should not duplicate weather logic.
+It should not duplicate Telegram logic.
 
 ### `packages/skill`
 
@@ -166,12 +161,12 @@ It should not duplicate weather logic.
 
 It should:
 
-- Prefer the MCP `weather` tool when available.
+- Prefer the MCP `telegram` tool when available.
 - Document CLI fallback usage.
 - Explain that `@starter/core` is an implementation detail.
 - Avoid duplicating business logic.
 
-The Skill should stay product-generic while documenting `weather` as the available tutorial capability.
+The Skill should stay product-generic while documenting `telegram` as the available tutorial capability.
 
 ## Operation Lifecycle
 
@@ -196,8 +191,8 @@ Recommended verification commands:
 ```bash
 bun install
 bun run typecheck
-bun --filter @starter/cli dev weather "London"
-bun --filter @starter/cli dev weather "London" --json
+TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @starter/cli dev telegram "<chat-id>" "Hello from Starter"
+TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @starter/cli dev telegram "<chat-id>" "Hello from Starter" --json
 bun --filter @starter/mcp dev
 ```
 
@@ -223,9 +218,7 @@ This file explains the design intent and boundaries of the starter for agents an
 The initial tutorial starter should not include:
 
 - Automated tests.
-- A real weather API integration.
-- API keys or environment variable setup.
-- OAuth or user authentication.
+- OAuth or user authentication beyond Telegram bot tokens.
 - Database persistence.
 - Hosted remote MCP transport.
 - Complex logging or observability.
@@ -239,8 +232,8 @@ These topics may be covered in later tutorials, but they should not distract fro
 
 Possible follow-up topics include:
 
-- Replacing mocked weather with a real third-party API.
-- Adding environment variables and secrets.
+- Adding richer Telegram API features.
+- Adding broader environment variable and secrets guidance.
 - Adding structured error handling.
 - Adding tests after the tutorial architecture is established.
 - Publishing the CLI and MCP binaries.
