@@ -4,8 +4,8 @@
   "type": "module",
   "workspaces": ["packages/*"],
   "scripts": {
-    "dev:cli": "bun --env-file=.env --filter @starter/cli dev",
-    "dev:mcp": "bun --env-file=.env --filter @starter/mcp dev",
+    "dev:cli": "bun run packages/cli/src/index.ts",
+    "dev:mcp": "bun run packages/mcp/src/index.ts",
     "typecheck": "bun run --filter '*' typecheck"
   },
   "devDependencies": {

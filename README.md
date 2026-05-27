@@ -18,7 +18,7 @@ Business logic belongs in `packages/core`. The CLI, MCP server, and Skill should
 ## Prerequisites
 
 - Bun installed locally.
-- A Telegram bot token in `TELEGRAM_BOT_TOKEN`.
+- A Telegram bot token.
 - A Node-compatible MCP client if you want to connect the MCP server.
 
 ## Install
@@ -32,7 +32,8 @@ bun install
 Run the CLI Telegram command:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from Starter"
+bun run dev:cli init --telegram-bot-token "<bot-token>"
+bun run dev:cli telegram "<chat-id>" "Hello from Starter"
 ```
 
 Expected readable output:
@@ -44,7 +45,7 @@ Sent Telegram message 123 to chat <chat-id>
 Run Telegram with script-friendly JSON output:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
+bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
 ```
 
 Expected output:
@@ -130,23 +131,27 @@ MCP tool:      telegram
 Skill usage:   telegram
 ```
 
-Telegram messages are sent through the Telegram Bot API. The bot token is read from `TELEGRAM_BOT_TOKEN` by the CLI and MCP adapters, then passed into `@starter/core`; it is not exposed as an MCP tool argument.
+Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `starter init`. The MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. Both adapters pass the token into `@starter/core`; it is not exposed as an MCP tool argument.
 
 ## CLI Usage
 
 Development commands:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from Starter"
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
+bun run dev:cli init --telegram-bot-token "<bot-token>"
+bun run dev:cli telegram "<chat-id>" "Hello from Starter"
+bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
 ```
 
 After publishing or linking a binary, these can become:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" starter telegram "<chat-id>" "Hello from Starter"
-TELEGRAM_BOT_TOKEN="<bot-token>" starter telegram "<chat-id>" "Hello from Starter" --json
+starter init --telegram-bot-token "<bot-token>"
+starter telegram "<chat-id>" "Hello from Starter"
+starter telegram "<chat-id>" "Hello from Starter" --json
 ```
+
+CLI config is stored at `~/.config/starter/config.json`.
 
 ## MCP Usage
 
@@ -163,7 +168,10 @@ Example MCP client config from the repository root:
   "mcpServers": {
     "starter": {
       "command": "bun",
-      "args": ["run", "packages/mcp/src/index.ts"]
+      "args": ["run", "packages/mcp/src/index.ts"],
+      "environment": {
+        "TELEGRAM_BOT_TOKEN": "<bot-token>"
+      }
     }
   }
 }
@@ -176,7 +184,10 @@ For a published package, this can become:
   "mcpServers": {
     "starter": {
       "command": "starter-mcp",
-      "args": []
+      "args": [],
+      "environment": {
+        "TELEGRAM_BOT_TOKEN": "<bot-token>"
+      }
     }
   }
 }
@@ -201,7 +212,8 @@ The skill tells agents to:
 CLI fallback example:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" starter telegram "<chat-id>" "Hello from Starter" --json
+starter init --telegram-bot-token "<bot-token>"
+starter telegram "<chat-id>" "Hello from Starter" --json
 ```
 
 ## Add A New Operation
@@ -227,9 +239,10 @@ Skill       = instructions for when/how to use CLI or MCP
 ```bash
 bun install
 bun run typecheck
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from Starter"
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
-bun run dev:mcp
+bun run dev:cli init --telegram-bot-token "<bot-token>"
+bun run dev:cli telegram "<chat-id>" "Hello from Starter"
+bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:mcp
 ```
 
 ## Troubleshooting
@@ -244,4 +257,6 @@ If an MCP client cannot start the server, confirm its working directory is the r
 
 If CLI output is difficult to parse in scripts, pass `--json` and parse stdout as JSON.
 
-If Telegram requests fail, confirm `TELEGRAM_BOT_TOKEN` is set and the bot can send messages to the target chat.
+If Telegram requests fail from the CLI, run `starter init` and confirm the bot can send messages to the target chat.
+
+If Telegram requests fail from MCP, confirm the MCP client config provides `TELEGRAM_BOT_TOKEN` in the server `environment`.
