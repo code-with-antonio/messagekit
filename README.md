@@ -4,8 +4,8 @@ This repository is a lightweight starter for building one shared TypeScript oper
 
 - `packages/core`: Shared schemas and operations.
 - `packages/cli`: Human/script CLI adapter.
-- `packages/mcp`: MCP stdio server adapter for AI clients.
-- `packages/remote-mcp`: Remote MCP HTTP adapter for deployed clients.
+- `packages/local-mcp`: Local MCP stdio server adapter for AI clients.
+- `apps/remote-mcp`: Remote MCP HTTP adapter for deployed clients.
 - `packages/skill`: Agent-facing usage instructions.
 
 The central pattern is:
@@ -59,10 +59,10 @@ Expected output:
 }
 ```
 
-Start the MCP stdio server:
+Start the local MCP stdio server:
 
 ```bash
-bun run dev:mcp
+bun run dev:local-mcp
 ```
 
 Expected behavior: the process stays running and waits for MCP messages over stdio. Stop it with `Ctrl-C` when testing manually.
@@ -80,8 +80,8 @@ Expected behavior: the server listens on `PORT` or `3000` by default and exposes
 ```text
 packages/core        -> shared schemas and operations
 packages/cli         -> command-line adapter backed by core
-packages/mcp         -> local MCP stdio adapter backed by core
-packages/remote-mcp  -> remote MCP HTTP adapter backed by core
+packages/local-mcp   -> local MCP stdio adapter backed by core
+apps/remote-mcp      -> remote MCP HTTP adapter backed by core
 packages/skill       -> agent-facing instructions and fallback guidance
 ```
 
@@ -92,7 +92,7 @@ Dependency direction:
    ▲       ▲       ▲
    │       │       │
 @starter/cli
-@starter/mcp
+@starter/local-mcp
 @starter/remote-mcp
 
 @starter/skill is documentation/instructions only
@@ -115,14 +115,14 @@ Dependency direction:
 - Prints readable output by default.
 - Supports `--json` for scriptable and agent-readable output.
 
-`packages/mcp` owns MCP protocol usage:
+`packages/local-mcp` owns local MCP stdio usage:
 
 - Creates an MCP stdio server.
 - Registers a `telegram` tool backed by `@starter/core`.
 - Uses the shared Telegram message input schema.
 - Returns both `content` and `structuredContent`.
 
-`packages/remote-mcp` owns remote MCP HTTP usage:
+`apps/remote-mcp` owns remote MCP HTTP usage:
 
 - Creates a Hono HTTP app exposing `/mcp`, run by Bun in development.
 - Registers a `telegram` tool backed by `@starter/core`.
@@ -176,7 +176,7 @@ CLI config is stored at `~/.config/starter/config.json`.
 Run the local MCP server:
 
 ```bash
-bun run dev:mcp
+bun run dev:local-mcp
 ```
 
 Example MCP client config from the repository root:
@@ -186,7 +186,7 @@ Example MCP client config from the repository root:
   "mcpServers": {
     "starter": {
       "command": "bun",
-      "args": ["run", "packages/mcp/src/index.ts"],
+      "args": ["run", "packages/local-mcp/src/index.ts"],
       "environment": {
         "TELEGRAM_BOT_TOKEN": "<bot-token>"
       }
@@ -274,8 +274,8 @@ starter telegram "<chat-id>" "Hello from Starter" --json
 2. Add the operation function in `packages/core/src/operations.ts`.
 3. Export it through `packages/core/src/index.ts` when needed.
 4. Add a CLI command in `packages/cli/src/index.ts`.
-5. Add a local MCP tool in `packages/mcp/src/index.ts`.
-6. Add a remote MCP tool in `packages/remote-mcp/src/index.ts` when remote support is part of the tutorial.
+5. Add a local MCP tool in `packages/local-mcp/src/index.ts`.
+6. Add a remote MCP tool in `apps/remote-mcp/src/index.ts` when remote support is part of the tutorial.
 7. Add usage notes in `packages/skill/SKILL.md`.
 8. Add manual verification commands to the README if the operation is part of the tutorial.
 
@@ -296,7 +296,7 @@ bun run typecheck
 bun run dev:cli init --telegram-bot-token "<bot-token>"
 bun run dev:cli telegram "<chat-id>" "Hello from Starter"
 bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:mcp
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 bun run dev:remote-mcp
 ```
 

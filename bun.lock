@@ -7,6 +7,18 @@
         "typescript": "^5.9.3",
       },
     },
+    "apps/remote-mcp": {
+      "name": "@starter/remote-mcp",
+      "version": "0.1.0",
+      "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.21.0",
+        "@starter/core": "workspace:*",
+        "hono": "^4.0.0",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
     "packages/cli": {
       "name": "@starter/cli",
       "version": "0.1.0",
@@ -31,8 +43,8 @@
         "bun-types": "latest",
       },
     },
-    "packages/mcp": {
-      "name": "@starter/mcp",
+    "packages/local-mcp": {
+      "name": "@starter/local-mcp",
       "version": "0.1.0",
       "bin": {
         "starter-mcp": "./src/index.ts",
@@ -40,18 +52,6 @@
       "dependencies": {
         "@modelcontextprotocol/sdk": "^1.21.0",
         "@starter/core": "workspace:*",
-      },
-      "devDependencies": {
-        "bun-types": "latest",
-      },
-    },
-    "packages/remote-mcp": {
-      "name": "@starter/remote-mcp",
-      "version": "0.1.0",
-      "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.21.0",
-        "@starter/core": "workspace:*",
-        "hono": "^4.0.0",
       },
       "devDependencies": {
         "bun-types": "latest",
@@ -71,9 +71,9 @@
 
     "@starter/core": ["@starter/core@workspace:packages/core"],
 
-    "@starter/mcp": ["@starter/mcp@workspace:packages/mcp"],
+    "@starter/local-mcp": ["@starter/local-mcp@workspace:packages/local-mcp"],
 
-    "@starter/remote-mcp": ["@starter/remote-mcp@workspace:packages/remote-mcp"],
+    "@starter/remote-mcp": ["@starter/remote-mcp@workspace:apps/remote-mcp"],
 
     "@starter/skill": ["@starter/skill@workspace:packages/skill"],
 

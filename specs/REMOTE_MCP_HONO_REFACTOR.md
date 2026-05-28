@@ -2,7 +2,7 @@
 
 ## Goal
 
-Refactor `packages/remote-mcp` from direct `Bun.serve` request handling to a Hono app.
+Refactor `apps/remote-mcp` from direct `Bun.serve` request handling to a Hono app.
 
 The goal is not to reduce physical line count. The goal is to reduce cognitive overhead by replacing custom manual routing with a familiar HTTP routing abstraction.
 
@@ -39,19 +39,19 @@ Use Hono for the remote MCP HTTP layer.
 
 Keep Bun as the runtime for local development and package scripts.
 
-Do not move MCP tool registration or Telegram behavior out of `packages/remote-mcp/src/index.ts` as part of this refactor.
+Do not move MCP tool registration or Telegram behavior out of `apps/remote-mcp/src/index.ts` as part of this refactor.
 
 ## Scope
 
 In scope:
 
-- Add `hono` to `packages/remote-mcp` dependencies.
+- Add `hono` to `apps/remote-mcp` dependencies.
 - Replace manual pathname checking with Hono routes.
 - Expose `POST /mcp` through `app.post("/mcp", ...)`.
 - Preserve the per-request `Authorization: Bearer <telegram-bot-token>` behavior.
 - Preserve use of `WebStandardStreamableHTTPServerTransport`.
 - Preserve the `telegram` MCP tool behavior and output shape.
-- Update README wording so `packages/remote-mcp` is described as a Hono HTTP app run by Bun.
+- Update README wording so `apps/remote-mcp` is described as a Hono HTTP app run by Bun.
 
 Out of scope:
 
@@ -65,7 +65,7 @@ Out of scope:
 
 ## Current Behavior To Preserve
 
-`packages/remote-mcp` must continue to:
+`apps/remote-mcp` must continue to:
 
 - Listen on `process.env.PORT` or `3000` by default.
 - Expose the remote MCP endpoint at `/mcp`.
@@ -78,7 +78,7 @@ Out of scope:
 
 ## Proposed Implementation
 
-Update `packages/remote-mcp/package.json`:
+Update `apps/remote-mcp/package.json`:
 
 ```json
 {
@@ -90,7 +90,7 @@ Update `packages/remote-mcp/package.json`:
 }
 ```
 
-Update `packages/remote-mcp/src/index.ts` to import Hono:
+Update `apps/remote-mcp/src/index.ts` to import Hono:
 
 ```ts
 import { Hono } from "hono";
@@ -153,7 +153,7 @@ export default {
 
 ## README Updates
 
-Change the `packages/remote-mcp` package detail from:
+Change the `apps/remote-mcp` package detail from:
 
 ```md
 Creates a Bun HTTP server exposing `/mcp`.
@@ -200,7 +200,7 @@ The expected improvement is readability:
 
 The refactor is successful when:
 
-- `packages/remote-mcp` no longer calls `Bun.serve` directly.
+- `apps/remote-mcp` no longer calls `Bun.serve` directly.
 - `POST /mcp` is declared through Hono.
 - Remote MCP behavior is unchanged from the client perspective.
 - Typechecking passes.

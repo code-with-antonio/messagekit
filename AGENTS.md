@@ -34,7 +34,7 @@ By the end, a viewer should be able to:
 
 - Define a reusable operation in `packages/core`.
 - Expose that operation as a CLI command in `packages/cli`.
-- Expose that operation as an MCP tool in `packages/mcp`.
+- Expose that operation as an MCP tool in `packages/local-mcp`.
 - Reference that operation in `packages/skill/SKILL.md`.
 - Test the operation manually through CLI, Skill guidance, and an MCP client.
 
@@ -55,7 +55,7 @@ The repository should teach that these interfaces are complementary, not mutuall
 ```text
 packages/core  -> shared schemas and operations
 packages/cli   -> command-line adapter backed by core
-packages/mcp   -> MCP stdio server adapter backed by core
+packages/local-mcp -> local MCP stdio server adapter backed by core
 packages/skill -> agent-facing instructions and fallback guidance
 ```
 
@@ -66,7 +66,7 @@ Dependency direction:
    ▲       ▲
    │       │
 @starter/cli
-@starter/mcp
+@starter/local-mcp
 
 @starter/skill is documentation/instructions only
 ```
@@ -141,9 +141,9 @@ It should:
 
 It should not duplicate Telegram logic.
 
-### `packages/mcp`
+### `packages/local-mcp`
 
-`packages/mcp` owns MCP protocol usage.
+`packages/local-mcp` owns local MCP stdio usage.
 
 It should:
 
@@ -176,7 +176,7 @@ Every new operation added by viewers should follow this explicit registration fl
 2. Add the operation function in `packages/core/src/operations.ts`.
 3. Export it through `packages/core/src/index.ts` when needed.
 4. Add a CLI command in `packages/cli/src/index.ts`.
-5. Add an MCP tool in `packages/mcp/src/index.ts`.
+5. Add an MCP tool in `packages/local-mcp/src/index.ts`.
 6. Add usage notes in `packages/skill/SKILL.md`.
 7. Add manual verification commands to the README if the operation is part of the tutorial.
 
@@ -193,7 +193,7 @@ bun install
 bun run typecheck
 TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @starter/cli dev telegram "<chat-id>" "Hello from Starter"
 TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @starter/cli dev telegram "<chat-id>" "Hello from Starter" --json
-bun --filter @starter/mcp dev
+bun --filter @starter/local-mcp dev
 ```
 
 The repository should not include or document a `bun test` workflow.

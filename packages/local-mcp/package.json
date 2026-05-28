@@ -1,5 +1,5 @@
 {
-  "name": "@starter/mcp",
+  "name": "@starter/local-mcp",
   "version": "0.1.0",
   "type": "module",
   "bin": {
