@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 import { z } from "zod";
 import { homedir } from "node:os";
 import { Command } from "commander";
@@ -21,7 +21,7 @@ async function printTelegramMessage(
   const telegramMessage = telegramMessageOutputSchema.parse(result);
 
   if (json) {
-    console.log(await Response.json(telegramMessage).text());
+    console.log(JSON.stringify(telegramMessage));
     return;
   }
 

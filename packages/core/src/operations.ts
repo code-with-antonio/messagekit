@@ -5,7 +5,7 @@ import {
   telegramMessageOptionsSchema,
   telegramSendMessageRequestSchema,
   telegramSendMessageResponseSchema,
-} from "./schemas";
+} from "./schemas.js";
 
 export async function sendTelegramMessage(
   input: z.infer<typeof telegramMessageOptionsSchema>,

@@ -41,3 +41,5 @@ npm publish --access public --otp=<code>
 ```
 
 The dry run should include only `README.md`, `package.json`, and compiled files under `dist/`.
+
+This package publishes native Node ESM. Keep relative TypeScript imports using the runtime `.js` extension, such as `./schemas.js`, so `tsc` emits JavaScript that Node can load without a bundler.

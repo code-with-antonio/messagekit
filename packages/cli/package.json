@@ -2,18 +2,30 @@
   "name": "@codewithantonio/messagekit",
   "version": "0.1.0",
   "bin": {
-    "messagekit": "./src/index.ts"
+    "messagekit": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "dev": "bun run src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "@codewithantonio/messagekit-core": "workspace:*",
-    "commander": "^14.0.2"
+    "@codewithantonio/messagekit-core": "^0.1.1",
+    "commander": "^14.0.2",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@types/node": "latest"
   }
 }

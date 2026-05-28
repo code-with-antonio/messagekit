@@ -27,19 +27,20 @@
       "name": "@codewithantonio/messagekit",
       "version": "0.1.0",
       "bin": {
-        "messagekit": "./src/index.ts",
+        "messagekit": "./dist/index.js",
       },
       "dependencies": {
-        "@codewithantonio/messagekit-core": "workspace:*",
+        "@codewithantonio/messagekit-core": "^0.1.1",
         "commander": "^14.0.2",
+        "zod": "^4.1.12",
       },
       "devDependencies": {
-        "bun-types": "latest",
+        "@types/node": "latest",
       },
     },
     "packages/core": {
       "name": "@codewithantonio/messagekit-core",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "dependencies": {
         "zod": "^4.1.12",
       },

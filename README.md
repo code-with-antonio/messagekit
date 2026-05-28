@@ -346,6 +346,8 @@ dist/operations.d.ts
 
 The dry run should not include `src/`, `node_modules/`, or `tsconfig.build.json`.
 
+Because the published packages run as native Node ESM, relative imports in TypeScript source should include the runtime `.js` extension, for example `./schemas.js`. TypeScript resolves that to the local `.ts` source during development and preserves the `.js` specifier in compiled output so Node can load the package without a bundler.
+
 If npm asks for a one-time password, rerun only the publish command with the current authenticator code:
 
 ```bash
