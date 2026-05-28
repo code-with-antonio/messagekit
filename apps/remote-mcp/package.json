@@ -1,14 +1,15 @@
 {
-  "name": "@messagekit/remote-mcp",
+  "name": "messagekit-remote-mcp",
   "version": "0.1.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "bun run src/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@codewithantonio/messagekit-core": "workspace:*",
     "@hono/zod-validator": "^0.8.0",
-    "@messagekit/core": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.21.0",
     "hono": "^4.10.0",
     "zod": "^4.4.3"

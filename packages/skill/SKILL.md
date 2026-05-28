@@ -4,7 +4,7 @@ Use this skill when you need to interact with the MessageKit toolset from an age
 
 ## Preferred Interface
 
-Prefer the MessageKit MCP server when the current client has it configured. MCP exposes the same operations implemented in `@messagekit/core` through protocol-native tools.
+Prefer the MessageKit MCP server when the current client has it configured. MCP exposes the same operations implemented in `@codewithantonio/messagekit-core` through protocol-native tools.
 
 MCP clients should configure `TELEGRAM_BOT_TOKEN` in the MessageKit MCP server `environment`.
 
@@ -36,7 +36,7 @@ bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
 ## Safety Guidelines
 
 - Do not duplicate business logic in this skill.
-- Treat `@messagekit/core` as an implementation detail, not as a direct user interface.
+- Treat `@codewithantonio/messagekit-core` as an implementation detail, not as a direct user interface.
 - Never ask users to put Telegram bot tokens directly in MCP tool arguments.
 - Prefer MCP tools for agent workflows when they are available.
 - Prefer CLI `--json` output for reliable parsing.

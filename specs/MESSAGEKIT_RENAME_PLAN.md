@@ -32,11 +32,11 @@ Rename these public identifiers:
 Starter                    -> MessageKit
 starter                    -> messagekit
 starter-workspace          -> messagekit-workspace
-@starter/core              -> @messagekit/core
-@starter/cli               -> @messagekit/cli
-@starter/local-mcp         -> @messagekit/local-mcp
-@starter/remote-mcp        -> @messagekit/remote-mcp
-@starter/skill             -> @messagekit/skill
+@starter/core              -> @codewithantonio/messagekit-core
+@starter/cli               -> @codewithantonio/messagekit
+@starter/local-mcp         -> @codewithantonio/messagekit-mcp
+@starter/remote-mcp        -> messagekit-remote-mcp
+@starter/skill             -> messagekit-skill
 starter telegram ...       -> messagekit telegram ...
 starter init ...           -> messagekit init ...
 starter-mcp                -> messagekit-mcp
@@ -74,12 +74,12 @@ Update package names:
 ```json
 // packages/core/package.json
 {
-  "name": "@messagekit/core"
+  "name": "@codewithantonio/messagekit-core"
 }
 
 // packages/cli/package.json
 {
-  "name": "@messagekit/cli",
+  "name": "@codewithantonio/messagekit",
   "bin": {
     "messagekit": "./src/index.ts"
   }
@@ -87,7 +87,7 @@ Update package names:
 
 // packages/local-mcp/package.json
 {
-  "name": "@messagekit/local-mcp",
+  "name": "@codewithantonio/messagekit-mcp",
   "bin": {
     "messagekit-mcp": "./src/index.ts"
   }
@@ -95,16 +95,18 @@ Update package names:
 
 // apps/remote-mcp/package.json
 {
-  "name": "@messagekit/remote-mcp"
+  "name": "messagekit-remote-mcp",
+  "private": true
 }
 
 // packages/skill/package.json
 {
-  "name": "@messagekit/skill"
+  "name": "messagekit-skill",
+  "private": true
 }
 ```
 
-Update all workspace dependencies from `@starter/core` to `@messagekit/core`.
+Update all workspace dependencies from `@starter/core` to `@codewithantonio/messagekit-core`.
 
 After package changes, run:
 
@@ -119,7 +121,7 @@ This should regenerate `bun.lock` with the new package scope.
 Update imports:
 
 ```ts
-import { sendTelegramMessage, telegramMessageInputSchema } from "@messagekit/core";
+import { sendTelegramMessage, telegramMessageInputSchema } from "@codewithantonio/messagekit-core";
 ```
 
 Update MCP server names:
@@ -206,7 +208,7 @@ Update Skill documentation:
 ```text
 Starter Skill -> MessageKit Skill
 Starter toolset -> MessageKit toolset
-@starter/core -> @messagekit/core
+@starter/core -> @codewithantonio/messagekit-core
 starter CLI -> messagekit CLI
 ```
 

@@ -1,5 +1,5 @@
 {
-  "name": "@messagekit/cli",
+  "name": "@codewithantonio/messagekit",
   "version": "0.1.0",
   "bin": {
     "messagekit": "./src/index.ts"
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@messagekit/core": "workspace:*",
+    "@codewithantonio/messagekit-core": "workspace:*",
     "commander": "^14.0.2"
   },
   "devDependencies": {

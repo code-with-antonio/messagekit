@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
-import { sendTelegramMessage, telegramMessageOutputSchema } from "@messagekit/core";
+import { sendTelegramMessage, telegramMessageOutputSchema } from "@codewithantonio/messagekit-core";
 
 const program = new Command();
 const configPath = join(homedir(), ".config", "messagekit", "config.json");
@@ -64,7 +64,7 @@ async function askTelegramBotToken() {
 
 program
   .name("messagekit")
-  .description("MessageKit CLI backed by @messagekit/core")
+  .description("MessageKit CLI backed by @codewithantonio/messagekit-core")
   .version("0.1.0");
 
 program

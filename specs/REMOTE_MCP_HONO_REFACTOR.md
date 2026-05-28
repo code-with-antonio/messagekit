@@ -72,7 +72,7 @@ Out of scope:
 - Require `Authorization: Bearer <telegram-bot-token>` per request.
 - Keep `botToken` out of the MCP tool input schema.
 - Register the `telegram` tool using `telegramMessageInputSchema.shape`.
-- Call `sendTelegramMessage({ ...input, botToken })` from `@messagekit/core`.
+- Call `sendTelegramMessage({ ...input, botToken })` from `@codewithantonio/messagekit-core`.
 - Return both `content` and `structuredContent` from the MCP tool.
 - Close the per-request MCP server after handling the request.
 
@@ -84,7 +84,7 @@ Update `apps/remote-mcp/package.json`:
 {
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.0",
-    "@messagekit/core": "workspace:*",
+    "@codewithantonio/messagekit-core": "workspace:*",
     "hono": "^4.0.0"
   }
 }
@@ -176,7 +176,7 @@ Run:
 
 ```bash
 bun install
-bun run --filter @messagekit/remote-mcp typecheck
+bun run --filter messagekit-remote-mcp typecheck
 bun run dev:remote-mcp
 ```
 

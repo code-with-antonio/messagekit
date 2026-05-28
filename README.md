@@ -88,14 +88,14 @@ packages/skill       -> agent-facing instructions and fallback guidance
 Dependency direction:
 
 ```text
-@messagekit/core
+@codewithantonio/messagekit-core
    ▲       ▲       ▲
    │       │       │
-@messagekit/cli
-@messagekit/local-mcp
-@messagekit/remote-mcp
+@codewithantonio/messagekit
+@codewithantonio/messagekit-mcp
+messagekit-remote-mcp
 
-@messagekit/skill is documentation/instructions only
+messagekit-skill is documentation/instructions only
 ```
 
 ## Package Details
@@ -111,21 +111,21 @@ Dependency direction:
 
 - Defines `messagekit telegram <chatId> <message>`.
 - Parses command arguments with Commander.
-- Calls `@messagekit/core` functions.
+- Calls `@codewithantonio/messagekit-core` functions.
 - Prints readable output by default.
 - Supports `--json` for scriptable and agent-readable output.
 
 `packages/local-mcp` owns local MCP stdio usage:
 
 - Creates an MCP stdio server.
-- Registers a `telegram` tool backed by `@messagekit/core`.
+- Registers a `telegram` tool backed by `@codewithantonio/messagekit-core`.
 - Uses the shared Telegram message input schema.
 - Returns both `content` and `structuredContent`.
 
 `apps/remote-mcp` owns remote MCP HTTP usage:
 
 - Creates a Hono HTTP app exposing `/mcp`, run by Bun in development.
-- Registers a `telegram` tool backed by `@messagekit/core`.
+- Registers a `telegram` tool backed by `@codewithantonio/messagekit-core`.
 - Reads the Telegram bot token from `Authorization: Bearer <token>` per request.
 - Keeps the token out of the MCP tool input schema.
 
@@ -133,7 +133,7 @@ Dependency direction:
 
 - Prefers the MCP `telegram` tool when available.
 - Documents CLI fallback usage.
-- Explains that `@messagekit/core` is an implementation detail.
+- Explains that `@codewithantonio/messagekit-core` is an implementation detail.
 - Avoids duplicating business logic.
 
 ## Telegram Operation
@@ -149,7 +149,7 @@ MCP tool:      telegram
 Skill usage:   telegram
 ```
 
-Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `messagekit init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request `Authorization: Bearer <token>` header. All adapters pass the token into `@messagekit/core`; it is not exposed as an MCP tool argument.
+Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `messagekit init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request `Authorization: Bearer <token>` header. All adapters pass the token into `@codewithantonio/messagekit-core`; it is not exposed as an MCP tool argument.
 
 ## CLI Usage
 
@@ -275,7 +275,7 @@ The skill tells agents to:
 - Use CLI fallback when MCP is unavailable.
 - Request JSON output from CLI commands when parsing results.
 - Avoid duplicating business logic in the skill.
-- Treat `@messagekit/core` as an implementation detail, not a direct user interface.
+- Treat `@codewithantonio/messagekit-core` as an implementation detail, not a direct user interface.
 
 CLI fallback example:
 
@@ -316,7 +316,7 @@ TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 bun run dev:remote-mcp
 ```
 
-Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@messagekit/core`.
+Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@codewithantonio/messagekit-core`.
 
 ## Troubleshooting
 

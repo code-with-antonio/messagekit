@@ -63,14 +63,14 @@ packages/skill     -> agent-facing instructions and fallback guidance
 Dependency direction:
 
 ```text
-@messagekit/core
+@codewithantonio/messagekit-core
    ▲       ▲       ▲
    │       │       │
-@messagekit/cli
-@messagekit/local-mcp
-@messagekit/remote-mcp
+@codewithantonio/messagekit
+@codewithantonio/messagekit-mcp
+messagekit-remote-mcp
 
-@messagekit/skill is documentation/instructions only
+messagekit-skill is documentation/instructions only
 ```
 
 Business logic must live in `packages/core`. The CLI, MCP server, and Skill must not duplicate core behavior.
@@ -84,7 +84,7 @@ Avoid helpers shaped like `doThingFunction(thing) { thing.do() }` or single-use 
 Imports should be grouped in this order:
 
 1. Third-party package imports.
-2. Local alias imports, such as `@messagekit/core`.
+2. Local alias imports, such as `@codewithantonio/messagekit-core`.
 3. Relative imports.
 
 Separate each import group with a blank line. Within each group, order imports by total line length from shortest to longest.
@@ -95,7 +95,7 @@ Example:
 import { z } from "zod";
 import { Hono } from "hono";
 
-import { sendTelegramMessage } from "@messagekit/core";
+import { sendTelegramMessage } from "@codewithantonio/messagekit-core";
 
 import { foo } from "../bar";
 ```
@@ -119,7 +119,7 @@ The repository should use the `MessageKit` human-facing product name and `messag
 
 The Telegram operation should send a message through the Telegram Bot API.
 
-The CLI and MCP adapters should read the bot token from config or `TELEGRAM_BOT_TOKEN` and pass it to `@messagekit/core`.
+The CLI and MCP adapters should read the bot token from config or `TELEGRAM_BOT_TOKEN` and pass it to `@codewithantonio/messagekit-core`.
 
 The MCP tool input should not include the bot token. Agents should provide only the chat ID and message text.
 
@@ -162,7 +162,7 @@ It should:
 
 - Define `messagekit telegram <chatId> <message>`.
 - Parse command arguments with Commander.
-- Call `@messagekit/core`.
+- Call `@codewithantonio/messagekit-core`.
 - Print readable output by default.
 - Support `--json` for scriptable and agent-readable output.
 
@@ -177,7 +177,7 @@ It should:
 - Create an MCP stdio server.
 - Register a `telegram` tool.
 - Use the shared Telegram message input schema.
-- Call `@messagekit/core`.
+- Call `@codewithantonio/messagekit-core`.
 - Return both `content` and `structuredContent`.
 
 It should not duplicate Telegram logic.
@@ -190,7 +190,7 @@ It should:
 
 - Prefer the MCP `telegram` tool when available.
 - Document CLI fallback usage.
-- Explain that `@messagekit/core` is an implementation detail.
+- Explain that `@codewithantonio/messagekit-core` is an implementation detail.
 - Avoid duplicating business logic.
 
 The Skill should stay product-generic while documenting `telegram` as the available tutorial capability.
@@ -220,11 +220,11 @@ bun install
 bun run format
 bun run lint
 bun run typecheck
-bun --filter @messagekit/cli dev init --telegram-bot-token "<bot-token>"
-bun --filter @messagekit/cli dev telegram "<chat-id>" "Hello from MessageKit"
-bun --filter @messagekit/cli dev telegram "<chat-id>" "Hello from MessageKit" --json
-TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @messagekit/local-mcp dev
-bun --filter @messagekit/remote-mcp dev
+bun --filter @codewithantonio/messagekit dev init --telegram-bot-token "<bot-token>"
+bun --filter @codewithantonio/messagekit dev telegram "<chat-id>" "Hello from MessageKit"
+bun --filter @codewithantonio/messagekit dev telegram "<chat-id>" "Hello from MessageKit" --json
+TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @codewithantonio/messagekit-mcp dev
+bun --filter messagekit-remote-mcp dev
 ```
 
 After each implementation, run `bun run format`, `bun run lint`, and `bun run typecheck` before reporting completion.

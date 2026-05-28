@@ -5,7 +5,7 @@ import { zValidator } from "@hono/zod-validator";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 
-import { sendTelegramMessage, telegramMessageInputSchema } from "@messagekit/core";
+import { sendTelegramMessage, telegramMessageInputSchema } from "@codewithantonio/messagekit-core";
 
 const bearerTokenHeaderSchema = z
   .object({

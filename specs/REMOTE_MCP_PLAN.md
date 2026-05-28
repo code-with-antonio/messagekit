@@ -11,7 +11,7 @@ packages/local-mcp   -> local MCP stdio adapter
 apps/remote-mcp      -> remote MCP HTTP adapter
 ```
 
-Both adapters should keep using `@messagekit/core` for business logic.
+Both adapters should keep using `@codewithantonio/messagekit-core` for business logic.
 
 ## Recommendation
 
@@ -42,7 +42,7 @@ Suggested package name:
 
 ```json
 {
-  "name": "@messagekit/remote-mcp"
+  "name": "messagekit-remote-mcp"
 }
 ```
 
@@ -75,7 +75,7 @@ Register the same `telegram` MCP tool in the remote package.
 The remote package should still import from core:
 
 ```ts
-import { sendTelegramMessage, telegramMessageInputSchema } from "@messagekit/core";
+import { sendTelegramMessage, telegramMessageInputSchema } from "@codewithantonio/messagekit-core";
 ```
 
 The MCP tool input should stay user-facing and minimal:
@@ -137,7 +137,7 @@ Add dependencies:
 {
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.0",
-    "@messagekit/core": "workspace:*"
+    "@codewithantonio/messagekit-core": "workspace:*"
   },
   "devDependencies": {
     "bun-types": "latest"
@@ -192,14 +192,14 @@ packages/skill       -> agent-facing instructions and fallback guidance
 Update the dependency diagram:
 
 ```text
-@messagekit/core
+@codewithantonio/messagekit-core
    ▲       ▲       ▲
    │       │       │
-@messagekit/cli
-@messagekit/local-mcp
-@messagekit/remote-mcp
+@codewithantonio/messagekit
+@codewithantonio/messagekit-mcp
+messagekit-remote-mcp
 
-@messagekit/skill is documentation/instructions only
+messagekit-skill is documentation/instructions only
 ```
 
 Update the operation registration flow to include remote MCP when relevant:

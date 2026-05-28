@@ -2,7 +2,7 @@
 
 ## Goal
 
-Allow the `@messagekit/cli` package to be invoked from anywhere on the machine as `messagekit` before the package is published.
+Allow the `@codewithantonio/messagekit` package to be invoked from anywhere on the machine as `messagekit` before the package is published.
 
 This is the first distribution step for the CLI: local global invocation through Bun's package linking.
 
@@ -63,7 +63,7 @@ messagekit telegram "<chat-id>" "Hello from MessageKit" --json
 - Running `bun link` inside `packages/cli` creates a global `messagekit` command.
 - Running `messagekit --help` from outside the repository prints the MessageKit CLI help output.
 - Running `messagekit init --telegram-bot-token "<bot-token>"` writes local CLI config to `~/.config/messagekit/config.json`.
-- Running `messagekit telegram "<chat-id>" "Hello from MessageKit"` uses the shared `@messagekit/core` Telegram operation.
+- Running `messagekit telegram "<chat-id>" "Hello from MessageKit"` uses the shared `@codewithantonio/messagekit-core` Telegram operation.
 - The CLI package does not duplicate Telegram business logic for linking or distribution.
 
 ## Unlink Workflow

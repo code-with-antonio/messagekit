@@ -1,5 +1,5 @@
 {
-  "name": "@messagekit/local-mcp",
+  "name": "@codewithantonio/messagekit-mcp",
   "version": "0.1.0",
   "bin": {
     "messagekit-mcp": "./src/index.ts"
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@messagekit/core": "workspace:*",
+    "@codewithantonio/messagekit-core": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.21.0"
   },
   "devDependencies": {
