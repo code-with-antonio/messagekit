@@ -318,6 +318,52 @@ bun run dev:remote-mcp
 
 Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@codewithantonio/messagekit-core`.
 
+## Publish Core To NPM
+
+`@codewithantonio/messagekit-core` is the shared implementation package used by the CLI, MCP servers, and downstream programmatic consumers. Publish it from `packages/core`, not from the repository root.
+
+Before publishing, confirm the version in `packages/core/package.json` is the version you want to publish. npm versions are immutable, so a failed or completed publish may require bumping the version before trying again.
+
+Run the full publish workflow:
+
+```bash
+cd packages/core
+bun run build
+npm pack --dry-run
+npm publish --access public
+```
+
+The dry run should include `README.md`, `package.json`, and compiled files under `dist/`, including:
+
+```text
+dist/index.js
+dist/index.d.ts
+dist/schemas.js
+dist/schemas.d.ts
+dist/operations.js
+dist/operations.d.ts
+```
+
+The dry run should not include `src/`, `node_modules/`, or `tsconfig.build.json`.
+
+If npm asks for a one-time password, rerun only the publish command with the current authenticator code:
+
+```bash
+npm publish --access public --otp=<code>
+```
+
+If npm says you are not logged in, authenticate first:
+
+```bash
+npm adduser
+```
+
+After publishing, verify the package metadata:
+
+```bash
+npm view @codewithantonio/messagekit-core version
+```
+
 ## Troubleshooting
 
 If `bun --filter` cannot find a package, run `bun install` from the repository root and confirm the package name matches the workspace package name.
