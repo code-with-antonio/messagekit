@@ -161,13 +161,29 @@ bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
 bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
 ```
 
-After publishing or linking a binary, these can become:
+Local linked binary commands:
+
+```bash
+cd packages/cli
+bun link
+messagekit --help
+```
+
+After linking the binary, these can be run from anywhere on the machine:
 
 ```bash
 messagekit init --telegram-bot-token "<bot-token>"
 messagekit telegram "<chat-id>" "Hello from MessageKit"
 messagekit telegram "<chat-id>" "Hello from MessageKit" --json
 ```
+
+To remove the local linked binary, run this from `packages/cli`:
+
+```bash
+bun unlink
+```
+
+See `specs/CLI_LOCAL_LINK.md` for the local linking acceptance criteria.
 
 CLI config is stored at `~/.config/messagekit/config.json`. If you used the old tutorial config path, rerun `messagekit init --telegram-bot-token "<bot-token>"`.
 
