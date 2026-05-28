@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.0",
-    "@starter/core": "workspace:*"
+    "@starter/core": "workspace:*",
+    "hono": "^4.0.0"
   },
   "devDependencies": {
     "bun-types": "latest"

@@ -124,7 +124,7 @@ Dependency direction:
 
 `packages/remote-mcp` owns remote MCP HTTP usage:
 
-- Creates a Bun HTTP server exposing `/mcp`.
+- Creates a Hono HTTP app exposing `/mcp`, run by Bun in development.
 - Registers a `telegram` tool backed by `@starter/core`.
 - Reads the Telegram bot token from `Authorization: Bearer <token>` per request.
 - Keeps the token out of the MCP tool input schema.

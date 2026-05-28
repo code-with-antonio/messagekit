@@ -2,6 +2,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { sendTelegramMessage, telegramMessageInputSchema } from "@starter/core";
+import { Hono } from "hono";
 
 function getBearerToken(request: Request) {
   const authorization = request.headers.get("authorization");
@@ -41,10 +42,6 @@ function createServer(botToken: string) {
 }
 
 async function handleMcpRequest(request: Request) {
-  if (new URL(request.url).pathname !== "/mcp") {
-    return Response.json({ error: "Not found" }, { status: 404 });
-  }
-
   const botToken = getBearerToken(request);
 
   if (!botToken) {
@@ -66,11 +63,19 @@ async function handleMcpRequest(request: Request) {
   }
 }
 
-const port = Number(process.env.PORT ?? 3000);
+const app = new Hono();
 
-Bun.serve({
-  port,
-  fetch: handleMcpRequest,
+app.post("/mcp", async (c) => {
+  return handleMcpRequest(c.req.raw);
 });
 
-console.log(`Remote MCP server listening on http://localhost:${port}/mcp`);
+app.notFound((c) => {
+  return c.json({ error: "Not found" }, 404);
+});
+
+const port = Number(process.env.PORT ?? 3000);
+
+export default {
+  port,
+  fetch: app.fetch,
+};
