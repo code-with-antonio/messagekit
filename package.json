@@ -1,15 +1,24 @@
 {
   "name": "messagekit-workspace",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "type": "module",
-  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev:cli": "bun run packages/cli/src/index.ts",
     "dev:local-mcp": "bun run packages/local-mcp/src/index.ts",
     "dev:remote-mcp": "bun run apps/remote-mcp/src/index.ts",
+    "format": "oxfmt . --write",
+    "format:check": "oxfmt . --check",
+    "lint": "oxlint . --deny-warnings",
+    "lint:fix": "oxlint . --fix",
     "typecheck": "bun run --filter '*' typecheck"
   },
   "devDependencies": {
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
     "typescript": "^5.9.3"
   }
 }

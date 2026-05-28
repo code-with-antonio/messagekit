@@ -1,17 +1,17 @@
 {
   "name": "@messagekit/local-mcp",
   "version": "0.1.0",
-  "type": "module",
   "bin": {
     "messagekit-mcp": "./src/index.ts"
   },
+  "type": "module",
   "scripts": {
     "dev": "bun run src/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.0",
-    "@messagekit/core": "workspace:*"
+    "@messagekit/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.21.0"
   },
   "devDependencies": {
     "bun-types": "latest"

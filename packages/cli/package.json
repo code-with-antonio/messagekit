@@ -1,10 +1,10 @@
 {
   "name": "@messagekit/cli",
   "version": "0.1.0",
-  "type": "module",
   "bin": {
     "messagekit": "./src/index.ts"
   },
+  "type": "module",
   "scripts": {
     "dev": "bun run src/index.ts",
     "typecheck": "tsc --noEmit"

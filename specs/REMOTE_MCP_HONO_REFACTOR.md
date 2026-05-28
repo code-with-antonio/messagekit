@@ -105,7 +105,10 @@ async function handleMcpRequest(request: Request) {
   const botToken = getBearerToken(request);
 
   if (!botToken) {
-    return Response.json({ error: "Authorization: Bearer <telegram-bot-token> is required" }, { status: 401 });
+    return Response.json(
+      { error: "Authorization: Bearer <telegram-bot-token> is required" },
+      { status: 401 },
+    );
   }
 
   const server = createServer(botToken);

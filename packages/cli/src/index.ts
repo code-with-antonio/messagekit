@@ -13,7 +13,10 @@ const cliConfigSchema = z.object({
   telegramBotToken: z.string().min(1).optional(),
 });
 
-async function printTelegramMessage(result: z.infer<typeof telegramMessageOutputSchema>, json: boolean) {
+async function printTelegramMessage(
+  result: z.infer<typeof telegramMessageOutputSchema>,
+  json: boolean,
+) {
   const telegramMessage = telegramMessageOutputSchema.parse(result);
 
   if (json) {
@@ -21,7 +24,9 @@ async function printTelegramMessage(result: z.infer<typeof telegramMessageOutput
     return;
   }
 
-  console.log(`Sent Telegram message ${telegramMessage.messageId} to chat ${telegramMessage.chatId}`);
+  console.log(
+    `Sent Telegram message ${telegramMessage.messageId} to chat ${telegramMessage.chatId}`,
+  );
 }
 
 function getTelegramBotToken() {
@@ -41,7 +46,9 @@ function getTelegramBotToken() {
 
 function writeTelegramBotToken(token: string) {
   mkdirSync(dirname(configPath), { recursive: true });
-  writeFileSync(configPath, `${JSON.stringify({ telegramBotToken: token }, null, 2)}\n`, { mode: 0o600 });
+  writeFileSync(configPath, `${JSON.stringify({ telegramBotToken: token }, null, 2)}\n`, {
+    mode: 0o600,
+  });
 }
 
 async function askTelegramBotToken() {

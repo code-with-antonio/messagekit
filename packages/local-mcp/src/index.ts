@@ -29,7 +29,12 @@ server.registerTool(
     const result = await sendTelegramMessage({ ...input, botToken: getTelegramBotToken() });
 
     return {
-      content: [{ type: "text", text: `Sent Telegram message ${result.messageId} to chat ${result.chatId}` }],
+      content: [
+        {
+          type: "text",
+          text: `Sent Telegram message ${result.messageId} to chat ${result.chatId}`,
+        },
+      ],
       structuredContent: result,
     };
   },

@@ -8,7 +8,9 @@ import { z } from "zod";
 
 const bearerTokenHeaderSchema = z
   .object({
-    authorization: z.string().regex(/^Bearer\s+\S+$/, "Authorization: Bearer <telegram-bot-token> is required"),
+    authorization: z
+      .string()
+      .regex(/^Bearer\s+\S+$/, "Authorization: Bearer <telegram-bot-token> is required"),
   })
   .transform(({ authorization }) => ({
     botToken: authorization.replace(/^Bearer\s+/, ""),
@@ -31,7 +33,12 @@ function createServer(botToken: string) {
       const result = await sendTelegramMessage({ ...input, botToken });
 
       return {
-        content: [{ type: "text", text: `Sent Telegram message ${result.messageId} to chat ${result.chatId}` }],
+        content: [
+          {
+            type: "text",
+            text: `Sent Telegram message ${result.messageId} to chat ${result.chatId}`,
+          },
+        ],
         structuredContent: result,
       };
     },
