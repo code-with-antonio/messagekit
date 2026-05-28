@@ -75,6 +75,31 @@ Dependency direction:
 
 Business logic must live in `packages/core`. The CLI, MCP server, and Skill must not duplicate core behavior.
 
+## Code Style
+
+Prefer direct code over defensive wrappers. Do not add helper functions that only rename a single operation, pass through one value, or hide one obvious property access without reducing duplication or clarifying a meaningful boundary.
+
+Avoid helpers shaped like `doThingFunction(thing) { thing.do() }` or single-use wrappers around `process.env`, config reads, simple schema parsing, or one-line adapter calls. Keep that logic inline at the call site unless it is reused, isolates a real boundary, or makes a complex flow easier to understand.
+
+Imports should be grouped in this order:
+
+1. Third-party package imports.
+2. Local alias imports, such as `@messagekit/core`.
+3. Relative imports.
+
+Separate each import group with a blank line. Within each group, order imports by total line length from shortest to longest.
+
+Example:
+
+```ts
+import { z } from "zod";
+import { Hono } from "hono";
+
+import { sendTelegramMessage } from "@messagekit/core";
+
+import { foo } from "../bar";
+```
+
 ## Canonical Operation
 
 The canonical tutorial operation is `sendTelegramMessage`.
@@ -192,6 +217,8 @@ Recommended verification commands:
 
 ```bash
 bun install
+bun run format
+bun run lint
 bun run typecheck
 bun --filter @messagekit/cli dev init --telegram-bot-token "<bot-token>"
 bun --filter @messagekit/cli dev telegram "<chat-id>" "Hello from MessageKit"
@@ -199,6 +226,8 @@ bun --filter @messagekit/cli dev telegram "<chat-id>" "Hello from MessageKit" --
 TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @messagekit/local-mcp dev
 bun --filter @messagekit/remote-mcp dev
 ```
+
+After each implementation, run `bun run format`, `bun run lint`, and `bun run typecheck` before reporting completion.
 
 The repository should not include or document a `bun test` workflow.
 

@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
-import { Command } from "commander";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { z } from "zod";
 import { homedir } from "node:os";
+import { Command } from "commander";
 import { dirname, join } from "node:path";
 import { createInterface } from "node:readline/promises";
-import { z } from "zod";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+
 import { sendTelegramMessage, telegramMessageOutputSchema } from "@messagekit/core";
 
 const program = new Command();

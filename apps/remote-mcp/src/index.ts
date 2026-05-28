@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
+import { z } from "zod";
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
+
 import { sendTelegramMessage, telegramMessageInputSchema } from "@messagekit/core";
-import { zValidator } from "@hono/zod-validator";
-import { Hono } from "hono";
-import { z } from "zod";
 
 const bearerTokenHeaderSchema = z
   .object({
