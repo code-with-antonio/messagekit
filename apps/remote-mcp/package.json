@@ -7,9 +7,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.0",
+    "@hono/zod-validator": "^0.8.0",
     "@messagekit/core": "workspace:*",
-    "hono": "^4.0.0"
+    "@modelcontextprotocol/sdk": "^1.21.0",
+    "hono": "^4.10.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "bun-types": "latest"

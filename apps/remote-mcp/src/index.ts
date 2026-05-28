@@ -2,18 +2,17 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { sendTelegramMessage, telegramMessageInputSchema } from "@messagekit/core";
+import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { z } from "zod";
 
-function getBearerToken(request: Request) {
-  const authorization = request.headers.get("authorization");
-  const [scheme, token] = authorization?.split(" ") ?? [];
-
-  if (scheme !== "Bearer" || !token) {
-    return null;
-  }
-
-  return token;
-}
+const bearerTokenHeaderSchema = z
+  .object({
+    authorization: z.string().regex(/^Bearer\s+\S+$/, "Authorization: Bearer <telegram-bot-token> is required"),
+  })
+  .transform(({ authorization }) => ({
+    botToken: authorization.replace(/^Bearer\s+/, ""),
+  }));
 
 function createServer(botToken: string) {
   const server = new McpServer({
@@ -41,33 +40,32 @@ function createServer(botToken: string) {
   return server;
 }
 
-async function handleMcpRequest(request: Request) {
-  const botToken = getBearerToken(request);
-
-  if (!botToken) {
-    return Response.json({ error: "Authorization: Bearer <telegram-bot-token> is required" }, { status: 401 });
-  }
-
-  const server = createServer(botToken);
-  const transport = new WebStandardStreamableHTTPServerTransport({
-    sessionIdGenerator: undefined,
-    enableJsonResponse: true,
-  });
-
-  await server.connect(transport);
-
-  try {
-    return await transport.handleRequest(request);
-  } finally {
-    await server.close();
-  }
-}
-
 const app = new Hono();
 
-app.post("/mcp", async (c) => {
-  return handleMcpRequest(c.req.raw);
-});
+app.post(
+  "/mcp",
+  zValidator("header", bearerTokenHeaderSchema, (result, c) => {
+    if (!result.success) {
+      return c.json({ error: "Authorization: Bearer <telegram-bot-token> is required" }, 401);
+    }
+  }),
+  async (c) => {
+    const { botToken } = c.req.valid("header");
+    const server = createServer(botToken);
+    const transport = new WebStandardStreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+      enableJsonResponse: true,
+    });
+
+    await server.connect(transport);
+
+    try {
+      return await transport.handleRequest(c.req.raw);
+    } finally {
+      await server.close();
+    }
+  },
+);
 
 app.notFound((c) => {
   return c.json({ error: "Not found" }, 404);

@@ -11,9 +11,11 @@
       "name": "@messagekit/remote-mcp",
       "version": "0.1.0",
       "dependencies": {
+        "@hono/zod-validator": "^0.8.0",
         "@messagekit/core": "workspace:*",
         "@modelcontextprotocol/sdk": "^1.21.0",
-        "hono": "^4.0.0",
+        "hono": "^4.10.0",
+        "zod": "^4.4.3",
       },
       "devDependencies": {
         "bun-types": "latest",
@@ -64,6 +66,8 @@
   },
   "packages": {
     "@hono/node-server": ["@hono/node-server@1.19.14", "", { "peerDependencies": { "hono": "^4" } }, "sha512-GwtvgtXxnWsucXvbQXkRgqksiH2Qed37H9xHZocE5sA3N8O8O8/8FA3uclQXxXVzc9XBZuEOMK7+r02FmSpHtw=="],
+
+    "@hono/zod-validator": ["@hono/zod-validator@0.8.0", "", { "peerDependencies": { "hono": ">=4.10.0", "zod": "^3.25.0 || ^4.0.0" } }, "sha512-5uS4S1/LKtZQYvD4BtpPUFkOv8d1wNxHHrChm26buMiEYc1FrHWvDUaKVBwkiVtvSExHSpLGDvcnpI2Copyj9w=="],
 
     "@messagekit/cli": ["@messagekit/cli@workspace:packages/cli"],
 
