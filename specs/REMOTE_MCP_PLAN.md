@@ -11,7 +11,7 @@ packages/local-mcp   -> local MCP stdio adapter
 apps/remote-mcp      -> remote MCP HTTP adapter
 ```
 
-Both adapters should keep using `@starter/core` for business logic.
+Both adapters should keep using `@messagekit/core` for business logic.
 
 ## Recommendation
 
@@ -42,7 +42,7 @@ Suggested package name:
 
 ```json
 {
-  "name": "@starter/remote-mcp"
+  "name": "@messagekit/remote-mcp"
 }
 ```
 
@@ -75,7 +75,7 @@ Register the same `telegram` MCP tool in the remote package.
 The remote package should still import from core:
 
 ```ts
-import { sendTelegramMessage, telegramMessageInputSchema } from "@starter/core";
+import { sendTelegramMessage, telegramMessageInputSchema } from "@messagekit/core";
 ```
 
 The MCP tool input should stay user-facing and minimal:
@@ -83,7 +83,7 @@ The MCP tool input should stay user-facing and minimal:
 ```json
 {
   "chatId": "123456789",
-  "message": "Hello from Starter"
+  "message": "Hello from MessageKit"
 }
 ```
 
@@ -137,7 +137,7 @@ Add dependencies:
 {
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.0",
-    "@starter/core": "workspace:*"
+    "@messagekit/core": "workspace:*"
   },
   "devDependencies": {
     "bun-types": "latest"
@@ -163,7 +163,7 @@ Once deployed, OpenCode can point to the remote MCP server:
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "starter": {
+    "messagekit": {
       "type": "remote",
       "url": "https://your-host.example.com/mcp",
       "enabled": true,
@@ -192,14 +192,14 @@ packages/skill       -> agent-facing instructions and fallback guidance
 Update the dependency diagram:
 
 ```text
-@starter/core
+@messagekit/core
    ▲       ▲       ▲
    │       │       │
-@starter/cli
-@starter/local-mcp
-@starter/remote-mcp
+@messagekit/cli
+@messagekit/local-mcp
+@messagekit/remote-mcp
 
-@starter/skill is documentation/instructions only
+@messagekit/skill is documentation/instructions only
 ```
 
 Update the operation registration flow to include remote MCP when relevant:

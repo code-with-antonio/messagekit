@@ -1,5 +1,5 @@
 {
-  "name": "@starter/remote-mcp",
+  "name": "@messagekit/remote-mcp",
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.0",
-    "@starter/core": "workspace:*",
+    "@messagekit/core": "workspace:*",
     "hono": "^4.0.0"
   },
   "devDependencies": {

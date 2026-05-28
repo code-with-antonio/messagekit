@@ -5,10 +5,10 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { z } from "zod";
-import { sendTelegramMessage, telegramMessageOutputSchema } from "@starter/core";
+import { sendTelegramMessage, telegramMessageOutputSchema } from "@messagekit/core";
 
 const program = new Command();
-const configPath = join(homedir(), ".config", "starter", "config.json");
+const configPath = join(homedir(), ".config", "messagekit", "config.json");
 const cliConfigSchema = z.object({
   telegramBotToken: z.string().min(1).optional(),
 });
@@ -26,14 +26,14 @@ async function printTelegramMessage(result: z.infer<typeof telegramMessageOutput
 
 function getTelegramBotToken() {
   if (!existsSync(configPath)) {
-    throw new Error("Telegram bot token is required. Run `starter init`.");
+    throw new Error("Telegram bot token is required. Run `messagekit init`.");
   }
 
   const config = cliConfigSchema.parse(JSON.parse(readFileSync(configPath, "utf8")));
   const token = config.telegramBotToken;
 
   if (!token) {
-    throw new Error("Telegram bot token is required. Run `starter init`.");
+    throw new Error("Telegram bot token is required. Run `messagekit init`.");
   }
 
   return token;
@@ -55,23 +55,23 @@ async function askTelegramBotToken() {
 }
 
 program
-  .name("starter")
-  .description("Starter CLI backed by @starter/core")
+  .name("messagekit")
+  .description("MessageKit CLI backed by @messagekit/core")
   .version("0.1.0");
 
 program
   .command("init")
-  .description("Configure Starter CLI local settings")
+  .description("Configure MessageKit CLI local settings")
   .option("--telegram-bot-token <botToken>", "Telegram bot token")
   .action(async (options: { telegramBotToken?: string }) => {
     const botToken = options.telegramBotToken ?? (await askTelegramBotToken());
 
     if (!botToken) {
-      throw new Error("Telegram bot token is required. Run `starter init`.");
+      throw new Error("Telegram bot token is required. Run `messagekit init`.");
     }
 
     writeTelegramBotToken(botToken);
-    console.log(`Saved Starter CLI config to ${configPath}`);
+    console.log(`Saved MessageKit CLI config to ${configPath}`);
   });
 
 program

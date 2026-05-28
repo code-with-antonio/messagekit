@@ -1,5 +1,5 @@
 {
-  "name": "@starter/core",
+  "name": "@messagekit/core",
   "version": "0.1.0",
   "type": "module",
   "exports": {

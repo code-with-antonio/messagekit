@@ -2,7 +2,7 @@
 
 ## Project Purpose
 
-This repository is a tutorial starter for teaching developers how to build modern MCP-backed tools in 2026.
+MessageKit is a tutorial project for teaching developers how to build modern MCP-backed messaging tools in 2026.
 
 The central lesson is that MCP should be the primary agent-facing interface, but the business logic should live in a shared core package that can also be exposed through a CLI and documented through a Skill.
 
@@ -10,7 +10,7 @@ The central lesson is that MCP should be the primary agent-facing interface, but
 core capability -> CLI command -> MCP tool -> Skill instructions
 ```
 
-The starter should make it easy to maintain all three interfaces without duplicating business logic.
+MessageKit should make it easy to maintain all interfaces without duplicating business logic.
 
 ## Target Audience
 
@@ -53,22 +53,24 @@ The repository should teach that these interfaces are complementary, not mutuall
 ## Architecture
 
 ```text
-packages/core  -> shared schemas and operations
-packages/cli   -> command-line adapter backed by core
+packages/core      -> shared schemas and operations
+packages/cli       -> command-line adapter backed by core
 packages/local-mcp -> local MCP stdio server adapter backed by core
-packages/skill -> agent-facing instructions and fallback guidance
+apps/remote-mcp    -> remote MCP HTTP adapter backed by core
+packages/skill     -> agent-facing instructions and fallback guidance
 ```
 
 Dependency direction:
 
 ```text
-@starter/core
-   ▲       ▲
-   │       │
-@starter/cli
-@starter/local-mcp
+@messagekit/core
+   ▲       ▲       ▲
+   │       │       │
+@messagekit/cli
+@messagekit/local-mcp
+@messagekit/remote-mcp
 
-@starter/skill is documentation/instructions only
+@messagekit/skill is documentation/instructions only
 ```
 
 Business logic must live in `packages/core`. The CLI, MCP server, and Skill must not duplicate core behavior.
@@ -81,18 +83,18 @@ Public interface names:
 
 ```text
 core function: sendTelegramMessage
-CLI command:   starter telegram <chatId> <message>
+CLI command:   messagekit telegram <chatId> <message>
 MCP tool:      telegram
 Skill usage:   telegram
 ```
 
-The repository should stay named `starter` so viewers can rename it to match their own product during the tutorial.
+The repository should use the `MessageKit` human-facing product name and `messagekit` command/package name. Do not reintroduce the old generic identity in public names.
 
 ## Telegram Behavior
 
 The Telegram operation should send a message through the Telegram Bot API.
 
-The CLI and MCP adapters should read the bot token from `TELEGRAM_BOT_TOKEN` and pass it to `@starter/core`.
+The CLI and MCP adapters should read the bot token from config or `TELEGRAM_BOT_TOKEN` and pass it to `@messagekit/core`.
 
 The MCP tool input should not include the bot token. Agents should provide only the chat ID and message text.
 
@@ -133,9 +135,9 @@ It should not contain:
 
 It should:
 
-- Define `starter telegram <chatId> <message>`.
+- Define `messagekit telegram <chatId> <message>`.
 - Parse command arguments with Commander.
-- Call `@starter/core`.
+- Call `@messagekit/core`.
 - Print readable output by default.
 - Support `--json` for scriptable and agent-readable output.
 
@@ -150,7 +152,7 @@ It should:
 - Create an MCP stdio server.
 - Register a `telegram` tool.
 - Use the shared Telegram message input schema.
-- Call `@starter/core`.
+- Call `@messagekit/core`.
 - Return both `content` and `structuredContent`.
 
 It should not duplicate Telegram logic.
@@ -163,7 +165,7 @@ It should:
 
 - Prefer the MCP `telegram` tool when available.
 - Document CLI fallback usage.
-- Explain that `@starter/core` is an implementation detail.
+- Explain that `@messagekit/core` is an implementation detail.
 - Avoid duplicating business logic.
 
 The Skill should stay product-generic while documenting `telegram` as the available tutorial capability.
@@ -180,7 +182,7 @@ Every new operation added by viewers should follow this explicit registration fl
 6. Add usage notes in `packages/skill/SKILL.md`.
 7. Add manual verification commands to the README if the operation is part of the tutorial.
 
-The starter should keep this registration explicit. It should not introduce a shared operation registry in the initial tutorial.
+MessageKit should keep this registration explicit. It should not introduce a shared operation registry in the initial tutorial.
 
 ## Verification
 
@@ -191,9 +193,11 @@ Recommended verification commands:
 ```bash
 bun install
 bun run typecheck
-TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @starter/cli dev telegram "<chat-id>" "Hello from Starter"
-TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @starter/cli dev telegram "<chat-id>" "Hello from Starter" --json
-bun --filter @starter/local-mcp dev
+bun --filter @messagekit/cli dev init --telegram-bot-token "<bot-token>"
+bun --filter @messagekit/cli dev telegram "<chat-id>" "Hello from MessageKit"
+bun --filter @messagekit/cli dev telegram "<chat-id>" "Hello from MessageKit" --json
+TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @messagekit/local-mcp dev
+bun --filter @messagekit/remote-mcp dev
 ```
 
 The repository should not include or document a `bun test` workflow.
@@ -202,7 +206,7 @@ The repository should not include or document a `bun test` workflow.
 
 The README should explain:
 
-- What the starter is for.
+- What MessageKit is for.
 - How the packages relate to each other.
 - How to run the CLI.
 - How to run the MCP server.
@@ -211,11 +215,11 @@ The README should explain:
 - How to add a new operation by following the explicit registration flow.
 - Why business logic belongs in `packages/core`.
 
-This file explains the design intent and boundaries of the starter for agents and contributors working in this repository.
+This file explains the design intent and boundaries of MessageKit for agents and contributors working in this repository.
 
 ## Non-Goals
 
-The initial tutorial starter should not include:
+The initial MessageKit tutorial should not include:
 
 - Automated tests.
 - OAuth or user authentication beyond Telegram bot tokens.

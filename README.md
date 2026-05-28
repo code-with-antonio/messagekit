@@ -1,6 +1,6 @@
-# Bun Workspaces MCP + CLI + Skill Starter
+# MessageKit: Send Messages Through MCP, CLI, and Skills
 
-This repository is a lightweight starter for building one shared TypeScript operation and exposing it through three thin interfaces:
+MessageKit is a tutorial project for building one messaging capability and exposing it through CLI, local MCP, remote MCP, and Skill interfaces:
 
 - `packages/core`: Shared schemas and operations.
 - `packages/cli`: Human/script CLI adapter.
@@ -34,7 +34,7 @@ Run the CLI Telegram command:
 
 ```bash
 bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from Starter"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
 ```
 
 Expected readable output:
@@ -46,7 +46,7 @@ Sent Telegram message 123 to chat <chat-id>
 Run Telegram with script-friendly JSON output:
 
 ```bash
-bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
 ```
 
 Expected output:
@@ -88,14 +88,14 @@ packages/skill       -> agent-facing instructions and fallback guidance
 Dependency direction:
 
 ```text
-@starter/core
+@messagekit/core
    ▲       ▲       ▲
    │       │       │
-@starter/cli
-@starter/local-mcp
-@starter/remote-mcp
+@messagekit/cli
+@messagekit/local-mcp
+@messagekit/remote-mcp
 
-@starter/skill is documentation/instructions only
+@messagekit/skill is documentation/instructions only
 ```
 
 ## Package Details
@@ -109,23 +109,23 @@ Dependency direction:
 
 `packages/cli` owns human and script usage:
 
-- Defines `starter telegram <chatId> <message>`.
+- Defines `messagekit telegram <chatId> <message>`.
 - Parses command arguments with Commander.
-- Calls `@starter/core` functions.
+- Calls `@messagekit/core` functions.
 - Prints readable output by default.
 - Supports `--json` for scriptable and agent-readable output.
 
 `packages/local-mcp` owns local MCP stdio usage:
 
 - Creates an MCP stdio server.
-- Registers a `telegram` tool backed by `@starter/core`.
+- Registers a `telegram` tool backed by `@messagekit/core`.
 - Uses the shared Telegram message input schema.
 - Returns both `content` and `structuredContent`.
 
 `apps/remote-mcp` owns remote MCP HTTP usage:
 
 - Creates a Hono HTTP app exposing `/mcp`, run by Bun in development.
-- Registers a `telegram` tool backed by `@starter/core`.
+- Registers a `telegram` tool backed by `@messagekit/core`.
 - Reads the Telegram bot token from `Authorization: Bearer <token>` per request.
 - Keeps the token out of the MCP tool input schema.
 
@@ -133,23 +133,23 @@ Dependency direction:
 
 - Prefers the MCP `telegram` tool when available.
 - Documents CLI fallback usage.
-- Explains that `@starter/core` is an implementation detail.
+- Explains that `@messagekit/core` is an implementation detail.
 - Avoids duplicating business logic.
 
 ## Telegram Operation
 
-The starter includes one canonical tutorial operation: `sendTelegramMessage`.
+MessageKit includes one canonical tutorial operation: `sendTelegramMessage`.
 
 Public interface names:
 
 ```text
 core function: sendTelegramMessage
-CLI command:   starter telegram <chatId> <message>
+CLI command:   messagekit telegram <chatId> <message>
 MCP tool:      telegram
 Skill usage:   telegram
 ```
 
-Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `starter init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request `Authorization: Bearer <token>` header. All adapters pass the token into `@starter/core`; it is not exposed as an MCP tool argument.
+Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `messagekit init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request `Authorization: Bearer <token>` header. All adapters pass the token into `@messagekit/core`; it is not exposed as an MCP tool argument.
 
 ## CLI Usage
 
@@ -157,19 +157,19 @@ Development commands:
 
 ```bash
 bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from Starter"
-bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
 ```
 
 After publishing or linking a binary, these can become:
 
 ```bash
-starter init --telegram-bot-token "<bot-token>"
-starter telegram "<chat-id>" "Hello from Starter"
-starter telegram "<chat-id>" "Hello from Starter" --json
+messagekit init --telegram-bot-token "<bot-token>"
+messagekit telegram "<chat-id>" "Hello from MessageKit"
+messagekit telegram "<chat-id>" "Hello from MessageKit" --json
 ```
 
-CLI config is stored at `~/.config/starter/config.json`.
+CLI config is stored at `~/.config/messagekit/config.json`. If you used the old tutorial config path, rerun `messagekit init --telegram-bot-token "<bot-token>"`.
 
 ## MCP Usage
 
@@ -184,7 +184,7 @@ Example MCP client config from the repository root:
 ```json
 {
   "mcpServers": {
-    "starter": {
+    "messagekit": {
       "command": "bun",
       "args": ["run", "packages/local-mcp/src/index.ts"],
       "environment": {
@@ -200,8 +200,8 @@ For a published package, this can become:
 ```json
 {
   "mcpServers": {
-    "starter": {
-      "command": "starter-mcp",
+    "messagekit": {
+      "command": "messagekit-mcp",
       "args": [],
       "environment": {
         "TELEGRAM_BOT_TOKEN": "<bot-token>"
@@ -235,7 +235,7 @@ Example OpenCode remote MCP config after deployment:
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "starter": {
+    "messagekit": {
       "type": "remote",
       "url": "https://your-host.example.com/mcp",
       "enabled": true,
@@ -259,13 +259,13 @@ The skill tells agents to:
 - Use CLI fallback when MCP is unavailable.
 - Request JSON output from CLI commands when parsing results.
 - Avoid duplicating business logic in the skill.
-- Treat `@starter/core` as an implementation detail, not a direct user interface.
+- Treat `@messagekit/core` as an implementation detail, not a direct user interface.
 
 CLI fallback example:
 
 ```bash
-starter init --telegram-bot-token "<bot-token>"
-starter telegram "<chat-id>" "Hello from Starter" --json
+messagekit init --telegram-bot-token "<bot-token>"
+messagekit telegram "<chat-id>" "Hello from MessageKit" --json
 ```
 
 ## Add A New Operation
@@ -294,13 +294,13 @@ Skill       = instructions for when/how to use CLI or MCP
 bun install
 bun run typecheck
 bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from Starter"
-bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
 TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 bun run dev:remote-mcp
 ```
 
-Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@starter/core`.
+Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@messagekit/core`.
 
 ## Troubleshooting
 
@@ -314,6 +314,6 @@ If an MCP client cannot start the server, confirm its working directory is the r
 
 If CLI output is difficult to parse in scripts, pass `--json` and parse stdout as JSON.
 
-If Telegram requests fail from the CLI, run `starter init` and confirm the bot can send messages to the target chat.
+If Telegram requests fail from the CLI, run `messagekit init` and confirm the bot can send messages to the target chat.
 
 If Telegram requests fail from MCP, confirm the MCP client config provides `TELEGRAM_BOT_TOKEN` in the server `environment`.

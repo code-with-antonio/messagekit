@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
-import { sendTelegramMessage, telegramMessageInputSchema } from "@starter/core";
+import { sendTelegramMessage, telegramMessageInputSchema } from "@messagekit/core";
 import { Hono } from "hono";
 
 function getBearerToken(request: Request) {
@@ -17,7 +17,7 @@ function getBearerToken(request: Request) {
 
 function createServer(botToken: string) {
   const server = new McpServer({
-    name: "starter-remote",
+    name: "messagekit-remote",
     version: "0.1.0",
   });
 

@@ -1,5 +1,5 @@
 {
-  "name": "starter-workspace",
+  "name": "messagekit-workspace",
   "private": true,
   "type": "module",
   "workspaces": ["apps/*", "packages/*"],
