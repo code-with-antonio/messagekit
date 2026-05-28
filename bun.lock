@@ -45,6 +45,17 @@
         "bun-types": "latest",
       },
     },
+    "packages/remote-mcp": {
+      "name": "@starter/remote-mcp",
+      "version": "0.1.0",
+      "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.21.0",
+        "@starter/core": "workspace:*",
+      },
+      "devDependencies": {
+        "bun-types": "latest",
+      },
+    },
     "packages/skill": {
       "name": "@starter/skill",
       "version": "0.1.0",
@@ -60,6 +71,8 @@
     "@starter/core": ["@starter/core@workspace:packages/core"],
 
     "@starter/mcp": ["@starter/mcp@workspace:packages/mcp"],
+
+    "@starter/remote-mcp": ["@starter/remote-mcp@workspace:packages/remote-mcp"],
 
     "@starter/skill": ["@starter/skill@workspace:packages/skill"],
 

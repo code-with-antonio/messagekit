@@ -5,6 +5,7 @@ This repository is a lightweight starter for building one shared TypeScript oper
 - `packages/core`: Shared schemas and operations.
 - `packages/cli`: Human/script CLI adapter.
 - `packages/mcp`: MCP stdio server adapter for AI clients.
+- `packages/remote-mcp`: Remote MCP HTTP adapter for deployed clients.
 - `packages/skill`: Agent-facing usage instructions.
 
 The central pattern is:
@@ -66,23 +67,33 @@ bun run dev:mcp
 
 Expected behavior: the process stays running and waits for MCP messages over stdio. Stop it with `Ctrl-C` when testing manually.
 
+Start the remote MCP HTTP server:
+
+```bash
+bun run dev:remote-mcp
+```
+
+Expected behavior: the server listens on `PORT` or `3000` by default and exposes `POST /mcp`.
+
 ## Architecture
 
 ```text
-packages/core  -> shared schemas and operations
-packages/cli   -> command-line adapter backed by core
-packages/mcp   -> MCP stdio server adapter backed by core
-packages/skill -> agent-facing instructions and fallback guidance
+packages/core        -> shared schemas and operations
+packages/cli         -> command-line adapter backed by core
+packages/mcp         -> local MCP stdio adapter backed by core
+packages/remote-mcp  -> remote MCP HTTP adapter backed by core
+packages/skill       -> agent-facing instructions and fallback guidance
 ```
 
 Dependency direction:
 
 ```text
 @starter/core
-   ▲       ▲
-   │       │
+   ▲       ▲       ▲
+   │       │       │
 @starter/cli
 @starter/mcp
+@starter/remote-mcp
 
 @starter/skill is documentation/instructions only
 ```
@@ -111,6 +122,13 @@ Dependency direction:
 - Uses the shared Telegram message input schema.
 - Returns both `content` and `structuredContent`.
 
+`packages/remote-mcp` owns remote MCP HTTP usage:
+
+- Creates a Bun HTTP server exposing `/mcp`.
+- Registers a `telegram` tool backed by `@starter/core`.
+- Reads the Telegram bot token from `Authorization: Bearer <token>` per request.
+- Keeps the token out of the MCP tool input schema.
+
 `packages/skill` owns agent instructions:
 
 - Prefers the MCP `telegram` tool when available.
@@ -131,7 +149,7 @@ MCP tool:      telegram
 Skill usage:   telegram
 ```
 
-Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `starter init`. The MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. Both adapters pass the token into `@starter/core`; it is not exposed as an MCP tool argument.
+Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `starter init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request `Authorization: Bearer <token>` header. All adapters pass the token into `@starter/core`; it is not exposed as an MCP tool argument.
 
 ## CLI Usage
 
@@ -197,6 +215,40 @@ Available MCP tools:
 
 - `telegram`: Accepts `{ chatId, message }` and returns `{ ok, chatId, messageId }` output.
 
+## Remote MCP Usage
+
+Run the remote MCP server locally:
+
+```bash
+bun run dev:remote-mcp
+```
+
+The server exposes `POST /mcp` and requires a per-request bearer token:
+
+```http
+Authorization: Bearer <telegram-bot-token>
+```
+
+Example OpenCode remote MCP config after deployment:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "starter": {
+      "type": "remote",
+      "url": "https://your-host.example.com/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {env:TELEGRAM_BOT_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+This keeps the Telegram bot token user-specific and client-provided without exposing it as a tool argument.
+
 ## Skill Usage
 
 The skill lives at `packages/skill/SKILL.md`. Add or copy that file into an agent skill system that supports Markdown skills.
@@ -222,15 +274,17 @@ starter telegram "<chat-id>" "Hello from Starter" --json
 2. Add the operation function in `packages/core/src/operations.ts`.
 3. Export it through `packages/core/src/index.ts` when needed.
 4. Add a CLI command in `packages/cli/src/index.ts`.
-5. Add an MCP tool in `packages/mcp/src/index.ts`.
-6. Add usage notes in `packages/skill/SKILL.md`.
-7. Add manual verification commands to the README if the operation is part of the tutorial.
+5. Add a local MCP tool in `packages/mcp/src/index.ts`.
+6. Add a remote MCP tool in `packages/remote-mcp/src/index.ts` when remote support is part of the tutorial.
+7. Add usage notes in `packages/skill/SKILL.md`.
+8. Add manual verification commands to the README if the operation is part of the tutorial.
 
 Keep every capability implemented once in `core`:
 
 ```text
 CLI command = parse input + call core + print output
 MCP tool    = validate input + call core + return structured result
+Remote MCP  = read request auth + validate input + call core
 Skill       = instructions for when/how to use CLI or MCP
 ```
 
@@ -243,7 +297,10 @@ bun run dev:cli init --telegram-bot-token "<bot-token>"
 bun run dev:cli telegram "<chat-id>" "Hello from Starter"
 bun run dev:cli telegram "<chat-id>" "Hello from Starter" --json
 TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:mcp
+bun run dev:remote-mcp
 ```
+
+Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@starter/core`.
 
 ## Troubleshooting
 
