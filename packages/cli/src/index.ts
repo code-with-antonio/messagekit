@@ -65,7 +65,7 @@ async function askTelegramBotToken() {
 program
   .name("messagekit")
   .description("MessageKit CLI backed by @codewithantonio/messagekit-core")
-  .version("0.1.0");
+  .version("0.1.2");
 
 program
   .command("init")

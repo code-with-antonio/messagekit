@@ -318,18 +318,70 @@ bun run dev:remote-mcp
 
 Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@codewithantonio/messagekit-core`.
 
-## Publish Core To NPM
+## Publish Packages To NPM
 
 `@codewithantonio/messagekit-core` is the shared implementation package used by the CLI, MCP servers, and downstream programmatic consumers. Publish it from `packages/core`, not from the repository root.
 
-Before publishing, confirm the version in `packages/core/package.json` is the version you want to publish. npm versions are immutable, so a failed or completed publish may require bumping the version before trying again.
+`@codewithantonio/messagekit` is the published CLI package. It depends on the published core package, so publish core first whenever a release includes core changes.
+
+### Version Bumps
+
+npm versions are immutable. Before publishing, choose versions that have not already been published.
+
+If core changed, bump `packages/core/package.json` first:
+
+```json
+{
+  "name": "@codewithantonio/messagekit-core",
+  "version": "0.1.3"
+}
+```
+
+Then update the CLI dependency on core to the published semver range:
+
+```json
+{
+  "dependencies": {
+    "@codewithantonio/messagekit-core": "^0.1.3"
+  }
+}
+```
+
+Use actual semver for `@codewithantonio/messagekit-core` in `packages/cli/package.json`, not `workspace:*`. The CLI package is published to npm, and published npm packages cannot rely on workspace-only dependency ranges. Bun can still link the local workspace package during development because the dependency name matches a workspace package.
+
+If the CLI changed, bump `packages/cli/package.json` and keep the CLI's displayed version in `packages/cli/src/index.ts` in sync with it.
+
+After editing versions, refresh the lockfile from the repository root:
+
+```bash
+bun install
+```
+
+### Pre-Publish Checks
+
+Run the normal workspace checks before publishing either package:
+
+```bash
+bun run release:check
+```
+
+This script runs formatting checks, linting, typechecking, and both package builds. Use `bun run build:core` or `bun run build:cli` when checking only one package build.
+
+Package builds run through `tsdown`, which produces native Node ESM output in `dist` for publishing while keeping source imports clean. `tsdown` requires Node.js 22.18.0 or newer at build time, but the emitted package output targets the supported Node runtime.
+
+### Git Commit Timing
+
+Commit release preparation changes before running `npm publish`. The commit should include version bumps, dependency range updates, lockfile updates, and documentation changes. Publishing from a committed state makes the npm package traceable to a specific repository revision and avoids publishing local edits that are not recorded in git.
+
+After the publish succeeds, verify npm metadata and consider creating a git tag for the published version. If publishing fails before the package is accepted by npm, fix the issue, rerun the checks, and commit the fix before trying again. If npm accepts the publish but a later verification step fails, do not reuse the same version; bump to a new version for the next publish because npm versions are immutable.
+
+### Publish Core
 
 Run the full publish workflow:
 
 ```bash
 cd packages/core
-bun run build
-npm pack --dry-run
+bun run pack:dry
 npm publish --access public
 ```
 
@@ -342,8 +394,6 @@ dist/index.js.map
 ```
 
 The dry run should not include `src/`, `node_modules/`, or `tsconfig.build.json`.
-
-Source files can use extensionless relative imports. Package builds run through `tsdown`, which produces native Node ESM output in `dist` for publishing while keeping source imports clean. `tsdown` requires Node.js 22.18.0 or newer at build time, but the emitted package output targets the supported Node runtime.
 
 If npm asks for a one-time password, rerun only the publish command with the current authenticator code:
 
@@ -363,11 +413,43 @@ After publishing, verify the package metadata:
 npm view @codewithantonio/messagekit-core version
 ```
 
+### Publish CLI
+
+Publish the CLI only after its `@codewithantonio/messagekit-core` dependency points at a core version that already exists on npm.
+
+Run the CLI publish workflow:
+
+```bash
+cd packages/cli
+bun run pack:dry
+npm publish --access public
+```
+
+The dry run should include `README.md`, `package.json`, and compiled files under `dist/`, including:
+
+```text
+dist/index.js
+dist/index.d.ts
+dist/index.js.map
+```
+
+The dry run should not include `src/`, `node_modules/`, or `tsconfig.build.json`.
+
+After publishing, verify the package metadata and installed binary:
+
+```bash
+npm view @codewithantonio/messagekit version
+npm install -g @codewithantonio/messagekit
+messagekit --help
+messagekit --version
+npm uninstall -g @codewithantonio/messagekit
+```
+
 ## Troubleshooting
 
 If `bun --filter` cannot find a package, run `bun install` from the repository root and confirm the package name matches the workspace package name.
 
-If TypeScript cannot resolve workspace packages, confirm each package has `"type": "module"`, an `exports` entry, and the dependency uses `"workspace:*"`.
+If TypeScript cannot resolve workspace packages, confirm each package has `"type": "module"`, an `exports` entry, and a dependency that can resolve locally. Internal unpublished packages can use `"workspace:*"`; published packages such as `@codewithantonio/messagekit` should use real npm semver ranges for published dependencies.
 
 If the MCP server appears to hang, that is expected for stdio mode. It waits for MCP client messages until the process is stopped.
 

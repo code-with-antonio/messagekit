@@ -1,6 +1,6 @@
 {
   "name": "@codewithantonio/messagekit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "bin": {
     "messagekit": "./dist/index.js"
   },
@@ -17,11 +17,12 @@
   "scripts": {
     "build": "tsdown",
     "dev": "bun run src/index.ts",
+    "pack:dry": "bun run build && npm pack --dry-run",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "@codewithantonio/messagekit-core": "^0.1.2",
+    "@codewithantonio/messagekit-core": "^0.1.3",
     "commander": "^14.0.2",
     "zod": "^4.1.12"
   },

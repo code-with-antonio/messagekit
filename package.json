@@ -7,6 +7,8 @@
   ],
   "type": "module",
   "scripts": {
+    "build:cli": "bun run --filter @codewithantonio/messagekit build",
+    "build:core": "bun run --filter @codewithantonio/messagekit-core build",
     "dev:cli": "bun run packages/cli/src/index.ts",
     "dev:local-mcp": "bun run packages/local-mcp/src/index.ts",
     "dev:remote-mcp": "bun run apps/remote-mcp/src/index.ts",
@@ -14,6 +16,9 @@
     "format:check": "oxfmt . --check",
     "lint": "oxlint . --deny-warnings",
     "lint:fix": "oxlint . --fix",
+    "release:check": "bun run format:check && bun run lint && bun run typecheck && bun run build:core && bun run build:cli",
+    "release:pack:cli": "cd packages/cli && bun run build && npm pack --dry-run",
+    "release:pack:core": "cd packages/core && bun run build && npm pack --dry-run",
     "typecheck": "bun run --filter '*' typecheck"
   },
   "devDependencies": {
