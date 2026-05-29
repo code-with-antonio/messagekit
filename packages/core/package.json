@@ -1,6 +1,6 @@
 {
   "name": "@codewithantonio/messagekit-core",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "files": [
     "dist",
     "README.md"
@@ -19,7 +19,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsdown",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "bun run build"
   },

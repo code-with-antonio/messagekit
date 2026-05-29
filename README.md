@@ -338,15 +338,12 @@ The dry run should include `README.md`, `package.json`, and compiled files under
 ```text
 dist/index.js
 dist/index.d.ts
-dist/schemas.js
-dist/schemas.d.ts
-dist/operations.js
-dist/operations.d.ts
+dist/index.js.map
 ```
 
 The dry run should not include `src/`, `node_modules/`, or `tsconfig.build.json`.
 
-Because the published packages run as native Node ESM, relative imports in TypeScript source should include the runtime `.js` extension, for example `./schemas.js`. TypeScript resolves that to the local `.ts` source during development and preserves the `.js` specifier in compiled output so Node can load the package without a bundler.
+Source files can use extensionless relative imports. Package builds run through `tsdown`, which produces native Node ESM output in `dist` for publishing while keeping source imports clean. `tsdown` requires Node.js 22.18.0 or newer at build time, but the emitted package output targets the supported Node runtime.
 
 If npm asks for a one-time password, rerun only the publish command with the current authenticator code:
 

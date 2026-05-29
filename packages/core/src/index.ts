@@ -1,2 +1,2 @@
-export * from "./schemas.js";
-export * from "./operations.js";
+export * from "./schemas";
+export * from "./operations";
