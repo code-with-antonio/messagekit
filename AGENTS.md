@@ -119,7 +119,7 @@ The repository should use the `MessageKit` human-facing product name and `messag
 
 The Telegram operation should send a message through the Telegram Bot API.
 
-The CLI and MCP adapters should read the bot token from config or `TELEGRAM_BOT_TOKEN` and pass it to `@codewithantonio/messagekit-core`.
+The CLI should read the bot token from `~/.config/messagekit/config.json`. The local MCP adapter should read `TELEGRAM_BOT_TOKEN` from the MCP client-provided environment. The remote MCP adapter should read `Authorization: Bearer <telegram-bot-token>` per request. All adapters should pass the token to `@codewithantonio/messagekit-core`.
 
 The MCP tool input should not include the bot token. Agents should provide only the chat ID and message text.
 
@@ -182,6 +182,23 @@ It should:
 
 It should not duplicate Telegram logic.
 
+### `apps/remote-mcp`
+
+`apps/remote-mcp` owns remote MCP HTTP usage.
+
+It should:
+
+- Create a Hono HTTP app exposing `POST /mcp`, run by Bun in development.
+- Register a `telegram` tool.
+- Use the shared Telegram message input schema.
+- Read the Telegram bot token from `Authorization: Bearer <telegram-bot-token>` per request.
+- Keep the bot token out of the MCP tool input schema.
+- Call `@codewithantonio/messagekit-core`.
+- Return both `content` and `structuredContent`.
+- Close the per-request MCP server after handling the request.
+
+It should not duplicate Telegram logic or use one global `TELEGRAM_BOT_TOKEN` for all remote users.
+
 ### `packages/skill`
 
 `packages/skill` owns agent-facing usage instructions.
@@ -203,9 +220,10 @@ Every new operation added by viewers should follow this explicit registration fl
 2. Add the operation function in `packages/core/src/operations.ts`.
 3. Export it through `packages/core/src/index.ts` when needed.
 4. Add a CLI command in `packages/cli/src/index.ts`.
-5. Add an MCP tool in `packages/local-mcp/src/index.ts`.
-6. Add usage notes in `packages/skill/SKILL.md`.
-7. Add manual verification commands to the README if the operation is part of the tutorial.
+5. Add a local MCP tool in `packages/local-mcp/src/index.ts`.
+6. Add a remote MCP tool in `apps/remote-mcp/src/index.ts` when remote support is part of the tutorial.
+7. Add usage notes in `packages/skill/SKILL.md`.
+8. Add manual verification commands to the README if the operation is part of the tutorial.
 
 MessageKit should keep this registration explicit. It should not introduce a shared operation registry in the initial tutorial.
 
@@ -220,14 +238,16 @@ bun install
 bun run format
 bun run lint
 bun run typecheck
-bun --filter @codewithantonio/messagekit dev init --telegram-bot-token "<bot-token>"
-bun --filter @codewithantonio/messagekit dev telegram "<chat-id>" "Hello from MessageKit"
-bun --filter @codewithantonio/messagekit dev telegram "<chat-id>" "Hello from MessageKit" --json
-TELEGRAM_BOT_TOKEN="<bot-token>" bun --filter @codewithantonio/messagekit-mcp dev
-bun --filter messagekit-remote-mcp dev
+bun run dev:cli init --telegram-bot-token "<bot-token>"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
+bun run dev:remote-mcp
 ```
 
 After each implementation, run `bun run format`, `bun run lint`, and `bun run typecheck` before reporting completion.
+
+For publish-oriented changes, run `bun run release:check` before reporting completion.
 
 The repository should not include or document a `bun test` workflow.
 
@@ -239,6 +259,7 @@ The README should explain:
 - How the packages relate to each other.
 - How to run the CLI.
 - How to run the MCP server.
+- How to run the remote MCP server.
 - How to configure an MCP client.
 - How to use the Skill.
 - How to add a new operation by following the explicit registration flow.
@@ -253,11 +274,11 @@ The initial MessageKit tutorial should not include:
 - Automated tests.
 - OAuth or user authentication beyond Telegram bot tokens.
 - Database persistence.
-- Hosted remote MCP transport.
+- Production-grade hosted deployment guidance.
 - Complex logging or observability.
 - Dynamic operation registration.
 - Code generation.
-- A production deployment guide.
+- OAuth, user accounts, or credential persistence for remote MCP.
 
 These topics may be covered in later tutorials, but they should not distract from the core MCP plus CLI plus Skill architecture.
 

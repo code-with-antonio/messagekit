@@ -308,6 +308,8 @@ Skill       = instructions for when/how to use CLI or MCP
 
 ```bash
 bun install
+bun run format
+bun run lint
 bun run typecheck
 bun run dev:cli init --telegram-bot-token "<bot-token>"
 bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
@@ -324,6 +326,8 @@ Manual remote verification should confirm the server starts on `PORT` or `3000`,
 
 `@codewithantonio/messagekit` is the published CLI package. It depends on the published core package, so publish core first whenever a release includes core changes.
 
+`@codewithantonio/messagekit-mcp` is the published local MCP stdio server package. It also depends on the published core package, so publish core first whenever a release includes core changes.
+
 ### Version Bumps
 
 npm versions are immutable. Before publishing, choose versions that have not already been published.
@@ -333,23 +337,25 @@ If core changed, bump `packages/core/package.json` first:
 ```json
 {
   "name": "@codewithantonio/messagekit-core",
-  "version": "0.1.3"
+  "version": "0.1.4"
 }
 ```
 
-Then update the CLI dependency on core to the published semver range:
+Then update the CLI and local MCP dependencies on core to the published semver range:
 
 ```json
 {
   "dependencies": {
-    "@codewithantonio/messagekit-core": "^0.1.3"
+    "@codewithantonio/messagekit-core": "^0.1.4"
   }
 }
 ```
 
-Use actual semver for `@codewithantonio/messagekit-core` in `packages/cli/package.json`, not `workspace:*`. The CLI package is published to npm, and published npm packages cannot rely on workspace-only dependency ranges. Bun can still link the local workspace package during development because the dependency name matches a workspace package.
+Use actual semver for `@codewithantonio/messagekit-core` in published package manifests, not `workspace:*`. Published npm packages cannot rely on workspace-only dependency ranges. Bun can still link the local workspace package during development because the dependency name matches a workspace package.
 
 If the CLI changed, bump `packages/cli/package.json` and keep the CLI's displayed version in `packages/cli/src/index.ts` in sync with it.
+
+If the local MCP server changed, bump `packages/local-mcp/package.json` and keep the MCP server version in `packages/local-mcp/src/index.ts` in sync with it.
 
 After editing versions, refresh the lockfile from the repository root:
 
@@ -359,13 +365,13 @@ bun install
 
 ### Pre-Publish Checks
 
-Run the normal workspace checks before publishing either package:
+Run the normal workspace checks before publishing any package:
 
 ```bash
 bun run release:check
 ```
 
-This script runs formatting checks, linting, typechecking, and both package builds. Use `bun run build:core` or `bun run build:cli` when checking only one package build.
+This script runs formatting checks, linting, typechecking, and all publishable package builds. Use `bun run build:core`, `bun run build:cli`, or `bun run build:local-mcp` when checking only one package build.
 
 Package builds run through `tsdown`, which produces native Node ESM output in `dist` for publishing while keeping source imports clean. `tsdown` requires Node.js 22.18.0 or newer at build time, but the emitted package output targets the supported Node runtime.
 
@@ -380,8 +386,8 @@ After the publish succeeds, verify npm metadata and consider creating a git tag 
 Run the full publish workflow:
 
 ```bash
+bun run release:pack:core
 cd packages/core
-bun run pack:dry
 npm publish --access public
 ```
 
@@ -420,8 +426,8 @@ Publish the CLI only after its `@codewithantonio/messagekit-core` dependency poi
 Run the CLI publish workflow:
 
 ```bash
+bun run release:pack:cli
 cd packages/cli
-bun run pack:dry
 npm publish --access public
 ```
 
@@ -445,11 +451,44 @@ messagekit --version
 npm uninstall -g @codewithantonio/messagekit
 ```
 
+### Publish Local MCP
+
+Publish the local MCP package only after its `@codewithantonio/messagekit-core` dependency points at a core version that already exists on npm.
+
+Run the local MCP publish workflow:
+
+```bash
+bun run release:pack:local-mcp
+cd packages/local-mcp
+npm publish --access public
+```
+
+The dry run should include `README.md`, `package.json`, and compiled files under `dist/`, including:
+
+```text
+dist/index.js
+dist/index.d.ts
+dist/index.js.map
+```
+
+The dry run should not include `src/`, `node_modules/`, or `tsconfig.build.json`.
+
+After publishing, verify the package metadata and installed binary:
+
+```bash
+npm view @codewithantonio/messagekit-mcp version
+npm install -g @codewithantonio/messagekit-mcp
+command -v messagekit-mcp
+npm uninstall -g @codewithantonio/messagekit-mcp
+```
+
+To manually verify runtime startup, run `TELEGRAM_BOT_TOKEN="<bot-token>" messagekit-mcp` and stop the stdio server with `Ctrl-C`.
+
 ## Troubleshooting
 
 If `bun --filter` cannot find a package, run `bun install` from the repository root and confirm the package name matches the workspace package name.
 
-If TypeScript cannot resolve workspace packages, confirm each package has `"type": "module"`, an `exports` entry, and a dependency that can resolve locally. Internal unpublished packages can use `"workspace:*"`; published packages such as `@codewithantonio/messagekit` should use real npm semver ranges for published dependencies.
+If TypeScript cannot resolve workspace packages, confirm each package has `"type": "module"`, an `exports` entry, and a dependency that can resolve locally. Internal unpublished packages can use `"workspace:*"`; published packages such as `@codewithantonio/messagekit` and `@codewithantonio/messagekit-mcp` should use real npm semver ranges for published dependencies.
 
 If the MCP server appears to hang, that is expected for stdio mode. It waits for MCP client messages until the process is stopped.
 
