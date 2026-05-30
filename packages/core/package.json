@@ -1,6 +1,6 @@
 {
   "name": "@codewithantonio/messagekit-core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "files": [
     "dist",
     "README.md"
@@ -28,6 +28,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@types/node": "latest"
   }
 }
