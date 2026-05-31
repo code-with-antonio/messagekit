@@ -52,7 +52,7 @@ packages/core
 packages/cli
 packages/local-mcp
 apps/remote-mcp
-packages/skill
+packages/skills/messagekit
 sendTelegramMessage
 telegram MCP tool
 telegram CLI command
@@ -99,7 +99,7 @@ Update package names:
   "private": true
 }
 
-// packages/skill/package.json
+// packages/skills/messagekit/package.json
 {
   "name": "messagekit-skill",
   "private": true

@@ -26,7 +26,7 @@
     },
     "packages/cli": {
       "name": "@codewithantonio/messagekit",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "bin": {
         "messagekit": "./dist/index.js",
       },
@@ -41,7 +41,7 @@
     },
     "packages/core": {
       "name": "@codewithantonio/messagekit-core",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "dependencies": {
         "zod": "^4.1.12",
       },
@@ -51,7 +51,7 @@
     },
     "packages/local-mcp": {
       "name": "@codewithantonio/messagekit-mcp",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "bin": {
         "messagekit-mcp": "./dist/index.js",
       },
@@ -63,7 +63,7 @@
         "@types/node": "latest",
       },
     },
-    "packages/skill": {
+    "packages/skills/messagekit": {
       "name": "messagekit-skill",
       "version": "0.1.0",
     },
@@ -363,7 +363,7 @@
 
     "messagekit-remote-mcp": ["messagekit-remote-mcp@workspace:apps/remote-mcp"],
 
-    "messagekit-skill": ["messagekit-skill@workspace:packages/skill"],
+    "messagekit-skill": ["messagekit-skill@workspace:packages/skills/messagekit"],
 
     "mime-db": ["mime-db@1.54.0", "", {}, "sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ=="],
 

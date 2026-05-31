@@ -186,7 +186,7 @@ packages/core        -> shared schemas and operations
 packages/cli         -> command-line adapter backed by core
 packages/local-mcp   -> local MCP stdio adapter backed by core
 apps/remote-mcp      -> remote MCP HTTP adapter backed by core
-packages/skill       -> agent-facing instructions and fallback guidance
+packages/skills/messagekit -> agent-facing instructions and fallback guidance
 ```
 
 Update the dependency diagram:
@@ -211,7 +211,7 @@ Update the operation registration flow to include remote MCP when relevant:
 4. Add a CLI command in packages/cli/src/index.ts.
 5. Add a local MCP tool in packages/local-mcp/src/index.ts.
 6. Add a remote MCP tool in apps/remote-mcp/src/index.ts when remote support is part of the tutorial.
-7. Add usage notes in packages/skill/SKILL.md.
+7. Add usage notes in packages/skills/messagekit/SKILL.md.
 8. Add manual verification commands to the README.
 ```
 

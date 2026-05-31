@@ -6,7 +6,7 @@ MessageKit is a tutorial project for building one messaging capability and expos
 - `packages/cli`: Human/script CLI adapter.
 - `packages/local-mcp`: Local MCP stdio server adapter for AI clients.
 - `apps/remote-mcp`: Remote MCP HTTP adapter for deployed clients.
-- `packages/skill`: Agent-facing usage instructions.
+- `packages/skills/messagekit`: Agent-facing usage instructions.
 
 The central pattern is:
 
@@ -82,7 +82,7 @@ packages/core        -> shared schemas and operations
 packages/cli         -> command-line adapter backed by core
 packages/local-mcp   -> local MCP stdio adapter backed by core
 apps/remote-mcp      -> remote MCP HTTP adapter backed by core
-packages/skill       -> agent-facing instructions and fallback guidance
+packages/skills/messagekit -> agent-facing instructions and fallback guidance
 ```
 
 Dependency direction:
@@ -129,7 +129,7 @@ messagekit-skill is documentation/instructions only
 - Reads the Telegram bot token from `Authorization: Bearer <token>` per request.
 - Keeps the token out of the MCP tool input schema.
 
-`packages/skill` owns agent instructions:
+`packages/skills/messagekit` owns agent instructions:
 
 - Prefers the MCP `telegram` tool when available.
 - Documents CLI fallback usage.
@@ -267,7 +267,7 @@ This keeps the Telegram bot token user-specific and client-provided without expo
 
 ## Skill Usage
 
-The skill lives at `packages/skill/SKILL.md`. Add or copy that file into an agent skill system that supports Markdown skills.
+The skill lives at `packages/skills/messagekit/SKILL.md`. Skill registries that derive names from folder paths should surface it as `messagekit`.
 
 The skill tells agents to:
 
@@ -292,7 +292,7 @@ messagekit telegram "<chat-id>" "Hello from MessageKit" --json
 4. Add a CLI command in `packages/cli/src/index.ts`.
 5. Add a local MCP tool in `packages/local-mcp/src/index.ts`.
 6. Add a remote MCP tool in `apps/remote-mcp/src/index.ts` when remote support is part of the tutorial.
-7. Add usage notes in `packages/skill/SKILL.md`.
+7. Add usage notes in `packages/skills/messagekit/SKILL.md`.
 8. Add manual verification commands to the README if the operation is part of the tutorial.
 
 Keep every capability implemented once in `core`:

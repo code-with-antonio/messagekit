@@ -20,7 +20,7 @@ Private workspace-only packages/apps:
 
 ```text
 apps/remote-mcp    -> messagekit-remote-mcp
-packages/skill     -> messagekit-skill
+packages/skills/messagekit -> messagekit-skill
 ```
 
 This gives the workspace a clear convention:
@@ -97,7 +97,7 @@ MCP tool name:      telegram
 Core operation:     sendTelegramMessage
 Repository folder:  messagekit
 Root package name:  messagekit-workspace
-Package folders:    packages/core, packages/cli, packages/local-mcp, packages/skill
+Package folders:    packages/core, packages/cli, packages/local-mcp, packages/skills/messagekit
 Remote app folder:  apps/remote-mcp
 ```
 
@@ -153,7 +153,7 @@ Update `apps/remote-mcp/package.json`:
 }
 ```
 
-Update `packages/skill/package.json`:
+Update `packages/skills/messagekit/package.json`:
 
 ```json
 {
@@ -215,7 +215,7 @@ Update package identity references in:
 ```text
 README.md
 AGENTS.md
-packages/skill/SKILL.md
+packages/skills/messagekit/SKILL.md
 specs/CLI_LOCAL_LINK.md
 specs/REMOTE_MCP_PLAN.md
 specs/REMOTE_MCP_HONO_REFACTOR.md

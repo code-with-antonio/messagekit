@@ -35,7 +35,7 @@ By the end, a viewer should be able to:
 - Define a reusable operation in `packages/core`.
 - Expose that operation as a CLI command in `packages/cli`.
 - Expose that operation as an MCP tool in `packages/local-mcp`.
-- Reference that operation in `packages/skill/SKILL.md`.
+- Reference that operation in `packages/skills/messagekit/SKILL.md`.
 - Test the operation manually through CLI, Skill guidance, and an MCP client.
 
 ## Interface Positioning
@@ -57,7 +57,7 @@ packages/core      -> shared schemas and operations
 packages/cli       -> command-line adapter backed by core
 packages/local-mcp -> local MCP stdio server adapter backed by core
 apps/remote-mcp    -> remote MCP HTTP adapter backed by core
-packages/skill     -> agent-facing instructions and fallback guidance
+packages/skills/messagekit -> agent-facing instructions and fallback guidance
 ```
 
 Dependency direction:
@@ -199,9 +199,9 @@ It should:
 
 It should not duplicate Telegram logic or use one global `TELEGRAM_BOT_TOKEN` for all remote users.
 
-### `packages/skill`
+### `packages/skills/messagekit`
 
-`packages/skill` owns agent-facing usage instructions.
+`packages/skills/messagekit` owns agent-facing usage instructions.
 
 It should:
 
@@ -222,7 +222,7 @@ Every new operation added by viewers should follow this explicit registration fl
 4. Add a CLI command in `packages/cli/src/index.ts`.
 5. Add a local MCP tool in `packages/local-mcp/src/index.ts`.
 6. Add a remote MCP tool in `apps/remote-mcp/src/index.ts` when remote support is part of the tutorial.
-7. Add usage notes in `packages/skill/SKILL.md`.
+7. Add usage notes in `packages/skills/messagekit/SKILL.md`.
 8. Add manual verification commands to the README if the operation is part of the tutorial.
 
 MessageKit should keep this registration explicit. It should not introduce a shared operation registry in the initial tutorial.
