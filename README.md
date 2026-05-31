@@ -15,7 +15,7 @@
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT license" /></a>
   <a href="https://www.npmjs.com/package/@codewithantonio/messagekit"><img src="https://img.shields.io/npm/dw/@codewithantonio/messagekit?label=downloads" alt="Weekly downloads" /></a>
-  <a href="https://discord.gg/codewithantonio"><img src="https://img.shields.io/badge/Discord-join-5865F2" alt="Discord" /></a>
+  <a href="https://www.youtube.com/@codewithantonio"><img src="https://img.shields.io/badge/YouTube-subscribe-FF0000" alt="YouTube" /></a>
   <a href="https://github.com/code-with-antonio/messagekit"><img src="https://img.shields.io/github/stars/code-with-antonio/messagekit?style=social" alt="GitHub stars" /></a>
 </p>
 
