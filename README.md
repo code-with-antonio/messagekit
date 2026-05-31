@@ -14,10 +14,10 @@ Business logic belongs in `packages/core`. The CLI, MCP server, remote MCP serve
 
 Use the section that matches what you are trying to do:
 
-- `Use MessageKit`: Install the published CLI, local MCP server, and Skill.
-- `Fork Or Adapt MessageKit`: Replace the Telegram tutorial operation with your own MCP plus CLI plus Skill workflow.
-- `Run Locally`: Work on this repository as a maintainer or tutorial author.
-- `Publish Packages To NPM`: Release-maintainer notes. Most users can ignore this section.
+- [Use MessageKit](#use-messagekit): Install the published CLI, local MCP server, and Skill.
+- [Fork Or Adapt MessageKit](#fork-or-adapt-messagekit): Replace the Telegram tutorial operation with your own MCP plus CLI plus Skill workflow.
+- [Run Locally](#run-locally): Work on this repository as a maintainer or tutorial author.
+- [Publish Packages To NPM](#publish-packages-to-npm): Release-maintainer notes. Most users can ignore this section.
 
 ## What Is Included
 
