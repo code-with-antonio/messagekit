@@ -1,12 +1,6 @@
 # MessageKit: Send Messages Through MCP, CLI, and Skills
 
-MessageKit is a tutorial project for building one messaging capability and exposing it through CLI, local MCP, remote MCP, and Skill interfaces:
-
-- `packages/core`: Shared schemas and operations.
-- `packages/cli`: Human/script CLI adapter.
-- `packages/local-mcp`: Local MCP stdio server adapter for AI clients.
-- `apps/remote-mcp`: Remote MCP HTTP adapter for deployed clients.
-- `packages/skills/messagekit`: Agent-facing usage instructions.
+MessageKit is a tutorial project for building one messaging capability and exposing it through CLI, local MCP, remote MCP, and Skill interfaces.
 
 The central pattern is:
 
@@ -14,42 +8,63 @@ The central pattern is:
 core capability -> CLI command -> MCP tool -> Skill instructions
 ```
 
-Business logic belongs in `packages/core`. The CLI, MCP server, and Skill should only adapt that shared implementation for their audiences.
+Business logic belongs in `packages/core`. The CLI, MCP server, remote MCP server, and Skill only adapt that shared implementation for their audiences.
+
+## Who This README Is For
+
+Use the section that matches what you are trying to do:
+
+- `Use MessageKit`: Install the published CLI, local MCP server, and Skill.
+- `Fork Or Adapt MessageKit`: Replace the Telegram tutorial operation with your own MCP plus CLI plus Skill workflow.
+- `Run Locally`: Work on this repository as a maintainer or tutorial author.
+- `Publish Packages To NPM`: Release-maintainer notes. Most users can ignore this section.
+
+## What Is Included
+
+- `packages/core`: Shared schemas and operations.
+- `packages/cli`: Human/script CLI adapter.
+- `packages/local-mcp`: Local MCP stdio server adapter for AI clients.
+- `apps/remote-mcp`: Remote MCP HTTP adapter for deployed clients.
+- `packages/skills/messagekit`: Agent-facing usage instructions.
 
 ## Prerequisites
 
-- Bun installed locally.
 - A Telegram bot token.
-- A Node-compatible MCP client if you want to connect the MCP server.
+- Node.js for published package usage.
+- Bun if you want to run or adapt this repository locally.
+- A Node-compatible MCP client if you want to connect the local MCP server.
 
-## Install
+## Use MessageKit
 
-```bash
-bun install
-```
+Use this section if you genuinely want to send Telegram messages with MessageKit instead of developing the repository.
 
-## Quick Smoke Test
+### CLI
 
-Run the CLI Telegram command:
-
-```bash
-bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
-```
-
-Expected readable output:
-
-```text
-Sent Telegram message 123 to chat <chat-id>
-```
-
-Run Telegram with script-friendly JSON output:
+Install the CLI globally:
 
 ```bash
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+npm install -g @codewithantonio/messagekit
 ```
 
-Expected output:
+Configure your Telegram bot token:
+
+```bash
+messagekit init --telegram-bot-token "<bot-token>"
+```
+
+Send a message:
+
+```bash
+messagekit telegram "<chat-id>" "Hello from MessageKit"
+```
+
+Use JSON output when scripting or when an agent needs to parse the result:
+
+```bash
+messagekit telegram "<chat-id>" "Hello from MessageKit" --json
+```
+
+Expected JSON output:
 
 ```json
 {
@@ -59,15 +74,206 @@ Expected output:
 }
 ```
 
-Start the local MCP stdio server:
+CLI config is stored at `~/.config/messagekit/config.json`.
+
+### Local MCP
+
+Install the local MCP stdio server globally:
 
 ```bash
-bun run dev:local-mcp
+npm install -g @codewithantonio/messagekit-mcp
+```
+
+Configure your MCP client to run the `messagekit-mcp` binary and provide `TELEGRAM_BOT_TOKEN` through the server environment:
+
+```json
+{
+  "mcpServers": {
+    "messagekit": {
+      "command": "messagekit-mcp",
+      "args": [],
+      "environment": {
+        "TELEGRAM_BOT_TOKEN": "<bot-token>"
+      }
+    }
+  }
+}
+```
+
+If your MCP client supports package execution directly, you can avoid a global install:
+
+```json
+{
+  "mcpServers": {
+    "messagekit": {
+      "command": "npx",
+      "args": ["-y", "@codewithantonio/messagekit-mcp"],
+      "environment": {
+        "TELEGRAM_BOT_TOKEN": "<bot-token>"
+      }
+    }
+  }
+}
+```
+
+Available MCP tools:
+
+- `telegram`: Accepts `{ chatId, message }` and returns `{ ok, chatId, messageId }`.
+
+Do not include Telegram bot tokens in MCP tool arguments. The local MCP server reads the token from `TELEGRAM_BOT_TOKEN`.
+
+### Skill
+
+Install the MessageKit Skill with your skill manager:
+
+```bash
+npx skills add https://github.com/code-with-antonio/messagekit/tree/main/packages/skills/messagekit
+```
+
+The Skill tells agents to prefer the MCP `telegram` tool when available, use the CLI as a fallback, request `--json` when parsing command output, and treat `@codewithantonio/messagekit-core` as an implementation detail.
+
+CLI fallback example from the Skill:
+
+```bash
+messagekit init --telegram-bot-token "<bot-token>"
+messagekit telegram "<chat-id>" "Hello from MessageKit" --json
+```
+
+### Remote MCP
+
+This repository includes a remote MCP HTTP server implementation, but this project does not host a public MessageKit remote MCP endpoint.
+
+If you want remote MCP usage, deploy your own copy of `apps/remote-mcp`. The server exposes `POST /mcp` and expects a per-request bearer token:
+
+```http
+Authorization: Bearer <telegram-bot-token>
+```
+
+Example OpenCode remote MCP config after you deploy your own server:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "messagekit": {
+      "type": "remote",
+      "url": "https://your-host.example.com/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {env:TELEGRAM_BOT_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+This keeps Telegram bot tokens user-specific and client-provided without exposing them as MCP tool arguments.
+
+## Fork Or Adapt MessageKit
+
+Use this section if you want MessageKit as a starting point for your own MCP plus CLI plus Skill project.
+
+### What To Keep
+
+Keep the dependency direction:
+
+```text
+packages/core        -> shared schemas and operations
+packages/cli         -> command-line adapter backed by core
+packages/local-mcp   -> local MCP stdio adapter backed by core
+apps/remote-mcp      -> remote MCP HTTP adapter backed by core
+packages/skills/...  -> agent-facing instructions and fallback guidance
+```
+
+Keep business logic in `packages/core`. Adapters should parse inputs, read credentials from the right place, call core, and format results.
+
+```text
+CLI command = parse input + call core + print output
+MCP tool    = validate input + call core + return structured result
+Remote MCP  = read request auth + validate input + call core
+Skill       = instructions for when/how to use CLI or MCP
+```
+
+### What To Replace
+
+Most forks should replace these MessageKit-specific pieces:
+
+- Package names in `package.json` files.
+- Binary names such as `messagekit` and `messagekit-mcp`.
+- The Telegram operation in `packages/core/src/schemas.ts` and `packages/core/src/operations.ts`.
+- CLI commands in `packages/cli/src/index.ts`.
+- MCP tool registrations in `packages/local-mcp/src/index.ts` and `apps/remote-mcp/src/index.ts`.
+- Skill metadata and instructions in `packages/skills/messagekit/SKILL.md`.
+- README install, configuration, and verification commands.
+
+### Add A New Operation
+
+Follow the explicit registration flow:
+
+1. Add input and output schemas in `packages/core/src/schemas.ts`.
+2. Add the operation function in `packages/core/src/operations.ts`.
+3. Export it through `packages/core/src/index.ts` when needed.
+4. Add a CLI command in `packages/cli/src/index.ts`.
+5. Add a local MCP tool in `packages/local-mcp/src/index.ts`.
+6. Add a remote MCP tool in `apps/remote-mcp/src/index.ts` when remote support is part of your project.
+7. Add usage notes in your Skill `SKILL.md`.
+8. Add manual verification commands to the README.
+
+MessageKit intentionally keeps registration explicit. Do not introduce a shared operation registry until the adapter boundaries are clear.
+
+### Credential Pattern
+
+MessageKit uses three credential paths because each interface has a different audience:
+
+- CLI reads a persisted local user config created by `messagekit init`.
+- Local MCP reads environment variables provided by the MCP client.
+- Remote MCP reads per-request authorization headers.
+
+For your own project, keep credentials out of MCP tool input schemas unless the credential is genuinely part of the operation payload.
+
+## Run Locally
+
+Use this section if you are maintaining this repository, following the tutorial, or making changes before publishing.
+
+Install workspace dependencies:
+
+```bash
+bun install
+```
+
+Run the CLI from source:
+
+```bash
+bun run dev:cli init --telegram-bot-token "<bot-token>"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+```
+
+Start the local MCP stdio server from source:
+
+```bash
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 ```
 
 Expected behavior: the process stays running and waits for MCP messages over stdio. Stop it with `Ctrl-C` when testing manually.
 
-Start the remote MCP HTTP server:
+Example MCP client config from the repository root:
+
+```json
+{
+  "mcpServers": {
+    "messagekit": {
+      "command": "bun",
+      "args": ["run", "packages/local-mcp/src/index.ts"],
+      "environment": {
+        "TELEGRAM_BOT_TOKEN": "<bot-token>"
+      }
+    }
+  }
+}
+```
+
+Start the remote MCP HTTP server from source:
 
 ```bash
 bun run dev:remote-mcp
@@ -75,15 +281,51 @@ bun run dev:remote-mcp
 
 Expected behavior: the server listens on `PORT` or `3000` by default and exposes `POST /mcp`.
 
-## Architecture
+### Local Linked Binary
 
-```text
-packages/core        -> shared schemas and operations
-packages/cli         -> command-line adapter backed by core
-packages/local-mcp   -> local MCP stdio adapter backed by core
-apps/remote-mcp      -> remote MCP HTTP adapter backed by core
-packages/skills/messagekit -> agent-facing instructions and fallback guidance
+Use `bun link` when you want to test the CLI as a real `messagekit` command without publishing:
+
+```bash
+cd packages/cli
+bun link
+messagekit --help
 ```
+
+After linking the binary, these can be run from anywhere on the machine:
+
+```bash
+messagekit init --telegram-bot-token "<bot-token>"
+messagekit telegram "<chat-id>" "Hello from MessageKit"
+messagekit telegram "<chat-id>" "Hello from MessageKit" --json
+```
+
+To remove the local linked binary, run this from `packages/cli`:
+
+```bash
+bun unlink
+```
+
+See `specs/CLI_LOCAL_LINK.md` for the local linking acceptance criteria.
+
+### Verification Commands
+
+Run these before reporting implementation work complete:
+
+```bash
+bun install
+bun run format
+bun run lint
+bun run typecheck
+bun run dev:cli init --telegram-bot-token "<bot-token>"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
+bun run dev:remote-mcp
+```
+
+Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@codewithantonio/messagekit-core`.
+
+## Architecture Details
 
 Dependency direction:
 
@@ -97,8 +339,6 @@ messagekit-remote-mcp
 
 messagekit-skill is documentation/instructions only
 ```
-
-## Package Details
 
 `packages/core` owns reusable logic:
 
@@ -128,6 +368,7 @@ messagekit-skill is documentation/instructions only
 - Registers a `telegram` tool backed by `@codewithantonio/messagekit-core`.
 - Reads the Telegram bot token from `Authorization: Bearer <token>` per request.
 - Keeps the token out of the MCP tool input schema.
+- Closes the per-request MCP server after handling the request.
 
 `packages/skills/messagekit` owns agent instructions:
 
@@ -151,176 +392,9 @@ Skill usage:   telegram
 
 Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `messagekit init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request `Authorization: Bearer <token>` header. All adapters pass the token into `@codewithantonio/messagekit-core`; it is not exposed as an MCP tool argument.
 
-## CLI Usage
-
-Development commands:
-
-```bash
-bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
-```
-
-Local linked binary commands:
-
-```bash
-cd packages/cli
-bun link
-messagekit --help
-```
-
-After linking the binary, these can be run from anywhere on the machine:
-
-```bash
-messagekit init --telegram-bot-token "<bot-token>"
-messagekit telegram "<chat-id>" "Hello from MessageKit"
-messagekit telegram "<chat-id>" "Hello from MessageKit" --json
-```
-
-To remove the local linked binary, run this from `packages/cli`:
-
-```bash
-bun unlink
-```
-
-See `specs/CLI_LOCAL_LINK.md` for the local linking acceptance criteria.
-
-CLI config is stored at `~/.config/messagekit/config.json`. If you used the old tutorial config path, rerun `messagekit init --telegram-bot-token "<bot-token>"`.
-
-## MCP Usage
-
-Run the local MCP server:
-
-```bash
-bun run dev:local-mcp
-```
-
-Example MCP client config from the repository root:
-
-```json
-{
-  "mcpServers": {
-    "messagekit": {
-      "command": "bun",
-      "args": ["run", "packages/local-mcp/src/index.ts"],
-      "environment": {
-        "TELEGRAM_BOT_TOKEN": "<bot-token>"
-      }
-    }
-  }
-}
-```
-
-For a published package, this can become:
-
-```json
-{
-  "mcpServers": {
-    "messagekit": {
-      "command": "messagekit-mcp",
-      "args": [],
-      "environment": {
-        "TELEGRAM_BOT_TOKEN": "<bot-token>"
-      }
-    }
-  }
-}
-```
-
-Available MCP tools:
-
-- `telegram`: Accepts `{ chatId, message }` and returns `{ ok, chatId, messageId }` output.
-
-## Remote MCP Usage
-
-Run the remote MCP server locally:
-
-```bash
-bun run dev:remote-mcp
-```
-
-The server exposes `POST /mcp` and requires a per-request bearer token:
-
-```http
-Authorization: Bearer <telegram-bot-token>
-```
-
-Example OpenCode remote MCP config after deployment:
-
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "messagekit": {
-      "type": "remote",
-      "url": "https://your-host.example.com/mcp",
-      "enabled": true,
-      "headers": {
-        "Authorization": "Bearer {env:TELEGRAM_BOT_TOKEN}"
-      }
-    }
-  }
-}
-```
-
-This keeps the Telegram bot token user-specific and client-provided without exposing it as a tool argument.
-
-## Skill Usage
-
-The skill lives at `packages/skills/messagekit/SKILL.md`. Skill registries that derive names from folder paths should surface it as `messagekit`.
-
-The skill tells agents to:
-
-- Prefer the MCP `telegram` tool when an MCP client is available.
-- Use CLI fallback when MCP is unavailable.
-- Request JSON output from CLI commands when parsing results.
-- Avoid duplicating business logic in the skill.
-- Treat `@codewithantonio/messagekit-core` as an implementation detail, not a direct user interface.
-
-CLI fallback example:
-
-```bash
-messagekit init --telegram-bot-token "<bot-token>"
-messagekit telegram "<chat-id>" "Hello from MessageKit" --json
-```
-
-## Add A New Operation
-
-1. Add input and output schemas in `packages/core/src/schemas.ts`.
-2. Add the operation function in `packages/core/src/operations.ts`.
-3. Export it through `packages/core/src/index.ts` when needed.
-4. Add a CLI command in `packages/cli/src/index.ts`.
-5. Add a local MCP tool in `packages/local-mcp/src/index.ts`.
-6. Add a remote MCP tool in `apps/remote-mcp/src/index.ts` when remote support is part of the tutorial.
-7. Add usage notes in `packages/skills/messagekit/SKILL.md`.
-8. Add manual verification commands to the README if the operation is part of the tutorial.
-
-Keep every capability implemented once in `core`:
-
-```text
-CLI command = parse input + call core + print output
-MCP tool    = validate input + call core + return structured result
-Remote MCP  = read request auth + validate input + call core
-Skill       = instructions for when/how to use CLI or MCP
-```
-
-## Verification Commands
-
-```bash
-bun install
-bun run format
-bun run lint
-bun run typecheck
-bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
-bun run dev:remote-mcp
-```
-
-Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@codewithantonio/messagekit-core`.
-
 ## Publish Packages To NPM
+
+This section is mainly useful to the MessageKit author or to fork maintainers who want to publish their adapted packages. It is not needed for normal MessageKit usage.
 
 `@codewithantonio/messagekit-core` is the shared implementation package used by the CLI, MCP servers, and downstream programmatic consumers. Publish it from `packages/core`, not from the repository root.
 
@@ -492,7 +566,7 @@ If TypeScript cannot resolve workspace packages, confirm each package has `"type
 
 If the MCP server appears to hang, that is expected for stdio mode. It waits for MCP client messages until the process is stopped.
 
-If an MCP client cannot start the server, confirm its working directory is the repository root or use an absolute path in the config.
+If an MCP client cannot start the server, confirm the command is available on `PATH`, use `npx -y @codewithantonio/messagekit-mcp`, or use an absolute path in local development config.
 
 If CLI output is difficult to parse in scripts, pass `--json` and parse stdout as JSON.
 
