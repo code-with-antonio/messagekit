@@ -1,0 +1,201 @@
+# Reconstruction File Map
+
+## Goal
+
+Track every file from the finished `main` branch and assign it to a reconstruction step, excluding only files that the reconstruction intentionally does not reproduce.
+
+If a file exists on `main` and is not listed here, the reconstruction specs are incomplete.
+
+## Excluded Files
+
+These files and folders are intentionally not reconstructed:
+
+```text
+AGENTS.md
+CLAUDE.md
+specs/
+```
+
+## Step 1: Minimal CLI
+
+These files are introduced from an empty repository:
+
+```text
+.gitignore
+bun.lock
+package.json
+tsconfig.json
+packages/cli/package.json
+packages/cli/src/index.ts
+```
+
+Rationale:
+
+- `tsconfig.json` is required from the first TypeScript chapter so editor and runtime assumptions are not implicit.
+- `package.json` and `bun.lock` are required for the runnable Bun CLI workspace.
+- `.gitignore` is required once the repo starts generating dependencies, build output, local env files, or local config artifacts.
+
+## Step 2: CLI Config And JSON Output
+
+These files are introduced or updated:
+
+```text
+.env.example
+.gitignore
+package.json
+packages/cli/package.json
+packages/cli/src/index.ts
+bun.lock
+```
+
+Rationale:
+
+- `.env.example` is introduced when credential setup becomes part of documented CLI usage.
+- `.gitignore` is updated if local environment or config artifacts need ignoring.
+
+## Step 3: Extract Shared Core
+
+These files are introduced or updated:
+
+```text
+bun.lock
+package.json
+packages/cli/package.json
+packages/cli/src/index.ts
+packages/core/package.json
+packages/core/src/index.ts
+packages/core/src/operations.ts
+packages/core/src/schemas.ts
+tsconfig.json
+```
+
+Rationale:
+
+- `packages/core` is introduced only when there is a working CLI behavior to extract.
+- Root TypeScript configuration may need path/workspace settings once multiple packages exist.
+
+## Step 4: Local MCP Adapter
+
+These files are introduced or updated:
+
+```text
+bun.lock
+package.json
+packages/local-mcp/package.json
+packages/local-mcp/src/index.ts
+tsconfig.json
+```
+
+Rationale:
+
+- `packages/local-mcp` is introduced only when the shared core exists.
+- Root package and TypeScript configuration may need workspace updates for the new package.
+
+## Step 5: MessageKit Skill
+
+These files are introduced or updated:
+
+```text
+bun.lock
+package.json
+packages/skills/messagekit/package.json
+packages/skills/messagekit/SKILL.md
+```
+
+Rationale:
+
+- The Skill is introduced after CLI and local MCP exist so it can document real interfaces.
+
+## Step 6: Remote MCP Adapter
+
+These files are introduced or updated:
+
+```text
+apps/remote-mcp/package.json
+apps/remote-mcp/src/index.ts
+bun.lock
+package.json
+tsconfig.json
+```
+
+Rationale:
+
+- `apps/remote-mcp` is introduced directly in its final app location.
+- Workspace and TypeScript configuration may need updates for the new app.
+
+## Step 7: Polish And Publish
+
+These files are introduced or updated:
+
+```text
+.oxfmtrc.json
+.oxlintrc.json
+README.md
+assets/messagekit-logo.svg
+bun.lock
+package.json
+packages/cli/README.md
+packages/cli/package.json
+packages/cli/src/index.ts
+packages/cli/tsconfig.build.json
+packages/cli/tsdown.config.ts
+packages/core/README.md
+packages/core/package.json
+packages/core/src/index.ts
+packages/core/src/operations.ts
+packages/core/tsconfig.build.json
+packages/core/tsdown.config.ts
+packages/local-mcp/README.md
+packages/local-mcp/package.json
+packages/local-mcp/src/index.ts
+packages/local-mcp/tsconfig.build.json
+packages/local-mcp/tsdown.config.ts
+packages/skills/messagekit/package.json
+tsconfig.json
+```
+
+Rationale:
+
+- Quality tooling, build config, publish metadata, package READMEs, and final root docs are added after all runnable product layers exist.
+- `assets/messagekit-logo.svg` is introduced with the final README hero/documentation polish.
+
+## Final Tracked File Checklist
+
+Every tracked, non-excluded file on `main` must appear in one of the step sections above:
+
+```text
+.env.example
+.gitignore
+.oxfmtrc.json
+.oxlintrc.json
+README.md
+apps/remote-mcp/package.json
+apps/remote-mcp/src/index.ts
+assets/messagekit-logo.svg
+bun.lock
+package.json
+packages/cli/README.md
+packages/cli/package.json
+packages/cli/src/index.ts
+packages/cli/tsconfig.build.json
+packages/cli/tsdown.config.ts
+packages/core/README.md
+packages/core/package.json
+packages/core/src/index.ts
+packages/core/src/operations.ts
+packages/core/src/schemas.ts
+packages/core/tsconfig.build.json
+packages/core/tsdown.config.ts
+packages/local-mcp/README.md
+packages/local-mcp/package.json
+packages/local-mcp/src/index.ts
+packages/local-mcp/tsconfig.build.json
+packages/local-mcp/tsdown.config.ts
+packages/skills/messagekit/SKILL.md
+packages/skills/messagekit/package.json
+tsconfig.json
+```
+
+## Maintenance Rule
+
+When `main` gains, removes, or renames a tracked non-excluded file, update this file map and the relevant step spec in the same change.

@@ -1,0 +1,161 @@
+# Minimal CLI Spec
+
+## Goal
+
+Create the smallest runnable MessageKit CLI that can send a Telegram message.
+
+This step should give the viewer an immediate payoff without setting up empty architecture or future-only tooling.
+
+## Background
+
+The tutorial should start with a real action, not a monorepo full of placeholders. The first runnable interface is the CLI because it is easy to execute, debug, and understand before MCP is introduced.
+
+```text
+packages/cli owns:
+- CLI argument parsing
+- initial inline Telegram API call
+- human-readable terminal output
+
+packages/cli must not own yet:
+- shared package extraction
+- MCP server behavior
+- Skill documentation
+- publishing setup
+```
+
+## Decision
+
+Create `packages/cli` in its final location and expose the final development command from the beginning:
+
+```bash
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+```
+
+The Telegram API call may be inline in the CLI during this step. That is the only temporary implementation detail. Public package location, command shape, and command name should already match the final tutorial.
+
+## Reconstruction Workspace
+
+Build this step in its own git workspace, such as `reconstruction/01-minimal-cli`.
+
+This is the first tutorial step and should start from a completely empty repository. Do not copy the current `main` tree and delete files from it. Add only the files needed to make the minimal CLI runnable.
+
+Do not reconstruct:
+
+- `specs/`
+- `AGENTS.md`
+- `CLAUDE.md`
+
+## Scope
+
+In scope:
+
+- Create the minimal Bun workspace needed to run `dev:cli`.
+- Create the root `tsconfig.json` needed by the TypeScript workspace from the first chapter.
+- Create `packages/cli` with a Bun executable entrypoint.
+- Add `@types/node` for Node globals and built-in module imports used by the CLI.
+- Add Commander-based `telegram <chatId> <message>` parsing.
+- Read `TELEGRAM_BOT_TOKEN` from the environment.
+- Send a message through the Telegram Bot API.
+- Print a readable success result.
+
+Out of scope:
+
+- Local config files.
+- `init` command.
+- `--json` output.
+- `packages/core`.
+- MCP packages.
+- Skill package.
+- `specs/`.
+- `AGENTS.md` and `CLAUDE.md`.
+- Formatting, linting, typechecking, release, or publishing setup.
+
+## Target Shape
+
+```text
+package.json
+tsconfig.json
+packages/cli/package.json
+packages/cli/src/index.ts
+```
+
+Root script:
+
+```json
+{
+  "scripts": {
+    "dev:cli": "bun run packages/cli/src/index.ts"
+  }
+}
+```
+
+CLI usage:
+
+```bash
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+```
+
+Readable output should include the target chat ID and Telegram message ID when available.
+
+## Implementation Notes
+
+- Keep the first CLI implementation direct and easy to read.
+- Use the Telegram Bot API endpoint `https://api.telegram.org/bot<token>/sendMessage`.
+- Validate that `TELEGRAM_BOT_TOKEN`, `chatId`, and `message` are present before making the request.
+- Surface Telegram API failures clearly enough for tutorial debugging.
+- Keep the shebang in the CLI entrypoint if the package will later expose a binary.
+
+## File Changes
+
+```text
+package.json                  -> workspace metadata and dev:cli script
+tsconfig.json                 -> root TypeScript configuration for the workspace
+packages/cli/package.json     -> CLI package metadata, dependencies, and Node typings
+packages/cli/src/index.ts     -> minimal telegram command
+bun.lock                      -> dependency lockfile
+.gitignore                    -> standard local ignores for dependencies, build output, env files, and local artifacts
+```
+
+## Documentation Updates
+
+Create only minimal README content if needed to run this step. Avoid documenting future packages that do not exist yet.
+
+## Implementation Steps
+
+1. Create the root workspace manifest with only the scripts and workspace entries required for the CLI.
+2. Create the root `tsconfig.json` so TypeScript configuration is explicit from the first chapter.
+3. Create `packages/cli` and install Commander plus `@types/node`.
+4. Implement `telegram <chatId> <message>` in `packages/cli/src/index.ts`.
+5. Read `TELEGRAM_BOT_TOKEN` from the environment and call the Telegram Bot API.
+6. Run the manual CLI verification command.
+
+## Verification
+
+Run from the workspace root:
+
+```bash
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+```
+
+Manual verification should cover:
+
+- A Telegram message is delivered.
+- The command prints a readable success result.
+- Missing `TELEGRAM_BOT_TOKEN` fails with a useful message.
+- Missing command arguments fail through Commander or explicit validation.
+
+## Acceptance Criteria
+
+- `bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"` is the first runnable project command.
+- The CLI sends a Telegram message using `TELEGRAM_BOT_TOKEN`.
+- The root `tsconfig.json` exists and supports the TypeScript CLI package.
+- No empty core, MCP, remote MCP, or Skill packages exist yet.
+- No temporary public command names are introduced.
+
+## Non-Goals
+
+- Do not copy files from the finished `main` branch that are not required for this step.
+- Do not add local config persistence.
+- Do not extract core logic yet.
+- Do not add MCP dependencies.
+- Do not add release or quality tooling yet.
