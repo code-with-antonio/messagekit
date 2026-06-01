@@ -2,7 +2,13 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "buildCommand": "bun run build:remote-mcp",
-    "watchPatterns": ["/apps/remote-mcp/**", "/packages/core/**", "/package.json", "/bun.lock"]
+    "watchPatterns": [
+      "/apps/remote-mcp/**",
+      "/packages/core/**",
+      "/railway.json",
+      "/package.json",
+      "/bun.lock"
+    ]
   },
   "deploy": {
     "startCommand": "bun run start:remote-mcp",
