@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@codewithantonio/messagekit-core": "workspace:*",
+    "@codewithantonio/messagekit-core": "^0.1.4",
     "@hono/zod-validator": "^0.8.0",
     "@modelcontextprotocol/sdk": "^1.21.0",
     "hono": "^4.10.0",
