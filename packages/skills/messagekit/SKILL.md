@@ -22,7 +22,15 @@ Required tool input:
 - `chatId`: Telegram chat ID.
 - `message`: Message text to send.
 
-Do not include Telegram bot tokens in MCP tool arguments. MCP clients should provide `TELEGRAM_BOT_TOKEN` through the MessageKit MCP server environment.
+Do not include Telegram bot tokens in MCP tool arguments. Local MCP clients should provide `TELEGRAM_BOT_TOKEN` through the MessageKit MCP server environment.
+
+For remote MCP clients such as ChatGPT connectors using `Authentication: None`, configure the MCP server URL with the Telegram bot token in the path:
+
+```text
+https://your-messagekit-host.example.com/<telegram-bot-token>/mcp
+```
+
+Treat the full remote MCP URL like a secret. Anyone with the URL can use the embedded Telegram bot token.
 
 ## CLI Fallback
 
@@ -51,5 +59,6 @@ bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
 
 - Prefer MCP tools for agent workflows when they are available.
 - Never ask users to put Telegram bot tokens directly in MCP tool arguments.
+- Treat remote MCP URLs containing Telegram bot tokens as secrets.
 - Do not reimplement Telegram API calls in the agent; use MCP or CLI.
 - Report command failures directly instead of guessing at missing state.

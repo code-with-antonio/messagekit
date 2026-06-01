@@ -60,10 +60,10 @@ Use HTTP transport in `apps/remote-mcp`:
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 ```
 
-Expose an HTTP endpoint, likely:
+Expose an HTTP endpoint:
 
 ```text
-POST /mcp
+POST /:botToken/mcp
 ```
 
 Use Bun's native `Bun.serve` unless there is a concrete need for a framework.
@@ -93,10 +93,10 @@ Do not add `botToken` to the MCP tool input schema.
 
 The remote MCP server must not use one global `TELEGRAM_BOT_TOKEN` for all users.
 
-For a minimal tutorial implementation, require a per-request authorization header:
+For ChatGPT connector compatibility with `Authentication: None`, require the Telegram bot token in the MCP URL path:
 
-```http
-Authorization: Bearer <telegram-bot-token>
+```text
+https://your-messagekit-host.example.com/<telegram-bot-token>/mcp
 ```
 
 The remote adapter extracts the token from the request and passes it to core:
@@ -112,11 +112,11 @@ The boundary should remain:
 
 ```text
 MCP input:              { chatId, message }
-per-request auth:       botToken
+per-request URL token:  botToken
 core operation input:   { chatId, message, botToken }
 ```
 
-A more product-like version could use the authorization header as an app API key and resolve the Telegram bot token from a user credential store. That is not required for the minimal package.
+A more product-like version could use OAuth, an app API key, or a user credential store. That is not required for the minimal package.
 
 ## Package Scripts
 
@@ -165,11 +165,8 @@ Once deployed, OpenCode can point to the remote MCP server:
   "mcp": {
     "messagekit": {
       "type": "remote",
-      "url": "https://your-host.example.com/mcp",
-      "enabled": true,
-      "headers": {
-        "Authorization": "Bearer {env:TELEGRAM_BOT_TOKEN}"
-      }
+      "url": "https://your-host.example.com/{env:TELEGRAM_BOT_TOKEN}/mcp",
+      "enabled": true
     }
   }
 }
@@ -231,9 +228,9 @@ Manual remote verification should cover:
 
 ```text
 1. Server starts on PORT or a default local port.
-2. Missing Authorization header is rejected.
-3. Valid Authorization header allows the telegram MCP tool to call core.
-4. Deployed URL works with OpenCode remote MCP config.
+2. `POST /mcp` returns `404`.
+3. `POST /<telegram-bot-token>/mcp` reaches MCP initialization.
+4. Deployed URL works with ChatGPT `Authentication: None` and OpenCode remote MCP config.
 ```
 
 ## Non-Goals For Minimal Remote Package

@@ -170,10 +170,25 @@ messagekit telegram "<chat-id>" "Hello from MessageKit" --json
 
 This repository includes a remote MCP HTTP server, but MessageKit does not provide a hosted public endpoint.
 
-For remote MCP usage, deploy your own copy of `apps/remote-mcp`. The server exposes `POST /mcp` and expects a per-request bearer token:
+For remote MCP usage, deploy your own copy of `apps/remote-mcp`. The server exposes `POST /:botToken/mcp`, where `botToken` is the URL-encoded Telegram bot token for that request.
 
-```http
-Authorization: Bearer <telegram-bot-token>
+For ChatGPT connectors using `Authentication: None`, include your Telegram bot token in the MCP server URL:
+
+```text
+https://your-messagekit-host.example.com/<telegram-bot-token>/mcp
+```
+
+Treat this URL like a secret. Anyone with the URL can use the Telegram bot token. If it is exposed, revoke and rotate the token with BotFather.
+
+This follows the Firecrawl-style no-auth connector pattern and is intended for tutorial and developer-mode setup.
+
+ChatGPT connector configuration:
+
+```text
+Name: MessageKit
+Description: Send Telegram messages through MessageKit MCP.
+MCP Server URL: https://your-messagekit-host.example.com/<telegram-bot-token>/mcp
+Authentication: None
 ```
 
 Example OpenCode remote MCP config after you deploy your own server:
@@ -184,11 +199,8 @@ Example OpenCode remote MCP config after you deploy your own server:
   "mcp": {
     "messagekit": {
       "type": "remote",
-      "url": "https://your-host.example.com/mcp",
-      "enabled": true,
-      "headers": {
-        "Authorization": "Bearer {env:TELEGRAM_BOT_TOKEN}"
-      }
+      "url": "https://your-host.example.com/{env:TELEGRAM_BOT_TOKEN}/mcp",
+      "enabled": true
     }
   }
 }
@@ -254,7 +266,7 @@ MessageKit uses three credential paths because each interface has a different au
 
 - CLI reads a persisted local user config created by `messagekit init`.
 - Local MCP reads environment variables provided by the MCP client.
-- Remote MCP reads per-request authorization headers.
+- Remote MCP reads the per-request Telegram bot token from the MCP URL path.
 
 For your own project, keep credentials out of MCP tool input schemas unless the credential is genuinely part of the operation payload.
 
@@ -306,7 +318,7 @@ Start the remote MCP HTTP server from source:
 bun run dev:remote-mcp
 ```
 
-Expected behavior: the server listens on `PORT` or `3000` by default and exposes `POST /mcp`.
+Expected behavior: the server listens on `PORT` or `3000` by default and exposes `POST /:botToken/mcp`.
 
 ### Local Linked Binary
 
@@ -350,7 +362,7 @@ TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 bun run dev:remote-mcp
 ```
 
-Manual remote verification should confirm the server starts on `PORT` or `3000`, missing `Authorization` is rejected, and a valid bearer token lets the remote `telegram` MCP tool call `@codewithantonio/messagekit-core`.
+Manual remote verification should confirm the server starts on `PORT` or `3000`, `POST /mcp` returns `404`, `POST /<telegram-bot-token>/mcp` reaches MCP initialization, and the remote `telegram` MCP tool calls `@codewithantonio/messagekit-core` without exposing `botToken` in the tool input schema.
 
 ## Architecture Details
 
@@ -391,9 +403,9 @@ messagekit-skill is documentation/instructions only
 
 `apps/remote-mcp` owns remote MCP HTTP usage:
 
-- Creates a Hono HTTP app exposing `/mcp`, run by Bun in development.
+- Creates a Hono HTTP app exposing `/:botToken/mcp`, run by Bun in development.
 - Registers a `telegram` tool backed by `@codewithantonio/messagekit-core`.
-- Reads the Telegram bot token from `Authorization: Bearer <token>` per request.
+- Reads the Telegram bot token from the URL path per request.
 - Keeps the token out of the MCP tool input schema.
 - Closes the per-request MCP server after handling the request.
 
@@ -417,7 +429,7 @@ MCP tool:      telegram
 Skill usage:   telegram
 ```
 
-Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `messagekit init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request `Authorization: Bearer <token>` header. All adapters pass the token into `@codewithantonio/messagekit-core`; it is not exposed as an MCP tool argument.
+Telegram messages are sent through the Telegram Bot API. The CLI reads the bot token from local user config created by `messagekit init`. The local MCP server reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided server environment. The remote MCP server reads the token from the per-request MCP URL path. All adapters pass the token into `@codewithantonio/messagekit-core`; it is not exposed as an MCP tool argument.
 
 ## Publish Packages To NPM
 
