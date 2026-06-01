@@ -28,16 +28,18 @@ The reconstruction tutorial intentionally renames the finished MessageKit projec
 
 Each reconstruction step must be built in its own git workspace, such as a branch or worktree, and each step must build directly on top of the previous completed step.
 
+When using git worktrees, create them in the encapsulating folder of this codebase, not inside this repository. From the `messagekit` repository root, the worktree paths should be siblings under `../reconstruction/` while the branch names remain `reconstruction/...`.
+
 The expected stack is:
 
 ```text
-reconstruction/01-minimal-cli          -> starts from a completely empty repository
-reconstruction/02-cli-config-and-json  -> starts from step 1
-reconstruction/03-extract-shared-core  -> starts from step 2
-reconstruction/04-local-mcp-adapter    -> starts from step 3
-reconstruction/05-sendkit-skill        -> starts from step 4
-reconstruction/06-remote-mcp-adapter   -> starts from step 5
-reconstruction/07-polish-and-publish   -> starts from step 6 and moves toward main
+../reconstruction/01-minimal-cli          -> branch reconstruction/01-minimal-cli, starts from a completely empty repository
+../reconstruction/02-cli-config-and-json  -> branch reconstruction/02-cli-config-and-json, starts from step 1
+../reconstruction/03-extract-shared-core  -> branch reconstruction/03-extract-shared-core, starts from step 2
+../reconstruction/04-local-mcp-adapter    -> branch reconstruction/04-local-mcp-adapter, starts from step 3
+../reconstruction/05-sendkit-skill        -> branch reconstruction/05-sendkit-skill, starts from step 4
+../reconstruction/06-remote-mcp-adapter   -> branch reconstruction/06-remote-mcp-adapter, starts from step 5
+../reconstruction/07-polish-and-publish   -> branch reconstruction/07-polish-and-publish, starts from step 6 and moves toward main
 ```
 
 Step 1 must start from a completely empty repository state. Do not copy the finished `main` tree and delete files from it.

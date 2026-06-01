@@ -35,7 +35,7 @@ The Telegram API call may be inline in the CLI during this step. That is the onl
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as `reconstruction/01-minimal-cli`.
+Build this step in its own git workspace, such as branch `reconstruction/01-minimal-cli` checked out at `../reconstruction/01-minimal-cli`.
 
 This is the first tutorial step and should start from a completely empty repository. Do not copy the current `main` tree and delete files from it. Add only the files needed to make the minimal CLI runnable.
 

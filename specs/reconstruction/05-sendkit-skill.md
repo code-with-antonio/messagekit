@@ -36,9 +36,9 @@ Do not create a temporary `packages/skill` folder.
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as `reconstruction/05-sendkit-skill`.
+Build this step in its own git workspace, such as branch `reconstruction/05-sendkit-skill` checked out at `../reconstruction/05-sendkit-skill`.
 
-Start from the completed `reconstruction/04-local-mcp-adapter` workspace. This step should add the Skill after the real CLI and local MCP interfaces exist.
+Start from the completed `../reconstruction/04-local-mcp-adapter` workspace. This step should add the Skill after the real CLI and local MCP interfaces exist.
 
 Do not reconstruct:
 

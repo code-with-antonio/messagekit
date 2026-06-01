@@ -37,9 +37,9 @@ The Telegram API call can remain inline until the next step.
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as `reconstruction/02-cli-config-and-json`.
+Build this step in its own git workspace, such as branch `reconstruction/02-cli-config-and-json` checked out at `../reconstruction/02-cli-config-and-json`.
 
-Start from the completed `reconstruction/01-minimal-cli` workspace. This step should contain all files from step 1 plus the config and JSON changes described here.
+Start from the completed `../reconstruction/01-minimal-cli` workspace. This step should contain all files from step 1 plus the config and JSON changes described here.
 
 Do not reconstruct:
 

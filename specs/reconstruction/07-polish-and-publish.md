@@ -42,9 +42,9 @@ Use this step to finalize docs and package metadata around the working architect
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as `reconstruction/07-polish-and-publish`.
+Build this step in its own git workspace, such as branch `reconstruction/07-polish-and-publish` checked out at `../reconstruction/07-polish-and-publish`.
 
-Start from the completed `reconstruction/06-remote-mcp-adapter` workspace. This step should move the reconstructed tutorial repository toward the finished `main` branch result while intentionally excluding repository-internal planning and agent guidance files.
+Start from the completed `../reconstruction/06-remote-mcp-adapter` workspace. This step should move the reconstructed tutorial repository toward the finished `main` branch result while intentionally excluding repository-internal planning and agent guidance files.
 
 Do not reconstruct:
 

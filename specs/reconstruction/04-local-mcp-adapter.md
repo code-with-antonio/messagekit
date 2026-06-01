@@ -40,9 +40,9 @@ TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as `reconstruction/04-local-mcp-adapter`.
+Build this step in its own git workspace, such as branch `reconstruction/04-local-mcp-adapter` checked out at `../reconstruction/04-local-mcp-adapter`.
 
-Start from the completed `reconstruction/03-extract-shared-core` workspace. This step should add the local MCP adapter on top of the working CLI and core package.
+Start from the completed `../reconstruction/03-extract-shared-core` workspace. This step should add the local MCP adapter on top of the working CLI and core package.
 
 Do not reconstruct:
 

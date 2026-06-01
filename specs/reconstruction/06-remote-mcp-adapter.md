@@ -41,9 +41,9 @@ Authorization: Bearer <telegram-bot-token>
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as `reconstruction/06-remote-mcp-adapter`.
+Build this step in its own git workspace, such as branch `reconstruction/06-remote-mcp-adapter` checked out at `../reconstruction/06-remote-mcp-adapter`.
 
-Start from the completed `reconstruction/05-sendkit-skill` workspace. This step should add remote MCP on top of the existing CLI, core, local MCP, and Skill layers.
+Start from the completed `../reconstruction/05-sendkit-skill` workspace. This step should add remote MCP on top of the existing CLI, core, local MCP, and Skill layers.
 
 Do not reconstruct:
 

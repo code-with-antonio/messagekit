@@ -38,14 +38,16 @@ Use [Reconstruction File Map](./FILE_MAP.md) to ensure every tracked non-exclude
 
 Each step should be implemented in its own git workspace, such as a branch or worktree, built directly on top of the previous step.
 
+When using git worktrees, create them in the encapsulating folder of this codebase, not inside this repository. From the `messagekit` repository root, the worktree paths should be siblings under `../reconstruction/` while the branch names remain `reconstruction/...`.
+
 ```text
-reconstruction/01-minimal-cli          -> starts from a completely empty repository
-reconstruction/02-cli-config-and-json  -> starts from step 1
-reconstruction/03-extract-shared-core  -> starts from step 2
-reconstruction/04-local-mcp-adapter    -> starts from step 3
-reconstruction/05-sendkit-skill        -> starts from step 4
-reconstruction/06-remote-mcp-adapter   -> starts from step 5
-reconstruction/07-polish-and-publish   -> starts from step 6 and moves toward main
+../reconstruction/01-minimal-cli          -> branch reconstruction/01-minimal-cli, starts from a completely empty repository
+../reconstruction/02-cli-config-and-json  -> branch reconstruction/02-cli-config-and-json, starts from step 1
+../reconstruction/03-extract-shared-core  -> branch reconstruction/03-extract-shared-core, starts from step 2
+../reconstruction/04-local-mcp-adapter    -> branch reconstruction/04-local-mcp-adapter, starts from step 3
+../reconstruction/05-sendkit-skill        -> branch reconstruction/05-sendkit-skill, starts from step 4
+../reconstruction/06-remote-mcp-adapter   -> branch reconstruction/06-remote-mcp-adapter, starts from step 5
+../reconstruction/07-polish-and-publish   -> branch reconstruction/07-polish-and-publish, starts from step 6 and moves toward main
 ```
 
 The sequence should reconstruct the finished project behavior from scratch. Step 1 should not be based on the current `main` tree with files deleted; it should begin from an empty repo state and add only the files required by that step.
@@ -96,6 +98,7 @@ bun run release:check
 ## Reconstruction Rules
 
 - Build each step in its own git workspace on top of the previous step.
+- If using git worktrees, create them outside this repository in the parent folder, under `../reconstruction/<step-name>`.
 - Start step 1 from a completely empty repository.
 - Move step 7 toward the finished `main` result, excluding files that are intentionally not reconstructed.
 - Every tracked non-excluded file on `main` must be assigned to a step in `FILE_MAP.md` and mentioned in that step's file changes.

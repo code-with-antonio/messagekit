@@ -39,9 +39,9 @@ The CLI should keep the same public commands and call `sendTelegramMessage` from
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as `reconstruction/03-extract-shared-core`.
+Build this step in its own git workspace, such as branch `reconstruction/03-extract-shared-core` checked out at `../reconstruction/03-extract-shared-core`.
 
-Start from the completed `reconstruction/02-cli-config-and-json` workspace. This step should preserve the existing CLI behavior while adding the final core package boundary.
+Start from the completed `../reconstruction/02-cli-config-and-json` workspace. This step should preserve the existing CLI behavior while adding the final core package boundary.
 
 Do not reconstruct:
 
