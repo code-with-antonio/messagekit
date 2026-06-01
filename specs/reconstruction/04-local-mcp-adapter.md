@@ -122,6 +122,7 @@ packages/local-mcp/package.json      -> local MCP package metadata and dependenc
 packages/local-mcp/src/index.ts      -> stdio MCP server and telegram tool
 tsconfig.json                        -> workspace TypeScript updates if needed for local MCP
 bun.lock                             -> dependency lockfile updates
+TEACHER.md                           -> update teacher-facing manual verification guide for this chapter
 ```
 
 ## Documentation Updates

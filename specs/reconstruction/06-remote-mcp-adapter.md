@@ -125,6 +125,7 @@ apps/remote-mcp/package.json    -> remote app metadata and dependencies
 apps/remote-mcp/src/index.ts    -> Hono app, /mcp endpoint, MCP server setup
 tsconfig.json                   -> workspace TypeScript updates if needed for remote MCP
 bun.lock                        -> dependency lockfile updates
+TEACHER.md                      -> update teacher-facing manual verification guide for this chapter
 ```
 
 ## Documentation Updates

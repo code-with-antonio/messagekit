@@ -21,18 +21,21 @@ specs/
 These files are introduced from an empty repository:
 
 ```text
+.env.example
 .gitignore
 bun.lock
 package.json
 tsconfig.json
 packages/cli/package.json
 packages/cli/src/index.ts
+TEACHER.md
 ```
 
 Rationale:
 
 - `tsconfig.json` is required from the first TypeScript chapter so editor and runtime assumptions are not implicit.
 - `package.json` and `bun.lock` are required for the runnable Bun CLI workspace.
+- `.env.example` is required once the first runnable command reads `TELEGRAM_BOT_TOKEN` from the environment.
 - `.gitignore` is required once the repo starts generating dependencies, build output, local env files, or local config artifacts.
 
 ## Step 2: CLI Config And JSON Output
@@ -40,17 +43,16 @@ Rationale:
 These files are introduced or updated:
 
 ```text
-.env.example
 .gitignore
 package.json
 packages/cli/package.json
 packages/cli/src/index.ts
 bun.lock
+TEACHER.md
 ```
 
 Rationale:
 
-- `.env.example` is introduced when credential setup becomes part of documented CLI usage.
 - `.gitignore` is updated if local environment or config artifacts need ignoring.
 
 ## Step 3: Extract Shared Core
@@ -67,6 +69,7 @@ packages/core/src/index.ts
 packages/core/src/operations.ts
 packages/core/src/schemas.ts
 tsconfig.json
+TEACHER.md
 ```
 
 Rationale:
@@ -84,6 +87,7 @@ package.json
 packages/local-mcp/package.json
 packages/local-mcp/src/index.ts
 tsconfig.json
+TEACHER.md
 ```
 
 Rationale:
@@ -100,6 +104,7 @@ bun.lock
 package.json
 packages/skills/messagekit/package.json
 packages/skills/messagekit/SKILL.md
+TEACHER.md
 ```
 
 Rationale:
@@ -116,6 +121,7 @@ apps/remote-mcp/src/index.ts
 bun.lock
 package.json
 tsconfig.json
+TEACHER.md
 ```
 
 Rationale:
@@ -152,6 +158,7 @@ packages/local-mcp/tsconfig.build.json
 packages/local-mcp/tsdown.config.ts
 packages/skills/messagekit/package.json
 tsconfig.json
+TEACHER.md
 ```
 
 Rationale:
@@ -193,6 +200,7 @@ packages/local-mcp/tsconfig.build.json
 packages/local-mcp/tsdown.config.ts
 packages/skills/messagekit/SKILL.md
 packages/skills/messagekit/package.json
+TEACHER.md
 tsconfig.json
 ```
 

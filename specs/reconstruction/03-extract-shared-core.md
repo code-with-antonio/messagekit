@@ -118,6 +118,7 @@ packages/cli/package.json       -> dependency on core
 packages/cli/src/index.ts       -> call core instead of inline Telegram logic
 tsconfig.json                   -> workspace TypeScript updates if needed for package imports
 bun.lock                        -> dependency lockfile updates
+TEACHER.md                      -> update teacher-facing manual verification guide for this chapter
 ```
 
 ## Documentation Updates

@@ -123,6 +123,7 @@ packages/cli/src/index.ts     -> init command, config read/write, --json output
 package.json                  -> script or dependency updates if required
 packages/cli/package.json     -> CLI dependency updates if required
 bun.lock                      -> dependency lockfile updates
+TEACHER.md                    -> update teacher-facing manual verification guide for this chapter
 ```
 
 ## Documentation Updates

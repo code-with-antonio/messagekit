@@ -131,6 +131,7 @@ packages/cli/README.md               -> CLI package README
 packages/local-mcp/README.md         -> local MCP package README
 README.md                            -> final tutorial documentation
 tsconfig.json                        -> final workspace TypeScript configuration
+TEACHER.md                           -> final teacher-facing manual verification guide
 ```
 
 ## Documentation Updates

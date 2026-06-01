@@ -53,6 +53,7 @@ In scope:
 - Create the root `tsconfig.json` needed by the TypeScript workspace from the first chapter.
 - Create `packages/cli` with a Bun executable entrypoint.
 - Add `@types/node` for Node globals and built-in module imports used by the CLI.
+- Add `.env.example` documenting `TELEGRAM_BOT_TOKEN`.
 - Add Commander-based `telegram <chatId> <message>` parsing.
 - Read `TELEGRAM_BOT_TOKEN` from the environment.
 - Send a message through the Telegram Bot API.
@@ -113,7 +114,9 @@ tsconfig.json                 -> root TypeScript configuration for the workspace
 packages/cli/package.json     -> CLI package metadata, dependencies, and Node typings
 packages/cli/src/index.ts     -> minimal telegram command
 bun.lock                      -> dependency lockfile
+.env.example                  -> example Telegram bot token environment variable
 .gitignore                    -> standard local ignores for dependencies, build output, env files, and local artifacts
+TEACHER.md                    -> teacher-facing manual verification guide for this chapter
 ```
 
 ## Documentation Updates

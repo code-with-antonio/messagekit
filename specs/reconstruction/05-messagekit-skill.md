@@ -98,6 +98,7 @@ packages/skills/messagekit/package.json -> Skill package metadata
 packages/skills/messagekit/SKILL.md     -> agent-facing instructions
 package.json                            -> workspace entry if needed
 bun.lock                                -> dependency lockfile updates if workspace metadata changes
+TEACHER.md                              -> update teacher-facing manual verification guide for this chapter
 ```
 
 ## Documentation Updates

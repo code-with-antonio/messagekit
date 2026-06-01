@@ -73,9 +73,10 @@ These files are planning and agent guidance artifacts for the source repository.
 3. Identify the correct base workspace from the reconstruction stack.
 4. Create or use the requested reconstruction branch/worktree.
 5. Implement only the target shape and scope from the requested step spec, including all files assigned to the step in `FILE_MAP.md`.
-6. Avoid reconstructing excluded files.
-7. Run the verification commands listed in the requested step spec.
-8. Report exactly what was implemented, what was verified, and any known gaps.
+6. Add or update the root `TEACHER.md` for the reconstruction workspace with exact teacher verification commands, required setup values, expected results, and gotchas for the requested step.
+7. Avoid reconstructing excluded files.
+8. Run the verification commands listed in the requested step spec.
+9. Report exactly what was implemented, what was verified, and any known gaps.
 
 ## Verification Expectations
 
@@ -103,6 +104,7 @@ A reconstruction step is complete when:
 - It builds on the correct previous step.
 - It includes only files in scope for that step.
 - It includes every file assigned to that step in `FILE_MAP.md`.
+- It includes a root `TEACHER.md` with step-specific manual verification guidance.
 - It excludes `specs/`, `AGENTS.md`, and `CLAUDE.md`.
 - Its public commands and package locations match the spec.
 - Its verification commands have been run or any blockers are clearly documented.
