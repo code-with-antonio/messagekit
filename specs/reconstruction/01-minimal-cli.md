@@ -2,7 +2,7 @@
 
 ## Goal
 
-Create the smallest runnable MessageKit CLI that can send a Telegram message.
+Create the smallest runnable SendKit CLI that can send a Telegram message.
 
 This step should give the viewer an immediate payoff without setting up empty architecture or future-only tooling.
 
@@ -28,7 +28,7 @@ packages/cli must not own yet:
 Create `packages/cli` in its final location and expose the final development command from the beginning:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
 ```
 
 The Telegram API call may be inline in the CLI during this step. That is the only temporary implementation detail. Public package location, command shape, and command name should already match the final tutorial.
@@ -93,7 +93,7 @@ Root script:
 CLI usage:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
 ```
 
 Readable output should include the target chat ID and Telegram message ID when available.
@@ -123,6 +123,24 @@ TEACHER.md                    -> teacher-facing manual verification guide for th
 
 Create only minimal README content if needed to run this step. Avoid documenting future packages that do not exist yet.
 
+`TEACHER.md` must document only this step's teaching and verification needs. Because this is the first step that requires Telegram credentials, include:
+
+- How to create a Telegram bot token with `@BotFather`.
+- How to obtain a `chat_id` with the Telegram `getUpdates` endpoint.
+- That the bot must receive at least one message before `getUpdates` can return the chat ID.
+- That group chat IDs are usually negative.
+- That an existing webhook can make `getUpdates` return an empty `result`, and `deleteWebhook` can clear it.
+- That Telegram bot tokens are credentials and must not be committed, recorded, or copied into example files.
+
+Because this step introduces the first Bun workspace command, `TEACHER.md` must also explain:
+
+- The canonical command is the root `dev:cli` script.
+- Do not use `bun --filter` for interactive CLI verification. It can break interactive CLI argument forwarding and make Commander receive the wrong arguments or no arguments.
+- Explain that the root `dev:cli` script is used because everything after `bun run dev:cli` is forwarded directly to the CLI entrypoint, which keeps the command predictable for students.
+- Explain that `bun --filter` is reserved for non-interactive package maintenance commands later, such as package-specific build or typecheck scripts, not for the tutorial's interactive CLI command path.
+- If students ask why not run the package directly with a filter, show that the lesson is the SendKit command shape, and the reliable development form is `bun run dev:cli ...` from the workspace root.
+- Message text with spaces must be quoted so it stays one CLI argument.
+
 ## Implementation Steps
 
 1. Create the root workspace manifest with only the scripts and workspace entries required for the CLI.
@@ -137,7 +155,7 @@ Create only minimal README content if needed to run this step. Avoid documenting
 Run from the workspace root:
 
 ```bash
-TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
 ```
 
 Manual verification should cover:
@@ -149,7 +167,7 @@ Manual verification should cover:
 
 ## Acceptance Criteria
 
-- `bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"` is the first runnable project command.
+- `bun run dev:cli telegram "<chat-id>" "Hello from SendKit"` is the first runnable project command.
 - The CLI sends a Telegram message using `TELEGRAM_BOT_TOKEN`.
 - The root `tsconfig.json` exists and supports the TypeScript CLI package.
 - No empty core, MCP, remote MCP, or Skill packages exist yet.

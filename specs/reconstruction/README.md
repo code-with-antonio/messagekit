@@ -1,8 +1,10 @@
-# MessageKit Reconstruction Plan
+# SendKit Reconstruction Plan
 
 ## Goal
 
-Reconstruct MessageKit as a tutorial-friendly sequence that starts with a runnable CLI and grows into the final MCP-backed architecture.
+Reconstruct SendKit as a tutorial-friendly sequence that starts with a runnable CLI and grows into the final MCP-backed architecture.
+
+This repository currently contains the finished MessageKit source, but the reconstruction tutorial intentionally teaches the project under the new SendKit name because `messagekit` is already taken. Treat every `sendkit` and `SendKit` reference in these specs as the desired tutorial name, not as a typo to correct back to MessageKit.
 
 The sequence should preserve the "build once" philosophy: public names, commands, package locations, and tool names should be final when introduced.
 
@@ -28,7 +30,7 @@ Use [Reconstruction File Map](./FILE_MAP.md) to ensure every tracked non-exclude
 2. [CLI Config And JSON Output](./02-cli-config-and-json.md)
 3. [Extract Shared Core](./03-extract-shared-core.md)
 4. [Local MCP Adapter](./04-local-mcp-adapter.md)
-5. [MessageKit Skill](./05-messagekit-skill.md)
+5. [SendKit Skill](./05-sendkit-skill.md)
 6. [Remote MCP Adapter](./06-remote-mcp-adapter.md)
 7. [Polish And Publish](./07-polish-and-publish.md)
 
@@ -41,7 +43,7 @@ reconstruction/01-minimal-cli          -> starts from a completely empty reposit
 reconstruction/02-cli-config-and-json  -> starts from step 1
 reconstruction/03-extract-shared-core  -> starts from step 2
 reconstruction/04-local-mcp-adapter    -> starts from step 3
-reconstruction/05-messagekit-skill     -> starts from step 4
+reconstruction/05-sendkit-skill        -> starts from step 4
 reconstruction/06-remote-mcp-adapter   -> starts from step 5
 reconstruction/07-polish-and-publish   -> starts from step 6 and moves toward main
 ```
@@ -67,14 +69,14 @@ packages/core      -> shared schemas and operations
 packages/cli       -> command-line adapter backed by core
 packages/local-mcp -> local MCP stdio server adapter backed by core
 apps/remote-mcp    -> remote MCP HTTP adapter backed by core
-packages/skills/messagekit -> agent-facing instructions and fallback guidance
+packages/skills/sendkit -> agent-facing instructions and fallback guidance
 ```
 
 ## Public Names To Preserve
 
 ```text
 core function: sendTelegramMessage
-CLI command:   messagekit telegram <chatId> <message>
+CLI command:   sendkit telegram <chatId> <message>
 MCP tool:      telegram
 Skill usage:   telegram
 ```

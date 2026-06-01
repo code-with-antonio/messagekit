@@ -1,6 +1,6 @@
 # Reconstruction Implementation Prompt
 
-Use this document as the standing instruction for implementing any MessageKit reconstruction step.
+Use this document as the standing instruction for implementing any SendKit reconstruction step.
 
 ## How To Use
 
@@ -24,6 +24,8 @@ Also consult `@specs/reconstruction/FILE_MAP.md` before implementing. The file m
 
 Implement the requested reconstruction step exactly as a tutorial chapter source-of-truth branch or worktree.
 
+The reconstruction tutorial intentionally renames the finished MessageKit project to SendKit. The source repository may still contain MessageKit package names, paths, or docs, but reconstructed tutorial branches should use SendKit public naming wherever the specs say `sendkit` or `SendKit`. Do not "fix" these references back to MessageKit.
+
 Each reconstruction step must be built in its own git workspace, such as a branch or worktree, and each step must build directly on top of the previous completed step.
 
 The expected stack is:
@@ -33,7 +35,7 @@ reconstruction/01-minimal-cli          -> starts from a completely empty reposit
 reconstruction/02-cli-config-and-json  -> starts from step 1
 reconstruction/03-extract-shared-core  -> starts from step 2
 reconstruction/04-local-mcp-adapter    -> starts from step 3
-reconstruction/05-messagekit-skill     -> starts from step 4
+reconstruction/05-sendkit-skill        -> starts from step 4
 reconstruction/06-remote-mcp-adapter   -> starts from step 5
 reconstruction/07-polish-and-publish   -> starts from step 6 and moves toward main
 ```
@@ -73,7 +75,7 @@ These files are planning and agent guidance artifacts for the source repository.
 3. Identify the correct base workspace from the reconstruction stack.
 4. Create or use the requested reconstruction branch/worktree.
 5. Implement only the target shape and scope from the requested step spec, including all files assigned to the step in `FILE_MAP.md`.
-6. Add or update the root `TEACHER.md` for the reconstruction workspace with exact teacher verification commands, required setup values, expected results, and gotchas for the requested step.
+6. Add or update the root `TEACHER.md` for the reconstruction workspace with exact teacher verification commands, required setup values introduced by this step, expected results, and student-facing explanation notes for the requested step.
 7. Avoid reconstructing excluded files.
 8. Run the verification commands listed in the requested step spec.
 9. Report exactly what was implemented, what was verified, and any known gaps.
@@ -82,7 +84,21 @@ These files are planning and agent guidance artifacts for the source repository.
 
 Use the verification section from the requested step spec as the source of truth.
 
-Do not invent a `bun test` workflow. MessageKit reconstruction uses manual verification and, once introduced, the quality scripts:
+## Teacher Guide Requirements
+
+Every reconstruction step must include a root `TEACHER.md`. This file is not optional and must be useful for teaching that chapter live without relying on unstated knowledge about the new material in that chapter.
+
+`TEACHER.md` is per-step instruction. Do not repeat all setup or explanation notes from previous reconstruction steps unless the requested step changes that behavior or the previous setup is required in a new way.
+
+Each `TEACHER.md` must include:
+
+- Exact commands to run from the reconstruction workspace root.
+- Required setup values introduced or changed by the step, including where to obtain them.
+- Expected successful output or observable behavior.
+- Negative verification commands and expected failures.
+- Student-facing explanation notes for concepts introduced by the step, including real failure modes that may appear during live demonstration.
+
+Do not invent a `bun test` workflow. SendKit reconstruction uses manual verification and, once introduced, the quality scripts:
 
 ```bash
 bun run format
@@ -104,7 +120,7 @@ A reconstruction step is complete when:
 - It builds on the correct previous step.
 - It includes only files in scope for that step.
 - It includes every file assigned to that step in `FILE_MAP.md`.
-- It includes a root `TEACHER.md` with step-specific manual verification guidance.
+- It includes a root `TEACHER.md` with step-specific manual verification guidance and student-facing explanation notes.
 - It excludes `specs/`, `AGENTS.md`, and `CLAUDE.md`.
 - Its public commands and package locations match the spec.
 - Its verification commands have been run or any blockers are clearly documented.

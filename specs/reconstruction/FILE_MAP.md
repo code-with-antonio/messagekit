@@ -95,15 +95,15 @@ Rationale:
 - `packages/local-mcp` is introduced only when the shared core exists.
 - Root package and TypeScript configuration may need workspace updates for the new package.
 
-## Step 5: MessageKit Skill
+## Step 5: SendKit Skill
 
 These files are introduced or updated:
 
 ```text
 bun.lock
 package.json
-packages/skills/messagekit/package.json
-packages/skills/messagekit/SKILL.md
+packages/skills/sendkit/package.json
+packages/skills/sendkit/SKILL.md
 TEACHER.md
 ```
 
@@ -137,7 +137,7 @@ These files are introduced or updated:
 .oxfmtrc.json
 .oxlintrc.json
 README.md
-assets/messagekit-logo.svg
+assets/sendkit-logo.svg
 bun.lock
 package.json
 packages/cli/README.md
@@ -156,7 +156,7 @@ packages/local-mcp/package.json
 packages/local-mcp/src/index.ts
 packages/local-mcp/tsconfig.build.json
 packages/local-mcp/tsdown.config.ts
-packages/skills/messagekit/package.json
+packages/skills/sendkit/package.json
 tsconfig.json
 TEACHER.md
 ```
@@ -164,7 +164,7 @@ TEACHER.md
 Rationale:
 
 - Quality tooling, build config, publish metadata, package READMEs, and final root docs are added after all runnable product layers exist.
-- `assets/messagekit-logo.svg` is introduced with the final README hero/documentation polish.
+- `assets/sendkit-logo.svg` is introduced with the final README hero/documentation polish.
 
 ## Final Tracked File Checklist
 
@@ -178,7 +178,7 @@ Every tracked, non-excluded file on `main` must appear in one of the step sectio
 README.md
 apps/remote-mcp/package.json
 apps/remote-mcp/src/index.ts
-assets/messagekit-logo.svg
+assets/sendkit-logo.svg
 bun.lock
 package.json
 packages/cli/README.md
@@ -198,8 +198,8 @@ packages/local-mcp/package.json
 packages/local-mcp/src/index.ts
 packages/local-mcp/tsconfig.build.json
 packages/local-mcp/tsdown.config.ts
-packages/skills/messagekit/SKILL.md
-packages/skills/messagekit/package.json
+packages/skills/sendkit/SKILL.md
+packages/skills/sendkit/package.json
 TEACHER.md
 tsconfig.json
 ```

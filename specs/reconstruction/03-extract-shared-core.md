@@ -126,8 +126,17 @@ TEACHER.md                      -> update teacher-facing manual verification gui
 Update README notes only enough to explain the new boundary:
 
 ```text
-packages/core owns reusable MessageKit operations. The CLI adapts those operations for human and script usage.
+packages/core owns reusable SendKit operations. The CLI adapts those operations for human and script usage.
 ```
+
+`TEACHER.md` must document only this step's new teaching and verification needs. Include:
+
+- Why this is the first chapter where extraction is justified: there is working behavior and a second interface is coming next.
+- The boundary rule: core owns schemas and Telegram request behavior; CLI owns config, argument parsing, process exits, and terminal output.
+- How to verify behavior did not change from the user's point of view after extraction.
+- How to inspect that `packages/core` receives `botToken` as explicit input instead of reading environment variables or local config.
+- Explain why `sendTelegramMessage` is the operation boundary students will reuse from CLI, MCP, and later remote MCP.
+- Explain that extraction is successful when the public CLI behavior stays boring and unchanged.
 
 ## Implementation Steps
 
@@ -143,8 +152,8 @@ Run from the workspace root:
 
 ```bash
 bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
 ```
 
 Manual verification should cover:

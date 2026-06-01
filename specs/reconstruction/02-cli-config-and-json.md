@@ -29,8 +29,8 @@ Add the final CLI ergonomics before extracting core:
 
 ```bash
 bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
 ```
 
 The Telegram API call can remain inline until the next step.
@@ -53,7 +53,7 @@ In scope:
 
 - Add `init --telegram-bot-token <token>`.
 - Add `.env.example` documenting Telegram token setup for local development.
-- Write config to `~/.config/messagekit/config.json`.
+- Write config to `~/.config/sendkit/config.json`.
 - Read the bot token from local config for `telegram`.
 - Keep environment token support only if it is useful for the tutorial and does not complicate the final behavior.
 - Add `--json` to `telegram`.
@@ -73,7 +73,7 @@ Out of scope:
 Config path:
 
 ```text
-~/.config/messagekit/config.json
+~/.config/sendkit/config.json
 ```
 
 Config shape:
@@ -87,13 +87,13 @@ Config shape:
 Readable command:
 
 ```bash
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
 ```
 
 JSON command:
 
 ```bash
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
 ```
 
 JSON output:
@@ -132,15 +132,25 @@ Document only the CLI commands that now exist:
 
 ```bash
 bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
 ```
+
+`TEACHER.md` must document only this step's new teaching and verification needs. Include:
+
+- Why `init` moves the token from repeated environment variables into local CLI config for human convenience.
+- The exact config path: `~/.config/sendkit/config.json`.
+- That the config file contains a secret and should not be committed or shown in recordings.
+- How to verify that `telegram` works without passing `TELEGRAM_BOT_TOKEN` inline after `init` succeeds.
+- How to verify `--json` output is valid JSON and contains no extra human-readable lines.
+- Explain that readable output is for humans, while `--json` is for scripts and agents that need stable machine-readable output.
+- Explain that Telegram API logic remains inline for one more chapter because the CLI is still the only runtime interface. The extraction becomes meaningful when another adapter needs the same behavior.
 
 ## Implementation Steps
 
 1. Add `.env.example` for Telegram token setup.
 2. Add the `init` command to the CLI.
-3. Write the Telegram token to `~/.config/messagekit/config.json`.
+3. Write the Telegram token to `~/.config/sendkit/config.json`.
 4. Update the `telegram` command to read from config.
 5. Add `--json` output for successful sends.
 6. Verify init, readable send, and JSON send.
@@ -151,8 +161,8 @@ Run from the workspace root:
 
 ```bash
 bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
+bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
 ```
 
 Manual verification should cover:

@@ -43,7 +43,7 @@ Authorization: Bearer <telegram-bot-token>
 
 Build this step in its own git workspace, such as `reconstruction/06-remote-mcp-adapter`.
 
-Start from the completed `reconstruction/05-messagekit-skill` workspace. This step should add remote MCP on top of the existing CLI, core, local MCP, and Skill layers.
+Start from the completed `reconstruction/05-sendkit-skill` workspace. This step should add remote MCP on top of the existing CLI, core, local MCP, and Skill layers.
 
 Do not reconstruct:
 
@@ -141,6 +141,17 @@ Document that remote clients send the Telegram token with:
 ```http
 Authorization: Bearer <telegram-bot-token>
 ```
+
+`TEACHER.md` must document only this step's new teaching and verification needs. Include:
+
+- Why remote MCP receives the Telegram token per request through `Authorization: Bearer <token>` instead of a global environment variable.
+- How to start the remote server from the workspace root with `bun run dev:remote-mcp`.
+- How to verify missing `Authorization` fails clearly before any Telegram send attempt.
+- How to explain that the bearer token is still the Telegram bot token for this tutorial, not SendKit user auth or OAuth.
+- How to verify the MCP tool input still contains only `chatId` and `message`.
+- Explain why remote MCP cannot use one global `TELEGRAM_BOT_TOKEN`: each HTTP request may represent a different caller and therefore a different Telegram bot token.
+- Explain why the per-request MCP server is closed after handling the request: the server is scoped to that HTTP request instead of being a long-lived stdio process.
+- Explain that Hono is only the HTTP adapter here. The chapter is about transport and per-request credentials, not production hosting or user accounts.
 
 ## Implementation Steps
 

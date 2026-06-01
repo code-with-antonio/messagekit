@@ -4,7 +4,7 @@
 
 Add maintainability, build, release, and documentation polish after all core product behavior exists.
 
-This step prepares MessageKit as a publishable tutorial repository without distracting from the earlier runnable learning path.
+This step prepares SendKit as a publishable tutorial repository without distracting from the earlier runnable learning path.
 
 ## Background
 
@@ -61,7 +61,7 @@ In scope:
 - Add `tsdown` package builds where needed.
 - Add package-specific `tsconfig.build.json` files where needed for publishing.
 - Add package READMEs.
-- Add final README assets such as the MessageKit logo.
+- Add final README assets such as the SendKit logo.
 - Add publish metadata for publishable packages.
 - Add release/check workflow scripts.
 - Expand root README to explain the complete project.
@@ -70,7 +70,7 @@ In scope:
 Out of scope:
 
 - Automated tests.
-- New MessageKit operations.
+- New SendKit operations.
 - OAuth or user accounts.
 - Production deployment guidance.
 - Dynamic operation registry.
@@ -95,7 +95,7 @@ bun run release:check
 
 Final docs should explain:
 
-- What MessageKit is for.
+- What SendKit is for.
 - How packages relate to each other.
 - How to run the CLI.
 - How to run local MCP.
@@ -119,7 +119,7 @@ Final docs should explain:
 package.json                         -> quality, build, and release scripts
 .oxfmtrc.json                        -> formatter config
 .oxlintrc.json                       -> lint config
-assets/messagekit-logo.svg           -> final README hero/logo asset
+assets/sendkit-logo.svg              -> final README hero/logo asset
 packages/core/tsdown.config.ts       -> core build config
 packages/cli/tsdown.config.ts        -> CLI build config
 packages/local-mcp/tsdown.config.ts  -> local MCP build config
@@ -150,13 +150,23 @@ Adding a new operation
 Verification
 ```
 
+`TEACHER.md` must document only this step's new teaching and verification needs. Include:
+
+- Why quality tooling is introduced last: earlier chapters prioritize runnable interfaces before polish and publishing mechanics.
+- The exact quality and release-check commands and what each one proves.
+- How to verify package READMEs match the package boundaries taught throughout the tutorial.
+- How to verify the root README commands match real root scripts.
+- Explain that release checks prove packaging/build readiness, while manual Telegram, local MCP, and remote MCP verification still prove runtime behavior.
+- Explain the difference between root README documentation and package README documentation: root teaches the whole architecture, package READMEs document installable package responsibilities.
+- Explain that polish is where the project becomes publishable and teachable as a complete repository, not where new product capabilities are added.
+
 ## Implementation Steps
 
 1. Add formatter and linter dependencies and config.
 2. Add root quality scripts.
 3. Add package build configuration with `tsdown` and `tsconfig.build.json` where needed.
 4. Add package README files.
-5. Add final README assets such as the MessageKit logo.
+5. Add final README assets such as the SendKit logo.
 6. Add publish metadata and release check script.
 7. Rewrite or expand root README around the final architecture.
 8. Run format, lint, typecheck, and release check.

@@ -8,7 +8,7 @@ This step introduces MCP only after the repository has a working CLI and extract
 
 ## Background
 
-MCP is the main agent-facing interface taught by MessageKit. The local MCP adapter should be a thin protocol adapter over core, not a second implementation of Telegram behavior.
+MCP is the main agent-facing interface taught by SendKit. The local MCP adapter should be a thin protocol adapter over core, not a second implementation of Telegram behavior.
 
 ```text
 packages/local-mcp owns:
@@ -80,7 +80,7 @@ Tool input:
 ```json
 {
   "chatId": "123456789",
-  "message": "Hello from MessageKit"
+  "message": "Hello from SendKit"
 }
 ```
 
@@ -134,6 +134,17 @@ TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 ```
 
 Explain that MCP tool callers provide only `chatId` and `message`.
+
+`TEACHER.md` must document only this step's new teaching and verification needs. Include:
+
+- Why local MCP reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided environment instead of the CLI config file.
+- How to start the stdio server from the workspace root with `TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp`.
+- How to explain stdio behavior: the command may appear to hang because it is waiting for MCP client messages on standard input.
+- How to verify the `telegram` tool is discoverable in an MCP client.
+- How to verify the tool input contains only `chatId` and `message`, not `botToken`.
+- How to verify `content` and `structuredContent` both come back from a successful tool call.
+- Explain that stdout belongs to the MCP protocol in stdio mode. Normal debug logs on stdout can break the client/server conversation, so temporary debugging should use stderr.
+- Explain why the MCP adapter is thin: it translates protocol input/output and delegates message sending to core.
 
 ## Implementation Steps
 
