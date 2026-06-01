@@ -11,6 +11,7 @@
     "build:cli": "bun run --filter @codewithantonio/messagekit build",
     "build:core": "bun run --filter @codewithantonio/messagekit-core build",
     "build:local-mcp": "bun run --filter @codewithantonio/messagekit-mcp build",
+    "build:remote-mcp": "bun run --filter messagekit-remote-mcp build",
     "dev:cli": "bun run packages/cli/src/index.ts",
     "dev:local-mcp": "bun run packages/local-mcp/src/index.ts",
     "dev:remote-mcp": "bun run apps/remote-mcp/src/index.ts",
@@ -18,10 +19,11 @@
     "format:check": "oxfmt . --check",
     "lint": "oxlint . --deny-warnings",
     "lint:fix": "oxlint . --fix",
-    "release:check": "bun run format:check && bun run lint && bun run typecheck && bun run build:core && bun run build:cli && bun run build:local-mcp",
+    "release:check": "bun run format:check && bun run lint && bun run typecheck && bun run build:core && bun run build:cli && bun run build:local-mcp && bun run build:remote-mcp",
     "release:pack:cli": "cd packages/cli && bun run build && npm pack --dry-run",
     "release:pack:core": "cd packages/core && bun run build && npm pack --dry-run",
     "release:pack:local-mcp": "cd packages/local-mcp && bun run build && npm pack --dry-run",
+    "start:remote-mcp": "bun run --filter messagekit-remote-mcp start",
     "typecheck": "bun run --filter '*' typecheck"
   },
   "devDependencies": {
