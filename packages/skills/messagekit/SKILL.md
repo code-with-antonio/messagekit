@@ -48,13 +48,6 @@ Send a message:
 messagekit telegram "<chat-id>" "Hello from MessageKit" --json
 ```
 
-During local development, use the workspace command form:
-
-```bash
-bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
-```
-
 ## Safety
 
 - Prefer MCP tools for agent workflows when they are available.
