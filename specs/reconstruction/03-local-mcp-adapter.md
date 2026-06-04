@@ -121,6 +121,11 @@ This step introduces local MCP, but intentionally does not add Skill docs, remot
 Expected differences:
 
 - `packages/cli/src/index.ts` may still read `TELEGRAM_BOT_TOKEN` from the environment and may not include `init` or `--json` yet.
+- Package names may still use the earlier reconstruction identity, such as `sendkit` and `sendkit-core`, instead of the final `messagekit` command and `@codewithantonio/messagekit-*` package names.
+- Root `package.json` may still be minimal and may not include `apps/*`, `packages/skills/*`, build scripts, lint scripts, format scripts, typecheck scripts, or release scripts yet.
+- Package metadata may still be private development metadata instead of final publish-ready scoped package metadata.
+- `.env.example` and `.gitignore` may still be simpler than their final `main` versions.
+- Root README and final README assets may still be absent until the polish step.
 - Remote MCP files are not present yet.
 - Skill package files are not present yet.
 - Package READMEs, build config, lint config, format config, and release scripts are not present yet.
