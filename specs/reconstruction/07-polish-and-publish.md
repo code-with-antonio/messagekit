@@ -44,7 +44,7 @@ Use this step to finalize docs and package metadata around the working architect
 
 Build this step in its own git workspace, such as branch `reconstruction/07-polish-and-publish` checked out at `../reconstruction/07-polish-and-publish`.
 
-Start from the completed `../reconstruction/06-remote-mcp-adapter` workspace. This step should move the reconstructed tutorial repository toward the finished `main` branch result while intentionally excluding repository-internal planning and agent guidance files.
+Start from the completed `../reconstruction/06-cli-config-and-json` workspace. This step should move the reconstructed tutorial repository toward the finished `main` branch result while intentionally excluding repository-internal planning and agent guidance files.
 
 Do not reconstruct:
 
@@ -112,6 +112,21 @@ Final docs should explain:
 - Keep package responsibilities clear in docs.
 - Preserve final public names and commands.
 - The README should describe the final architecture, not the messy historical path.
+
+## Expected Differences From Main
+
+This step should move the reconstruction as close to `main` as possible while still excluding repository-internal planning and agent guidance files.
+
+Expected differences:
+
+- `specs/`, `AGENTS.md`, and `CLAUDE.md` remain excluded even though they exist on `main`.
+- Any tutorial-only `TEACHER.md` content may differ from `main` when needed to teach the reconstruction chapter.
+
+Expected parity:
+
+- All tracked, non-excluded source files, package metadata, build config, docs, public commands, and runtime behavior should match `main` unless an expected difference above applies.
+- Quality scripts and release checks should match `main`.
+- Package READMEs and the root README should match `main` for the SendKit tutorial naming and architecture.
 
 ## File Changes
 

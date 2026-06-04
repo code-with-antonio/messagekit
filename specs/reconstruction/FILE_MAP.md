@@ -38,24 +38,7 @@ Rationale:
 - `.env.example` is required once the first runnable command reads `TELEGRAM_BOT_TOKEN` from the environment.
 - `.gitignore` is required once the repo starts generating dependencies, build output, local env files, or local config artifacts.
 
-## Step 2: CLI Config And JSON Output
-
-These files are introduced or updated:
-
-```text
-.gitignore
-package.json
-packages/cli/package.json
-packages/cli/src/index.ts
-bun.lock
-TEACHER.md
-```
-
-Rationale:
-
-- `.gitignore` is updated if local environment or config artifacts need ignoring.
-
-## Step 3: Extract Shared Core
+## Step 2: Extract Shared Core
 
 These files are introduced or updated:
 
@@ -74,10 +57,10 @@ TEACHER.md
 
 Rationale:
 
-- `packages/core` is introduced only when there is a working CLI behavior to extract.
+- `packages/core` is introduced as soon as the minimal CLI has working behavior worth extracting and before MCP needs the same operation.
 - Root TypeScript configuration may need path/workspace settings once multiple packages exist.
 
-## Step 4: Local MCP Adapter
+## Step 3: Local MCP Adapter
 
 These files are introduced or updated:
 
@@ -95,7 +78,7 @@ Rationale:
 - `packages/local-mcp` is introduced only when the shared core exists.
 - Root package and TypeScript configuration may need workspace updates for the new package.
 
-## Step 5: SendKit Skill
+## Step 4: SendKit Skill
 
 These files are introduced or updated:
 
@@ -111,7 +94,7 @@ Rationale:
 
 - The Skill is introduced after CLI and local MCP exist so it can document real interfaces.
 
-## Step 6: Remote MCP Adapter
+## Step 5: Remote MCP Adapter
 
 These files are introduced or updated:
 
@@ -128,6 +111,24 @@ Rationale:
 
 - `apps/remote-mcp` is introduced directly in its final app location.
 - Workspace and TypeScript configuration may need updates for the new app.
+
+## Step 6: CLI Config And JSON Output
+
+These files are introduced or updated:
+
+```text
+.gitignore
+bun.lock
+package.json
+packages/cli/package.json
+packages/cli/src/index.ts
+TEACHER.md
+```
+
+Rationale:
+
+- CLI config and JSON output are introduced when the project is close to distribution and repeated human CLI usage matters.
+- `.gitignore` is updated if local environment or config artifacts need ignoring.
 
 ## Step 7: Polish And Publish
 

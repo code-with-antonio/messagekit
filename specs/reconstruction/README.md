@@ -27,11 +27,11 @@ Use [Reconstruction Implementation Prompt](./IMPLEMENTATION_PROMPT.md) as the st
 Use [Reconstruction File Map](./FILE_MAP.md) to ensure every tracked non-excluded file from `main` is introduced or updated in a specific reconstruction step.
 
 1. [Minimal CLI](./01-minimal-cli.md)
-2. [CLI Config And JSON Output](./02-cli-config-and-json.md)
-3. [Extract Shared Core](./03-extract-shared-core.md)
-4. [Local MCP Adapter](./04-local-mcp-adapter.md)
-5. [SendKit Skill](./05-sendkit-skill.md)
-6. [Remote MCP Adapter](./06-remote-mcp-adapter.md)
+2. [Extract Shared Core](./02-extract-shared-core.md)
+3. [Local MCP Adapter](./03-local-mcp-adapter.md)
+4. [SendKit Skill](./04-sendkit-skill.md)
+5. [Remote MCP Adapter](./05-remote-mcp-adapter.md)
+6. [CLI Config And JSON Output](./06-cli-config-and-json.md)
 7. [Polish And Publish](./07-polish-and-publish.md)
 
 ## Git Workspace Model
@@ -42,11 +42,11 @@ When using git worktrees, create them in the encapsulating folder of this codeba
 
 ```text
 ../reconstruction/01-minimal-cli          -> branch reconstruction/01-minimal-cli, starts from a completely empty repository
-../reconstruction/02-cli-config-and-json  -> branch reconstruction/02-cli-config-and-json, starts from step 1
-../reconstruction/03-extract-shared-core  -> branch reconstruction/03-extract-shared-core, starts from step 2
-../reconstruction/04-local-mcp-adapter    -> branch reconstruction/04-local-mcp-adapter, starts from step 3
-../reconstruction/05-sendkit-skill        -> branch reconstruction/05-sendkit-skill, starts from step 4
-../reconstruction/06-remote-mcp-adapter   -> branch reconstruction/06-remote-mcp-adapter, starts from step 5
+../reconstruction/02-extract-shared-core  -> branch reconstruction/02-extract-shared-core, starts from step 1
+../reconstruction/03-local-mcp-adapter    -> branch reconstruction/03-local-mcp-adapter, starts from step 2
+../reconstruction/04-sendkit-skill        -> branch reconstruction/04-sendkit-skill, starts from step 3
+../reconstruction/05-remote-mcp-adapter   -> branch reconstruction/05-remote-mcp-adapter, starts from step 4
+../reconstruction/06-cli-config-and-json  -> branch reconstruction/06-cli-config-and-json, starts from step 5
 ../reconstruction/07-polish-and-publish   -> branch reconstruction/07-polish-and-publish, starts from step 6 and moves toward main
 ```
 
@@ -110,6 +110,20 @@ bun run release:check
 - Do not duplicate business logic after `packages/core` exists.
 - Keep operation registration explicit across core, CLI, MCP adapters, Skill docs, and README.
 - Do not reconstruct `specs/`, `AGENTS.md`, or `CLAUDE.md`.
+
+## Source-Truth Parity
+
+The finished `main` branch is the source of truth for every file, public API, command, package name, implementation detail, and behavior that is already in scope for a reconstruction step.
+
+When implementing a step:
+
+- Inspect the corresponding files on `main` before writing or changing in-scope files.
+- Prefer the `main` implementation for anything that has already been introduced by the current step.
+- If an in-scope file can match `main` exactly without introducing later-step behavior, it should match `main` exactly.
+- If a `main` file contains behavior from later steps, include only the current-step subset and keep the code as close to `main` as the scope allows.
+- Do not creatively reimplement in-scope behavior from the written spec when `main` already contains the final version.
+- Any intentional mismatch from `main` must be explained by deferred scope and listed in the step spec under `Expected Differences From Main`.
+- Any mismatch not listed in `Expected Differences From Main` should be treated as a bug in the implementation or a missing spec note.
 
 ## Verification Strategy
 

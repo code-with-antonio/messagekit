@@ -39,9 +39,9 @@ The CLI should keep the same public commands and call `sendTelegramMessage` from
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/03-extract-shared-core` checked out at `../reconstruction/03-extract-shared-core`.
+Build this step in its own git workspace, such as branch `reconstruction/02-extract-shared-core` checked out at `../reconstruction/02-extract-shared-core`.
 
-Start from the completed `../reconstruction/02-cli-config-and-json` workspace. This step should preserve the existing CLI behavior while adding the final core package boundary.
+Start from the completed `../reconstruction/01-minimal-cli` workspace. This step should preserve the minimal CLI behavior while adding the final core package boundary.
 
 Do not reconstruct:
 
@@ -59,7 +59,7 @@ In scope:
 - Add `sendTelegramMessage`.
 - Export schemas, types, and operation from core.
 - Update CLI to call core.
-- Preserve CLI config and output behavior.
+- Preserve the minimal CLI command shape and environment-token behavior.
 
 Out of scope:
 
@@ -103,9 +103,27 @@ packages/cli -> packages/core
 
 - Core should receive `botToken` as an explicit function input.
 - Core should not read `process.env` or local config.
-- CLI should continue to own config reads and terminal output.
+- CLI should continue to own environment reads and terminal output.
 - Keep the operation name final: `sendTelegramMessage`.
 - Keep schemas reusable for later MCP input definitions.
+
+## Expected Differences From Main
+
+This step extracts `packages/core`, but intentionally does not add final CLI credential persistence or machine-readable CLI output yet.
+
+Expected differences:
+
+- `packages/cli/src/index.ts` still reads `TELEGRAM_BOT_TOKEN` from the environment.
+- `packages/cli/src/index.ts` does not include `init`.
+- `packages/cli/src/index.ts` does not include `--json` output.
+- MCP adapters, Skill docs, remote MCP, package READMEs, build config, lint config, format config, and release scripts are not present yet.
+
+Expected parity:
+
+- `packages/core/src/schemas.ts` should match the final core schema names and shapes from `main` for the Telegram operation.
+- `packages/core/src/operations.ts` should match the final Telegram API request behavior and output shaping from `main`.
+- `packages/core/src/index.ts` should export the same in-scope public core API names as `main`.
+- `packages/cli/src/index.ts` should call `sendTelegramMessage` from core instead of duplicating Telegram request behavior.
 
 ## File Changes
 
@@ -132,9 +150,9 @@ packages/core owns reusable SendKit operations. The CLI adapts those operations 
 `TEACHER.md` must document only this step's new teaching and verification needs. Include:
 
 - Why this is the first chapter where extraction is justified: there is working behavior and a second interface is coming next.
-- The boundary rule: core owns schemas and Telegram request behavior; CLI owns config, argument parsing, process exits, and terminal output.
+- The boundary rule: core owns schemas and Telegram request behavior; CLI owns environment reads, argument parsing, process exits, and terminal output.
 - How to verify behavior did not change from the user's point of view after extraction.
-- How to inspect that `packages/core` receives `botToken` as explicit input instead of reading environment variables or local config.
+- How to inspect that `packages/core` receives `botToken` as explicit input instead of reading environment variables.
 - Explain why `sendTelegramMessage` is the operation boundary students will reuse from CLI, MCP, and later remote MCP.
 - Explain that extraction is successful when the public CLI behavior stays boring and unchanged.
 
@@ -151,22 +169,19 @@ packages/core owns reusable SendKit operations. The CLI adapts those operations 
 Run from the workspace root:
 
 ```bash
-bun run dev:cli init --telegram-bot-token "<bot-token>"
-bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
-bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
+TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
 ```
 
 Manual verification should cover:
 
 - CLI behavior is unchanged after extraction.
-- Core receives the bot token as data, not through environment or config reads.
-- JSON output still matches the target output shape.
+- Core receives the bot token as data, not through environment reads.
 
 ## Acceptance Criteria
 
 - Telegram business logic lives in `packages/core`.
 - CLI no longer duplicates Telegram API request logic.
-- CLI still owns config, argument parsing, and output formatting.
+- CLI still owns environment reads, argument parsing, and output formatting.
 - No MCP package is added in this step.
 
 ## Non-Goals

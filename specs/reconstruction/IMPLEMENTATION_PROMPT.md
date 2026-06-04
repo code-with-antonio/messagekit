@@ -15,7 +15,7 @@ Implement @specs/reconstruction/01-minimal-cli.md using @specs/reconstruction/IM
 Example for a later step:
 
 ```text
-Implement @specs/reconstruction/04-local-mcp-adapter.md using @specs/reconstruction/IMPLEMENTATION_PROMPT.md.
+Implement @specs/reconstruction/03-local-mcp-adapter.md using @specs/reconstruction/IMPLEMENTATION_PROMPT.md.
 ```
 
 Also consult `@specs/reconstruction/FILE_MAP.md` before implementing. The file map is mandatory and assigns every tracked non-excluded `main` file to a reconstruction step.
@@ -34,11 +34,11 @@ The expected stack is:
 
 ```text
 ../reconstruction/01-minimal-cli          -> branch reconstruction/01-minimal-cli, starts from a completely empty repository
-../reconstruction/02-cli-config-and-json  -> branch reconstruction/02-cli-config-and-json, starts from step 1
-../reconstruction/03-extract-shared-core  -> branch reconstruction/03-extract-shared-core, starts from step 2
-../reconstruction/04-local-mcp-adapter    -> branch reconstruction/04-local-mcp-adapter, starts from step 3
-../reconstruction/05-sendkit-skill        -> branch reconstruction/05-sendkit-skill, starts from step 4
-../reconstruction/06-remote-mcp-adapter   -> branch reconstruction/06-remote-mcp-adapter, starts from step 5
+../reconstruction/02-extract-shared-core  -> branch reconstruction/02-extract-shared-core, starts from step 1
+../reconstruction/03-local-mcp-adapter    -> branch reconstruction/03-local-mcp-adapter, starts from step 2
+../reconstruction/04-sendkit-skill        -> branch reconstruction/04-sendkit-skill, starts from step 3
+../reconstruction/05-remote-mcp-adapter   -> branch reconstruction/05-remote-mcp-adapter, starts from step 4
+../reconstruction/06-cli-config-and-json  -> branch reconstruction/06-cli-config-and-json, starts from step 5
 ../reconstruction/07-polish-and-publish   -> branch reconstruction/07-polish-and-publish, starts from step 6 and moves toward main
 ```
 
@@ -70,17 +70,32 @@ These files are planning and agent guidance artifacts for the source repository.
 - Do not duplicate business logic after `packages/core` exists.
 - Keep operation registration explicit across core, CLI, MCP adapters, Skill docs, and README.
 
+## Source-Truth Parity
+
+The finished `main` branch is the source of truth for anything that is already in scope for the requested reconstruction step.
+
+Before implementing, inspect the matching files on `main` for all files assigned to the step in `FILE_MAP.md`. For each in-scope file or behavior:
+
+- Match `main` exactly when the whole file or behavior is already in scope.
+- Match `main` as closely as possible when the `main` file also contains later-step behavior.
+- Omit only behavior that is explicitly out of scope for the current step.
+- Do not invent a new implementation when `main` already has the final implementation for the in-scope behavior.
+- Treat the step spec's `Expected Differences From Main` section as the complete list of acceptable mismatches.
+- If an implementation needs another mismatch from `main`, update the step spec or stop and ask before proceeding.
+
 ## Implementation Process
 
 1. Read the requested step spec fully.
 2. Read `@specs/reconstruction/FILE_MAP.md` and identify every file assigned to the requested step.
-3. Identify the correct base workspace from the reconstruction stack.
-4. Create or use the requested reconstruction branch/worktree.
-5. Implement only the target shape and scope from the requested step spec, including all files assigned to the step in `FILE_MAP.md`.
-6. Add or update the root `TEACHER.md` for the reconstruction workspace with exact teacher verification commands, required setup values introduced by this step, expected results, and student-facing explanation notes for the requested step.
-7. Avoid reconstructing excluded files.
-8. Run the verification commands listed in the requested step spec.
-9. Report exactly what was implemented, what was verified, and any known gaps.
+3. Inspect the corresponding `main` branch files for every in-scope file and behavior.
+4. Read the requested step spec's `Expected Differences From Main` section and use it as the allowed mismatch list.
+5. Identify the correct base workspace from the reconstruction stack.
+6. Create or use the requested reconstruction branch/worktree.
+7. Implement only the target shape and scope from the requested step spec, including all files assigned to the step in `FILE_MAP.md`.
+8. Add or update the root `TEACHER.md` for the reconstruction workspace with exact teacher verification commands, required setup values introduced by this step, expected results, and student-facing explanation notes for the requested step.
+9. Avoid reconstructing excluded files.
+10. Run the verification commands listed in the requested step spec.
+11. Report exactly what matched `main`, what intentionally differs from `main`, what was verified, and any known gaps.
 
 ## Verification Expectations
 

@@ -40,9 +40,9 @@ TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/04-local-mcp-adapter` checked out at `../reconstruction/04-local-mcp-adapter`.
+Build this step in its own git workspace, such as branch `reconstruction/03-local-mcp-adapter` checked out at `../reconstruction/03-local-mcp-adapter`.
 
-Start from the completed `../reconstruction/03-extract-shared-core` workspace. This step should add the local MCP adapter on top of the working CLI and core package.
+Start from the completed `../reconstruction/02-extract-shared-core` workspace. This step should add the local MCP adapter on top of the working CLI and core package.
 
 Do not reconstruct:
 
@@ -113,6 +113,24 @@ packages/local-mcp -> packages/core
 - Compose the core input inside the tool handler by combining MCP input with the environment token.
 - Keep credential failure messages clear but do not print secrets.
 - Keep tool registration explicit.
+
+## Expected Differences From Main
+
+This step introduces local MCP, but intentionally does not add Skill docs, remote MCP, final CLI config, or publishing polish yet.
+
+Expected differences:
+
+- `packages/cli/src/index.ts` may still read `TELEGRAM_BOT_TOKEN` from the environment and may not include `init` or `--json` yet.
+- Remote MCP files are not present yet.
+- Skill package files are not present yet.
+- Package READMEs, build config, lint config, format config, and release scripts are not present yet.
+
+Expected parity:
+
+- `packages/local-mcp/src/index.ts` should match the final local MCP tool name, input schema shape, credential boundary, and response shape from `main`.
+- Local MCP should call `sendTelegramMessage` from core and should not duplicate Telegram request behavior.
+- The MCP `telegram` tool input should contain `chatId` and `message`, not `botToken`.
+- Successful tool calls should return both readable `content` and machine-readable `structuredContent` as in `main`.
 
 ## File Changes
 

@@ -36,9 +36,9 @@ Do not create a temporary `packages/skill` folder.
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/05-sendkit-skill` checked out at `../reconstruction/05-sendkit-skill`.
+Build this step in its own git workspace, such as branch `reconstruction/04-sendkit-skill` checked out at `../reconstruction/04-sendkit-skill`.
 
-Start from the completed `../reconstruction/04-local-mcp-adapter` workspace. This step should add the Skill after the real CLI and local MCP interfaces exist.
+Start from the completed `../reconstruction/03-local-mcp-adapter` workspace. This step should add the Skill after the real CLI and local MCP interfaces exist.
 
 Do not reconstruct:
 
@@ -90,6 +90,22 @@ bun run dev:cli telegram "<chat-id>" "<message>"
 - Do not instruct agents to call `@codewithantonio/sendkit-core` directly.
 - Do not include the bot token in MCP tool input examples.
 - Keep fallback CLI examples aligned with the current development commands.
+
+## Expected Differences From Main
+
+This step introduces the Skill after local MCP, but intentionally does not document remote MCP or final CLI config behavior yet.
+
+Expected differences:
+
+- Remote MCP instructions should be absent or clearly deferred because remote MCP does not exist yet.
+- CLI fallback examples may still assume `TELEGRAM_BOT_TOKEN` environment setup if CLI config has not been introduced yet.
+- Package READMEs, build config, lint config, format config, and release scripts are not present yet.
+
+Expected parity:
+
+- `packages/skills/sendkit/SKILL.md` should match the final Skill's in-scope guidance from `main`: prefer MCP, fall back to CLI, and keep core as an implementation detail.
+- Skill examples should use the final public `telegram` capability name.
+- MCP examples should include only `chatId` and `message`, not `botToken`.
 
 ## File Changes
 

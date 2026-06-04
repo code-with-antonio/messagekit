@@ -41,9 +41,9 @@ Authorization: Bearer <telegram-bot-token>
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/06-remote-mcp-adapter` checked out at `../reconstruction/06-remote-mcp-adapter`.
+Build this step in its own git workspace, such as branch `reconstruction/05-remote-mcp-adapter` checked out at `../reconstruction/05-remote-mcp-adapter`.
 
-Start from the completed `../reconstruction/05-sendkit-skill` workspace. This step should add remote MCP on top of the existing CLI, core, local MCP, and Skill layers.
+Start from the completed `../reconstruction/04-sendkit-skill` workspace. This step should add remote MCP on top of the existing CLI, core, local MCP, and Skill layers.
 
 Do not reconstruct:
 
@@ -116,6 +116,23 @@ apps/remote-mcp -> packages/core
 - Keep the MCP tool input free of secrets.
 - Keep registration explicit and parallel to local MCP.
 - Return clear unauthorized responses for missing or malformed bearer tokens.
+
+## Expected Differences From Main
+
+This step introduces remote MCP, but intentionally does not add final CLI config or publishing polish yet.
+
+Expected differences:
+
+- `packages/cli/src/index.ts` may still read `TELEGRAM_BOT_TOKEN` from the environment and may not include `init` or `--json` yet.
+- Package READMEs, build config, lint config, format config, and release scripts are not present yet.
+- Final root README polish may still be deferred.
+
+Expected parity:
+
+- `apps/remote-mcp/src/index.ts` should match the final remote MCP endpoint, Hono usage, per-request bearer-token boundary, tool input shape, and response shape from `main`.
+- Remote MCP should call `sendTelegramMessage` from core and should not duplicate Telegram request behavior.
+- Remote MCP should not read one global `TELEGRAM_BOT_TOKEN` for all users.
+- The MCP `telegram` tool input should contain `chatId` and `message`, not `botToken`.
 
 ## File Changes
 

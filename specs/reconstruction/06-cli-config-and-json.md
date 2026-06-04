@@ -2,13 +2,13 @@
 
 ## Goal
 
-Turn the minimal CLI into the final human and script-friendly CLI interface.
+Turn the development-only CLI into the final human and script-friendly CLI interface.
 
 This step keeps the same `dev:cli` and `telegram` command shape while adding persistent local configuration and machine-readable output.
 
 ## Background
 
-The first CLI step proves that Telegram sending works. Requiring `TELEGRAM_BOT_TOKEN` on every command is acceptable for a spike, but poor for repeated human usage.
+The first CLI step proves that Telegram sending works. Requiring `TELEGRAM_BOT_TOKEN` on every command is acceptable while the only CLI workflow is `bun run dev:cli`, but it becomes awkward once the project is preparing for distribution and repeated human usage.
 
 ```text
 packages/cli owns:
@@ -25,7 +25,7 @@ packages/cli must not own:
 
 ## Decision
 
-Add the final CLI ergonomics before extracting core:
+Add the final CLI ergonomics after the MCP-backed architecture already exists:
 
 ```bash
 bun run dev:cli init --telegram-bot-token "<bot-token>"
@@ -33,13 +33,13 @@ bun run dev:cli telegram "<chat-id>" "Hello from SendKit"
 bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
 ```
 
-The Telegram API call can remain inline until the next step.
+The CLI should keep using `sendTelegramMessage` from core. This step changes only CLI credential ergonomics and output formatting.
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/02-cli-config-and-json` checked out at `../reconstruction/02-cli-config-and-json`.
+Build this step in its own git workspace, such as branch `reconstruction/06-cli-config-and-json` checked out at `../reconstruction/06-cli-config-and-json`.
 
-Start from the completed `../reconstruction/01-minimal-cli` workspace. This step should contain all files from step 1 plus the config and JSON changes described here.
+Start from the completed `../reconstruction/05-remote-mcp-adapter` workspace. This step should contain all files from step 5 plus the config and JSON changes described here.
 
 Do not reconstruct:
 
@@ -52,18 +52,17 @@ Do not reconstruct:
 In scope:
 
 - Add `init --telegram-bot-token <token>`.
-- Add `.env.example` documenting Telegram token setup for local development.
 - Write config to `~/.config/sendkit/config.json`.
 - Read the bot token from local config for `telegram`.
-- Keep environment token support only if it is useful for the tutorial and does not complicate the final behavior.
+- Keep `TELEGRAM_BOT_TOKEN` support for `bun run dev:cli` if it is useful and does not complicate the final behavior.
 - Add `--json` to `telegram`.
 - Preserve readable output by default.
 
 Out of scope:
 
-- `packages/core` extraction.
-- MCP adapters.
-- Remote auth.
+- Core operation changes.
+- MCP adapter changes.
+- Remote auth changes.
 - `specs/`.
 - `AGENTS.md` and `CLAUDE.md`.
 - Publishing setup.
@@ -114,11 +113,26 @@ JSON output:
 - `--json` output should print only JSON on success so it can be piped into scripts.
 - Error output does not need a final structured error shape in this tutorial step.
 
+## Expected Differences From Main
+
+This step adds final CLI ergonomics, but intentionally does not add publishing polish yet.
+
+Expected differences:
+
+- Package READMEs, build config, lint config, format config, and release scripts may still be absent until the polish step.
+- Final root README polish may still be deferred.
+
+Expected parity:
+
+- `packages/cli/src/index.ts` should match the final CLI command names, config path, config shape, `--json` behavior, and core delegation from `main`.
+- The CLI should keep calling `sendTelegramMessage` from core and should not reintroduce inline Telegram request behavior.
+- JSON success output should match the final core output shape from `main`.
+- CLI config should persist the Telegram token at `~/.config/sendkit/config.json` and should not print secrets.
+
 ## File Changes
 
 ```text
-packages/cli/src/index.ts     -> init command, config read/write, --json output
-.env.example                  -> example Telegram token environment variable for local development
+packages/cli/src/index.ts     -> init command, config read/write, --json output while still calling core
 .gitignore                    -> ignore local config if any repo-local config examples are introduced
 package.json                  -> script or dependency updates if required
 packages/cli/package.json     -> CLI dependency updates if required
@@ -144,16 +158,15 @@ bun run dev:cli telegram "<chat-id>" "Hello from SendKit" --json
 - How to verify that `telegram` works without passing `TELEGRAM_BOT_TOKEN` inline after `init` succeeds.
 - How to verify `--json` output is valid JSON and contains no extra human-readable lines.
 - Explain that readable output is for humans, while `--json` is for scripts and agents that need stable machine-readable output.
-- Explain that Telegram API logic remains inline for one more chapter because the CLI is still the only runtime interface. The extraction becomes meaningful when another adapter needs the same behavior.
+- Explain that Telegram API logic stays in core and this chapter only changes the CLI adapter.
 
 ## Implementation Steps
 
-1. Add `.env.example` for Telegram token setup.
-2. Add the `init` command to the CLI.
-3. Write the Telegram token to `~/.config/sendkit/config.json`.
-4. Update the `telegram` command to read from config.
-5. Add `--json` output for successful sends.
-6. Verify init, readable send, and JSON send.
+1. Add the `init` command to the CLI.
+2. Write the Telegram token to `~/.config/sendkit/config.json`.
+3. Update the `telegram` command to read from config while still calling core.
+4. Add `--json` output for successful sends.
+5. Verify init, readable send, and JSON send.
 
 ## Verification
 
@@ -176,9 +189,9 @@ Manual verification should cover:
 
 - CLI supports `init` and persistent Telegram token config.
 - CLI supports `telegram ... --json`.
-- `.env.example` exists and documents the Telegram token variable used by early local development and MCP steps.
+- CLI still calls `sendTelegramMessage` from core.
 - The public command shape from step 1 remains valid.
-- Telegram API logic is still allowed to live in CLI because no second adapter exists yet.
+- Telegram API logic remains in core.
 
 ## Non-Goals
 

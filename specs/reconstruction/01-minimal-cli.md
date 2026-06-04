@@ -106,6 +106,23 @@ Readable output should include the target chat ID and Telegram message ID when a
 - Surface Telegram API failures clearly enough for tutorial debugging.
 - Keep the shebang in the CLI entrypoint if the package will later expose a binary.
 
+## Expected Differences From Main
+
+This step intentionally differs from `main` because it is the smallest runnable CLI before shared core, MCP, Skill, remote MCP, and publishing are introduced.
+
+Expected differences:
+
+- `packages/core` does not exist yet, so Telegram request logic may live inline in `packages/cli/src/index.ts`.
+- `packages/cli/src/index.ts` reads `TELEGRAM_BOT_TOKEN` from the environment and does not include `init`.
+- `packages/cli/src/index.ts` does not include `--json` output.
+- MCP adapters, Skill docs, remote MCP, package READMEs, build config, lint config, format config, and release scripts are not present yet.
+
+Expected parity:
+
+- Public CLI names should already use the final SendKit command shape: `bun run dev:cli telegram <chatId> <message>`.
+- The Telegram API request should match the final operation behavior from `main` as closely as possible while remaining inline.
+- The success output should include the same meaningful data as the final operation: target chat ID and Telegram message ID when available.
+
 ## File Changes
 
 ```text
