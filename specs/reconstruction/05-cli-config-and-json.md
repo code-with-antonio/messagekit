@@ -37,9 +37,9 @@ The CLI should keep using `sendTelegramMessage` from core. This step changes onl
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/06-cli-config-and-json` checked out at `../reconstruction/06-cli-config-and-json`.
+Build this step in its own git workspace, such as branch `reconstruction/05-cli-config-and-json` checked out at `../reconstruction/05-cli-config-and-json`.
 
-Start from the completed `../reconstruction/05-remote-mcp-adapter` workspace. This step should contain all files from step 5 plus the config and JSON changes described here.
+Start from the completed `../reconstruction/04-remote-mcp-adapter` workspace. This step should contain all files from step 4 plus the config and JSON changes described here.
 
 Do not reconstruct:
 
@@ -63,6 +63,7 @@ Out of scope:
 - Core operation changes.
 - MCP adapter changes.
 - Remote auth changes.
+- Skill instructions.
 - `specs/`.
 - `AGENTS.md` and `CLAUDE.md`.
 - Publishing setup.
@@ -115,12 +116,13 @@ JSON output:
 
 ## Expected Differences From Main
 
-This step adds final CLI ergonomics, but intentionally does not add publishing polish yet.
+This step adds final CLI ergonomics, but intentionally does not add Skill docs or publishing polish yet.
 
 Expected differences:
 
 - Package READMEs, build config, lint config, format config, and release scripts may still be absent until the polish step.
 - Final root README polish may still be deferred.
+- Skill instructions are not present yet.
 
 Expected parity:
 
@@ -198,4 +200,5 @@ Manual verification should cover:
 - Do not copy files from the finished `main` branch that are not required for this step.
 - Do not add MCP behavior.
 - Do not add a shared operation registry.
+- Do not add Skill docs.
 - Do not add package publishing setup.

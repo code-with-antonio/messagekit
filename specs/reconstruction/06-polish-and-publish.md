@@ -2,13 +2,13 @@
 
 ## Goal
 
-Add maintainability, build, release, and documentation polish after all core product behavior exists.
+Add maintainability, build, release, deployment, and documentation polish after all runtime product behavior exists.
 
-This step prepares SendKit as a publishable tutorial repository without distracting from the earlier runnable learning path.
+This step prepares SendKit as a publishable and deployable tutorial repository without distracting from the earlier runnable learning path.
 
 ## Background
 
-Earlier tutorial steps intentionally avoid quality and publishing mechanics until there is a working product. Once CLI, core, local MCP, remote MCP, and Skill exist, the repository can add checks and packaging in a way that feels motivated.
+Earlier tutorial steps intentionally avoid quality and publishing mechanics until there is a working product. Once CLI, core, local MCP, and remote MCP exist, the repository can add checks and packaging in a way that feels motivated.
 
 ```text
 workspace polish owns:
@@ -19,6 +19,7 @@ workspace polish owns:
 - package READMEs
 - final root README
 - release verification
+- published package and deployed resource names for the Skill
 
 workspace polish must not own:
 - new business operations
@@ -29,7 +30,7 @@ workspace polish must not own:
 
 ## Decision
 
-Add quality scripts and publish configuration last:
+Add quality scripts, publish configuration, and deployment naming after all runtime interfaces exist:
 
 ```bash
 bun run format
@@ -38,13 +39,13 @@ bun run typecheck
 bun run release:check
 ```
 
-Use this step to finalize docs and package metadata around the working architecture.
+Use this step to finalize docs and package metadata around the working architecture before writing the Skill with final published and deployed names.
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/07-polish-and-publish` checked out at `../reconstruction/07-polish-and-publish`.
+Build this step in its own git workspace, such as branch `reconstruction/06-polish-and-publish` checked out at `../reconstruction/06-polish-and-publish`.
 
-Start from the completed `../reconstruction/06-cli-config-and-json` workspace. This step should move the reconstructed tutorial repository toward the finished `main` branch result while intentionally excluding repository-internal planning and agent guidance files.
+Start from the completed `../reconstruction/05-cli-config-and-json` workspace. This step should move the reconstructed tutorial repository toward the finished publishable result while intentionally excluding the Skill and repository-internal planning and agent guidance files.
 
 Do not reconstruct:
 
@@ -64,7 +65,8 @@ In scope:
 - Add final README assets such as the SendKit logo.
 - Add publish metadata for publishable packages.
 - Add release/check workflow scripts.
-- Expand root README to explain the complete project.
+- Record the final published package names and deployed remote MCP resource names for the Skill step.
+- Expand root README to explain the complete runtime project.
 - Document how to add a new operation using the explicit registration flow.
 
 Out of scope:
@@ -74,6 +76,7 @@ Out of scope:
 - OAuth or user accounts.
 - Production deployment guidance.
 - Dynamic operation registry.
+- Skill package and Skill instructions.
 - `specs/`.
 - `AGENTS.md` and `CLAUDE.md`.
 
@@ -101,9 +104,9 @@ Final docs should explain:
 - How to run local MCP.
 - How to run remote MCP.
 - How to configure an MCP client.
-- How to use the Skill.
 - How to add a new operation.
 - Why business logic belongs in `packages/core`.
+- Which published package names and deployed remote MCP resource names the Skill should use.
 
 ## Implementation Notes
 
@@ -115,18 +118,20 @@ Final docs should explain:
 
 ## Expected Differences From Main
 
-This step should move the reconstruction as close to `main` as possible while still excluding repository-internal planning and agent guidance files.
+This step should move the reconstruction as close to the publishable runtime project as possible while still excluding Skill instructions and repository-internal planning and agent guidance files.
 
 Expected differences:
 
 - `specs/`, `AGENTS.md`, and `CLAUDE.md` remain excluded even though they exist on `main`.
+- `packages/skills/sendkit` remains excluded until the final Skill step so it can use the proper published package names and deployed resource names.
 - Any tutorial-only `TEACHER.md` content may differ from `main` when needed to teach the reconstruction chapter.
 
 Expected parity:
 
-- All tracked, non-excluded source files, package metadata, build config, docs, public commands, and runtime behavior should match `main` unless an expected difference above applies.
+- All tracked, non-excluded source files, package metadata, build config, docs, public commands, and runtime behavior that are not Skill-specific should match `main` unless an expected difference above applies.
 - Quality scripts and release checks should match `main`.
-- Package READMEs and the root README should match `main` for the SendKit tutorial naming and architecture.
+- Package READMEs and the root README should match the publish-ready SendKit tutorial naming and architecture for interfaces introduced so far.
+- Published package names and deployed remote MCP resource names should be finalized before the Skill step starts.
 
 ## File Changes
 
@@ -144,14 +149,14 @@ packages/local-mcp/tsconfig.build.json -> local MCP declaration/build TypeScript
 packages/core/README.md              -> core package README
 packages/cli/README.md               -> CLI package README
 packages/local-mcp/README.md         -> local MCP package README
-README.md                            -> final tutorial documentation
+README.md                            -> final tutorial documentation and final published/deployed names
 tsconfig.json                        -> final workspace TypeScript configuration
 TEACHER.md                           -> final teacher-facing manual verification guide
 ```
 
 ## Documentation Updates
 
-Add final README sections for:
+Add publish-ready README sections for:
 
 ```text
 Overview
@@ -160,20 +165,20 @@ CLI usage
 Local MCP usage
 Remote MCP usage
 MCP client configuration
-Skill usage
 Adding a new operation
 Verification
 ```
 
 `TEACHER.md` must document only this step's new teaching and verification needs. Include:
 
-- Why quality tooling is introduced last: earlier chapters prioritize runnable interfaces before polish and publishing mechanics.
+- Why quality tooling is introduced after runtime behavior exists: earlier chapters prioritize runnable interfaces before polish and publishing mechanics.
 - The exact quality and release-check commands and what each one proves.
 - How to verify package READMEs match the package boundaries taught throughout the tutorial.
 - How to verify the root README commands match real root scripts.
 - Explain that release checks prove packaging/build readiness, while manual Telegram, local MCP, and remote MCP verification still prove runtime behavior.
+- Explain where the final published package names and deployed remote MCP resource names are recorded for the Skill chapter.
 - Explain the difference between root README documentation and package README documentation: root teaches the whole architecture, package READMEs document installable package responsibilities.
-- Explain that polish is where the project becomes publishable and teachable as a complete repository, not where new product capabilities are added.
+- Explain that polish is where the project becomes publishable and deployable, while the Skill remains deferred until final package and resource names exist.
 
 ## Implementation Steps
 
@@ -183,8 +188,9 @@ Verification
 4. Add package README files.
 5. Add final README assets such as the SendKit logo.
 6. Add publish metadata and release check script.
-7. Rewrite or expand root README around the final architecture.
-8. Run format, lint, typecheck, and release check.
+7. Record final published package names and deployed remote MCP resource names.
+8. Rewrite or expand root README around the publish-ready architecture.
+9. Run format, lint, typecheck, and release check.
 
 ## Verification
 
@@ -204,14 +210,18 @@ Manual verification should cover:
 - Remote MCP still starts.
 - README commands match package scripts.
 - Package READMEs match package responsibilities.
+- Published package names and deployed remote MCP resource names are known for the Skill step.
+- Skill package files are still absent and deferred to the final step.
 
 ## Acceptance Criteria
 
 - Quality scripts exist and pass.
 - Publish-oriented packages have build config and package metadata.
 - Final README assets referenced by docs exist in the reconstructed tree.
-- README explains the complete project clearly.
+- README explains the complete runtime project clearly.
 - New operation lifecycle is documented explicitly.
+- Published package names and deployed remote MCP resource names are finalized for the Skill step.
+- Skill package files are not introduced yet.
 - No automated test workflow is introduced.
 
 ## Non-Goals
@@ -221,3 +231,4 @@ Manual verification should cover:
 - Do not add code generation.
 - Do not add production hosting/deployment docs.
 - Do not add auth beyond existing Telegram token handling.
+- Do not add Skill docs until the final reconstruction step.

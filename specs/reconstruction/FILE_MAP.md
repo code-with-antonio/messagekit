@@ -78,23 +78,7 @@ Rationale:
 - `packages/local-mcp` is introduced only when the shared core exists.
 - Root package and TypeScript configuration may need workspace updates for the new package.
 
-## Step 4: SendKit Skill
-
-These files are introduced or updated:
-
-```text
-bun.lock
-package.json
-packages/skills/sendkit/package.json
-packages/skills/sendkit/SKILL.md
-TEACHER.md
-```
-
-Rationale:
-
-- The Skill is introduced after CLI and local MCP exist so it can document real interfaces.
-
-## Step 5: Remote MCP Adapter
+## Step 4: Remote MCP Adapter
 
 These files are introduced or updated:
 
@@ -109,10 +93,10 @@ TEACHER.md
 
 Rationale:
 
-- `apps/remote-mcp` is introduced directly in its final app location.
+- `apps/remote-mcp` is introduced directly in its final app location after local MCP is understood.
 - Workspace and TypeScript configuration may need updates for the new app.
 
-## Step 6: CLI Config And JSON Output
+## Step 5: CLI Config And JSON Output
 
 These files are introduced or updated:
 
@@ -130,7 +114,7 @@ Rationale:
 - CLI config and JSON output are introduced when the project is close to distribution and repeated human CLI usage matters.
 - `.gitignore` is updated if local environment or config artifacts need ignoring.
 
-## Step 7: Polish And Publish
+## Step 6: Polish And Publish
 
 These files are introduced or updated:
 
@@ -157,7 +141,6 @@ packages/local-mcp/package.json
 packages/local-mcp/src/index.ts
 packages/local-mcp/tsconfig.build.json
 packages/local-mcp/tsdown.config.ts
-packages/skills/sendkit/package.json
 tsconfig.json
 TEACHER.md
 ```
@@ -166,6 +149,22 @@ Rationale:
 
 - Quality tooling, build config, publish metadata, package READMEs, and final root docs are added after all runnable product layers exist.
 - `assets/sendkit-logo.svg` is introduced with the final README hero/documentation polish.
+
+## Step 7: SendKit Skill
+
+These files are introduced or updated:
+
+```text
+bun.lock
+package.json
+packages/skills/sendkit/SKILL.md
+packages/skills/sendkit/package.json
+TEACHER.md
+```
+
+Rationale:
+
+- The Skill is introduced last so it can reference final published package names and deployed remote MCP resource names.
 
 ## Final Tracked File Checklist
 

@@ -36,10 +36,10 @@ The expected stack is:
 ../reconstruction/01-minimal-cli          -> branch reconstruction/01-minimal-cli, starts from a completely empty repository
 ../reconstruction/02-extract-shared-core  -> branch reconstruction/02-extract-shared-core, starts from step 1
 ../reconstruction/03-local-mcp-adapter    -> branch reconstruction/03-local-mcp-adapter, starts from step 2
-../reconstruction/04-sendkit-skill        -> branch reconstruction/04-sendkit-skill, starts from step 3
-../reconstruction/05-remote-mcp-adapter   -> branch reconstruction/05-remote-mcp-adapter, starts from step 4
-../reconstruction/06-cli-config-and-json  -> branch reconstruction/06-cli-config-and-json, starts from step 5
-../reconstruction/07-polish-and-publish   -> branch reconstruction/07-polish-and-publish, starts from step 6 and moves toward main
+../reconstruction/04-remote-mcp-adapter   -> branch reconstruction/04-remote-mcp-adapter, starts from step 3
+../reconstruction/05-cli-config-and-json  -> branch reconstruction/05-cli-config-and-json, starts from step 4
+../reconstruction/06-polish-and-publish   -> branch reconstruction/06-polish-and-publish, starts from step 5 and prepares publish/deploy names
+../reconstruction/07-sendkit-skill        -> branch reconstruction/07-sendkit-skill, starts from step 6 and adds final Skill guidance
 ```
 
 Step 1 must start from a completely empty repository state. Do not copy the finished `main` tree and delete files from it.
@@ -67,6 +67,7 @@ These files are planning and agent guidance artifacts for the source repository.
 - Do not create empty packages for future chapters.
 - Do not add root scripts until they run something real.
 - Do not add formatting, linting, typechecking, release, or publishing mechanics before the step that asks for them.
+- Do not add Skill instructions before the final step that has published package names and deployed resource names.
 - Do not duplicate business logic after `packages/core` exists.
 - Keep operation registration explicit across core, CLI, MCP adapters, Skill docs, and README.
 

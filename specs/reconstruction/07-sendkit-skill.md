@@ -2,9 +2,9 @@
 
 ## Goal
 
-Add agent-facing Skill instructions that explain when to use the MCP tool and when to fall back to the CLI.
+Add agent-facing Skill instructions that explain when to use the MCP tool and when to fall back to the published CLI.
 
-This step documents real interfaces that already exist instead of creating a Skill around future functionality.
+This step is last so the Skill can reference the final published package names, CLI command, and deployed remote MCP resource names instead of placeholders from earlier chapters.
 
 ## Background
 
@@ -14,7 +14,8 @@ The Skill is documentation and guidance only. It should help agents choose the r
 packages/skills/sendkit owns:
 - agent-facing usage guidance
 - MCP-first recommendation
-- CLI fallback instructions
+- published CLI fallback instructions
+- local and remote MCP setup notes
 - warnings about credential handling
 
 packages/skills/sendkit must not own:
@@ -36,9 +37,9 @@ Do not create a temporary `packages/skill` folder.
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/04-sendkit-skill` checked out at `../reconstruction/04-sendkit-skill`.
+Build this step in its own git workspace, such as branch `reconstruction/07-sendkit-skill` checked out at `../reconstruction/07-sendkit-skill`.
 
-Start from the completed `../reconstruction/03-local-mcp-adapter` workspace. This step should add the Skill after the real CLI and local MCP interfaces exist.
+Start from the completed `../reconstruction/06-polish-and-publish` workspace. This step should add the Skill after the CLI packages are publish-ready and the remote MCP resource names are known.
 
 Do not reconstruct:
 
@@ -52,13 +53,13 @@ In scope:
 
 - Create the SendKit Skill package location.
 - Document MCP `telegram` as the preferred path when available.
-- Document CLI fallback commands.
+- Document local and remote MCP usage using final configured names.
+- Document CLI fallback commands using the final published `sendkit` command.
 - Explain that core is an implementation detail.
 - Explain that MCP tool input should include only `chatId` and `message`.
 
 Out of scope:
 
-- Remote MCP instructions that do not exist yet.
 - Additional operations.
 - Skill installation automation.
 - Business logic.
@@ -80,7 +81,7 @@ Prefer the MCP `telegram` tool when it is available.
 Use the CLI fallback when MCP is unavailable:
 
 ```bash
-bun run dev:cli telegram "<chat-id>" "<message>"
+sendkit telegram "<chat-id>" "<message>" --json
 ```
 ````
 
@@ -89,44 +90,47 @@ bun run dev:cli telegram "<chat-id>" "<message>"
 - Keep the Skill product-generic while documenting `telegram` as the available tutorial capability.
 - Do not instruct agents to call `@codewithantonio/sendkit-core` directly.
 - Do not include the bot token in MCP tool input examples.
-- Keep fallback CLI examples aligned with the current development commands.
+- Keep fallback CLI examples aligned with the final published command, not `bun run dev:cli`.
+- Include final remote MCP resource names or URLs only after they are known from the deploy/publish step.
 
 ## Expected Differences From Main
 
-This step introduces the Skill after local MCP, but intentionally does not document remote MCP or final CLI config behavior yet.
+This step introduces the Skill after the rest of the project is publish-ready and deployed, so it should use final public names instead of development placeholders.
 
 Expected differences:
 
-- Remote MCP instructions should be absent or clearly deferred because remote MCP does not exist yet.
-- CLI fallback examples may still assume `TELEGRAM_BOT_TOKEN` environment setup if CLI config has not been introduced yet.
-- Package READMEs, build config, lint config, format config, and release scripts are not present yet.
+- `specs/`, `AGENTS.md`, and `CLAUDE.md` remain excluded even though they exist on `main`.
+- Any tutorial-only `TEACHER.md` content may differ from `main` when needed to teach the reconstruction chapter.
 
 Expected parity:
 
-- `packages/skills/sendkit/SKILL.md` should match the final Skill's in-scope guidance from `main`: prefer MCP, fall back to CLI, and keep core as an implementation detail.
+- `packages/skills/sendkit/SKILL.md` should match the final Skill's in-scope guidance from `main`: prefer MCP, document local and remote MCP usage, fall back to CLI, and keep core as an implementation detail.
 - Skill examples should use the final public `telegram` capability name.
+- Skill CLI examples should use the final published `sendkit` command and package names.
+- Skill remote MCP examples should use final deployed resource names or URLs from the previous step.
 - MCP examples should include only `chatId` and `message`, not `botToken`.
 
 ## File Changes
 
 ```text
 packages/skills/sendkit/package.json -> Skill package metadata
-packages/skills/sendkit/SKILL.md     -> agent-facing instructions
-package.json                            -> workspace entry if needed
-bun.lock                                -> dependency lockfile updates if workspace metadata changes
-TEACHER.md                              -> update teacher-facing manual verification guide for this chapter
+packages/skills/sendkit/SKILL.md     -> agent-facing instructions with final published/deployed names
+package.json                         -> workspace entry if needed
+bun.lock                             -> dependency lockfile updates if workspace metadata changes
+TEACHER.md                           -> update teacher-facing manual verification guide for this chapter
 ```
 
 ## Documentation Updates
 
-The Skill itself is the documentation update for this step. Do not update the root README until the polish step.
+The Skill itself is the documentation update for this step. Update root README or package README references only if the final Skill installation or usage names were intentionally deferred from the polish step.
 
 `TEACHER.md` must document only this step's new teaching and verification needs. Include:
 
-- Why the Skill is introduced after local MCP exists: it should describe real agent behavior, not future placeholders.
+- Why the Skill is introduced after publish/deploy: it should describe final agent behavior with proper package and resource names, not future placeholders.
 - How to explain the Skill's role: agent-facing instructions that prefer MCP and fall back to CLI, not another implementation layer.
 - How to verify the Skill points agents to the MCP `telegram` tool first.
-- How to verify CLI fallback examples match commands that already exist.
+- How to verify local and remote MCP references match the final configured names.
+- How to verify CLI fallback examples match the published `sendkit` command.
 - Explain why the Skill must not include `botToken` in MCP tool input examples: credentials come from the MCP client/server environment, not agent-provided tool arguments.
 - Explain why the Skill should not tell agents to import or call `@codewithantonio/sendkit-core` directly: core is an implementation detail behind CLI and MCP interfaces.
 - Explain that a Skill can improve agent behavior without adding runtime code because it changes instructions, not product capabilities.
@@ -135,30 +139,30 @@ The Skill itself is the documentation update for this step. Do not update the ro
 
 1. Create `packages/skills/sendkit`.
 2. Add Skill package metadata.
-3. Write MCP-first usage guidance.
-4. Add CLI fallback guidance.
+3. Write MCP-first usage guidance for local and remote MCP.
+4. Add CLI fallback guidance using the published command.
 5. Add credential handling notes.
-6. Verify examples match existing commands and tool names.
+6. Verify examples match final commands, package names, resource names, and tool names.
 
 ## Verification
 
 Manual verification should cover:
 
 - Skill references MCP `telegram` as preferred.
-- Skill references CLI fallback commands that exist.
+- Skill references local and remote MCP configuration using final names.
+- Skill references published CLI fallback commands that exist.
 - Skill does not tell agents to call core directly.
 - Skill does not put `botToken` in MCP input examples.
 
 ## Acceptance Criteria
 
 - Skill exists at `packages/skills/sendkit/SKILL.md`.
-- Skill accurately describes local MCP and CLI usage.
+- Skill accurately describes local MCP, remote MCP, and CLI usage.
 - Skill does not duplicate business logic.
 - No temporary Skill folder is introduced.
 
 ## Non-Goals
 
 - Do not copy files from the finished `main` branch that are not required for this step.
-- Do not document remote MCP until it exists.
 - Do not add new runtime code.
 - Do not create operation registry docs.

@@ -41,9 +41,9 @@ Authorization: Bearer <telegram-bot-token>
 
 ## Reconstruction Workspace
 
-Build this step in its own git workspace, such as branch `reconstruction/05-remote-mcp-adapter` checked out at `../reconstruction/05-remote-mcp-adapter`.
+Build this step in its own git workspace, such as branch `reconstruction/04-remote-mcp-adapter` checked out at `../reconstruction/04-remote-mcp-adapter`.
 
-Start from the completed `../reconstruction/04-sendkit-skill` workspace. This step should add remote MCP on top of the existing CLI, core, local MCP, and Skill layers.
+Start from the completed `../reconstruction/03-local-mcp-adapter` workspace. This step should add remote MCP on top of the existing CLI, core, and local MCP layers.
 
 Do not reconstruct:
 
@@ -119,11 +119,12 @@ apps/remote-mcp -> packages/core
 
 ## Expected Differences From Main
 
-This step introduces remote MCP, but intentionally does not add final CLI config or publishing polish yet.
+This step introduces remote MCP, but intentionally does not add final CLI config, Skill docs, or publishing polish yet.
 
 Expected differences:
 
 - `packages/cli/src/index.ts` may still read `TELEGRAM_BOT_TOKEN` from the environment and may not include `init` or `--json` yet.
+- Skill instructions are not present yet.
 - Package READMEs, build config, lint config, format config, and release scripts are not present yet.
 - Final root README polish may still be deferred.
 

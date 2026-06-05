@@ -163,6 +163,9 @@ Explain that MCP tool callers provide only `chatId` and `message`.
 - Why local MCP reads `TELEGRAM_BOT_TOKEN` from the MCP client-provided environment instead of the CLI config file.
 - How to start the stdio server from the workspace root with `TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp`.
 - How to explain stdio behavior: the command may appear to hang because it is waiting for MCP client messages on standard input.
+- How to configure the local stdio server in Claude Code, including the `claude mcp add --env TELEGRAM_BOT_TOKEN="<bot-token>" --transport stdio ... -- bun run dev:local-mcp` shape and the equivalent `.mcp.json` shape.
+- How to configure the local stdio server in opencode using an `opencode.json` or `opencode.jsonc` `mcp` entry with `type: "local"`, `command`, and `environment`.
+- Warn teachers to use placeholders or local-only config for bot tokens and never commit real Telegram credentials.
 - How to verify the `telegram` tool is discoverable in an MCP client.
 - How to verify the tool input contains only `chatId` and `message`, not `botToken`.
 - How to verify `content` and `structuredContent` both come back from a successful tool call.

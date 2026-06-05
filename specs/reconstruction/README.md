@@ -29,10 +29,10 @@ Use [Reconstruction File Map](./FILE_MAP.md) to ensure every tracked non-exclude
 1. [Minimal CLI](./01-minimal-cli.md)
 2. [Extract Shared Core](./02-extract-shared-core.md)
 3. [Local MCP Adapter](./03-local-mcp-adapter.md)
-4. [SendKit Skill](./04-sendkit-skill.md)
-5. [Remote MCP Adapter](./05-remote-mcp-adapter.md)
-6. [CLI Config And JSON Output](./06-cli-config-and-json.md)
-7. [Polish And Publish](./07-polish-and-publish.md)
+4. [Remote MCP Adapter](./04-remote-mcp-adapter.md)
+5. [CLI Config And JSON Output](./05-cli-config-and-json.md)
+6. [Polish And Publish](./06-polish-and-publish.md)
+7. [SendKit Skill](./07-sendkit-skill.md)
 
 ## Git Workspace Model
 
@@ -44,10 +44,10 @@ When using git worktrees, create them in the encapsulating folder of this codeba
 ../reconstruction/01-minimal-cli          -> branch reconstruction/01-minimal-cli, starts from a completely empty repository
 ../reconstruction/02-extract-shared-core  -> branch reconstruction/02-extract-shared-core, starts from step 1
 ../reconstruction/03-local-mcp-adapter    -> branch reconstruction/03-local-mcp-adapter, starts from step 2
-../reconstruction/04-sendkit-skill        -> branch reconstruction/04-sendkit-skill, starts from step 3
-../reconstruction/05-remote-mcp-adapter   -> branch reconstruction/05-remote-mcp-adapter, starts from step 4
-../reconstruction/06-cli-config-and-json  -> branch reconstruction/06-cli-config-and-json, starts from step 5
-../reconstruction/07-polish-and-publish   -> branch reconstruction/07-polish-and-publish, starts from step 6 and moves toward main
+../reconstruction/04-remote-mcp-adapter   -> branch reconstruction/04-remote-mcp-adapter, starts from step 3
+../reconstruction/05-cli-config-and-json  -> branch reconstruction/05-cli-config-and-json, starts from step 4
+../reconstruction/06-polish-and-publish   -> branch reconstruction/06-polish-and-publish, starts from step 5 and prepares publish/deploy names
+../reconstruction/07-sendkit-skill        -> branch reconstruction/07-sendkit-skill, starts from step 6 and adds final Skill guidance
 ```
 
 The sequence should reconstruct the finished project behavior from scratch. Step 1 should not be based on the current `main` tree with files deleted; it should begin from an empty repo state and add only the files required by that step.
@@ -100,13 +100,15 @@ bun run release:check
 - Build each step in its own git workspace on top of the previous step.
 - If using git worktrees, create them outside this repository in the parent folder, under `../reconstruction/<step-name>`.
 - Start step 1 from a completely empty repository.
-- Move step 7 toward the finished `main` result, excluding files that are intentionally not reconstructed.
+- Move step 6 toward the publishable/deployable runtime result, excluding files that are intentionally deferred.
+- Add the Skill in step 7 after published package names and deployed resource names are known.
 - Every tracked non-excluded file on `main` must be assigned to a step in `FILE_MAP.md` and mentioned in that step's file changes.
 - Do not create packages before they are used by a runnable step.
 - Do not introduce temporary public commands such as `bun run dev` if the final command is `bun run dev:cli`.
 - Do not introduce temporary package names or folder names that must be renamed later.
 - Do not add root scripts until there is something real for them to run.
 - Do not add publishing, release, lint, or formatting mechanics before the project has working product behavior.
+- Do not add Skill instructions before publish/deploy names are available.
 - Do not duplicate business logic after `packages/core` exists.
 - Keep operation registration explicit across core, CLI, MCP adapters, Skill docs, and README.
 - Do not reconstruct `specs/`, `AGENTS.md`, or `CLAUDE.md`.
