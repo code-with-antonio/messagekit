@@ -8,13 +8,13 @@ This step adds the hosted-style adapter after local MCP is already understood.
 
 ## Background
 
-Local MCP uses stdio and receives credentials from the client process environment. Remote MCP uses HTTP and must handle credentials per request.
+Local MCP uses stdio and receives credentials from the client process environment. Remote MCP uses HTTP and must handle credentials per request through the configured MCP URL.
 
 ```text
 apps/remote-mcp owns:
 - Hono HTTP app
-- POST /mcp endpoint
-- per-request bearer token extraction
+- POST /:botToken/mcp endpoint
+- per-request URL token extraction
 - remote MCP transport handling
 - telegram tool registration for remote clients
 
@@ -33,10 +33,10 @@ Create the remote adapter directly in its final app location:
 apps/remote-mcp
 ```
 
-Use Hono and the final auth model from the start:
+Use Hono and the final URL-token model from the start:
 
-```http
-Authorization: Bearer <telegram-bot-token>
+```text
+POST /:botToken/mcp
 ```
 
 ## Reconstruction Workspace
@@ -59,9 +59,9 @@ In scope:
 - Add root `dev:remote-mcp` script.
 - Update root workspace and TypeScript configuration as needed for the new app.
 - Create a Hono HTTP app.
-- Expose `POST /mcp`.
+- Expose `POST /:botToken/mcp`.
 - Register the same `telegram` tool.
-- Extract Telegram bot token from `Authorization: Bearer <token>` per request.
+- Extract Telegram bot token from the `botToken` URL path parameter per request.
 - Return both `content` and `structuredContent`.
 - Close the per-request MCP server after handling the request.
 
@@ -86,21 +86,21 @@ bun run dev:remote-mcp
 HTTP endpoint:
 
 ```text
-POST /mcp
+POST /:botToken/mcp
 ```
 
-Auth header:
+URL token route:
 
-```http
-Authorization: Bearer <telegram-bot-token>
+```text
+/<telegram-bot-token>/mcp
 ```
 
 Boundary:
 
 ```text
-MCP input:              { chatId, message }
-per-request auth:       botToken
-core operation input:   { chatId, message, botToken }
+MCP input:                  { chatId, message }
+per-request URL path param: botToken
+core operation input:       { chatId, message, botToken }
 ```
 
 Dependency direction:
@@ -115,7 +115,8 @@ apps/remote-mcp -> packages/core
 - Do not use one global `TELEGRAM_BOT_TOKEN` for remote users.
 - Keep the MCP tool input free of secrets.
 - Keep registration explicit and parallel to local MCP.
-- Return clear unauthorized responses for missing or malformed bearer tokens.
+- Use the URL-token route for ChatGPT `Authentication: None` compatibility.
+- Treat the full remote MCP URL as a secret because it contains the Telegram bot token.
 
 ## Expected Differences From Main
 
@@ -124,15 +125,17 @@ This step introduces remote MCP, but intentionally does not add final CLI config
 Expected differences:
 
 - `packages/cli/src/index.ts` may still read `TELEGRAM_BOT_TOKEN` from the environment and may not include `init` or `--json` yet.
+- Package names, command names, README wording, and teacher docs should continue using the reconstruction identity, such as `sendkit`, `sendkit-core`, and `sendkit-mcp`, instead of the final `messagekit` names from `main`.
 - Skill instructions are not present yet.
 - Package READMEs, build config, lint config, format config, and release scripts are not present yet.
 - Final root README polish may still be deferred.
 
 Expected parity:
 
-- `apps/remote-mcp/src/index.ts` should match the final remote MCP endpoint, Hono usage, per-request bearer-token boundary, tool input shape, and response shape from `main`.
+- `apps/remote-mcp/src/index.ts` should match the final remote MCP endpoint, Hono usage, per-request URL-token boundary, tool input shape, and response shape from `main`.
 - Remote MCP should call `sendTelegramMessage` from core and should not duplicate Telegram request behavior.
 - Remote MCP should not read one global `TELEGRAM_BOT_TOKEN` for all users.
+- Remote MCP should not require `Authorization: Bearer <telegram-bot-token>` for this reconstruction step.
 - The MCP `telegram` tool input should contain `chatId` and `message`, not `botToken`.
 
 ## File Changes
@@ -140,7 +143,7 @@ Expected parity:
 ```text
 package.json                    -> dev:remote-mcp script and workspace entry if needed
 apps/remote-mcp/package.json    -> remote app metadata and dependencies
-apps/remote-mcp/src/index.ts    -> Hono app, /mcp endpoint, MCP server setup
+apps/remote-mcp/src/index.ts    -> Hono app, /:botToken/mcp endpoint, MCP server setup
 tsconfig.json                   -> workspace TypeScript updates if needed for remote MCP
 bun.lock                        -> dependency lockfile updates
 TEACHER.md                      -> update teacher-facing manual verification guide for this chapter
@@ -154,20 +157,22 @@ Document remote MCP separately from local MCP:
 bun run dev:remote-mcp
 ```
 
-Document that remote clients send the Telegram token with:
+Document that remote clients send the Telegram token in the MCP URL:
 
-```http
-Authorization: Bearer <telegram-bot-token>
+```text
+http://localhost:3000/<telegram-bot-token>/mcp
 ```
 
 `TEACHER.md` must document only this step's new teaching and verification needs. Include:
 
-- Why remote MCP receives the Telegram token per request through `Authorization: Bearer <token>` instead of a global environment variable.
+- Why remote MCP receives the Telegram token per request through the MCP URL path instead of a global environment variable.
 - How to start the remote server from the workspace root with `bun run dev:remote-mcp`.
-- How to verify missing `Authorization` fails clearly before any Telegram send attempt.
-- How to explain that the bearer token is still the Telegram bot token for this tutorial, not SendKit user auth or OAuth.
+- How to verify plain `POST /mcp` returns `404` before any Telegram send attempt.
+- How to explain that the URL path token is still the Telegram bot token for this tutorial, not SendKit user auth or OAuth.
 - How to verify the MCP tool input still contains only `chatId` and `message`.
 - Explain why remote MCP cannot use one global `TELEGRAM_BOT_TOKEN`: each HTTP request may represent a different caller and therefore a different Telegram bot token.
+- Explain why the URL-token route works with ChatGPT connectors configured with `Authentication: None`.
+- Explain that the full remote MCP URL is a secret because it contains the Telegram bot token.
 - Explain why the per-request MCP server is closed after handling the request: the server is scoped to that HTTP request instead of being a long-lived stdio process.
 - Explain that Hono is only the HTTP adapter here. The chapter is about transport and per-request credentials, not production hosting or user accounts.
 
@@ -175,12 +180,12 @@ Authorization: Bearer <telegram-bot-token>
 
 1. Create `apps/remote-mcp` and install Hono plus MCP dependencies.
 2. Add the root `dev:remote-mcp` script.
-3. Create the Hono app with `POST /mcp`.
-4. Extract and validate the bearer token per request.
+3. Create the Hono app with `POST /:botToken/mcp`.
+4. Extract the URL path token per request.
 5. Register the `telegram` tool backed by core.
 6. Return MCP content and structured content.
 7. Ensure the per-request MCP server is closed after the request.
-8. Verify the server starts and rejects missing authorization.
+8. Verify the server starts, `POST /mcp` returns `404`, and `POST /<telegram-bot-token>/mcp` reaches MCP initialization.
 
 ## Verification
 
@@ -193,17 +198,18 @@ bun run dev:remote-mcp
 Manual verification should cover:
 
 - Server starts successfully.
-- `POST /mcp` exists.
-- Missing `Authorization` fails clearly.
-- Bearer token is not part of the MCP tool input schema.
+- `POST /mcp` returns `404`.
+- `POST /<telegram-bot-token>/mcp` reaches MCP initialization.
+- URL path token is not part of the MCP tool input schema.
 - Remote `telegram` calls `sendTelegramMessage` from core.
 
 ## Acceptance Criteria
 
 - Remote MCP app exists at `apps/remote-mcp`.
 - Remote MCP uses Hono.
-- Remote MCP reads bot token from `Authorization: Bearer <token>` per request.
+- Remote MCP reads bot token from `/:botToken/mcp` per request.
 - Remote MCP does not use a global Telegram bot token.
+- Remote MCP does not require `Authorization: Bearer <telegram-bot-token>`.
 - Remote MCP returns both `content` and `structuredContent`.
 
 ## Non-Goals
