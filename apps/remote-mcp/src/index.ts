@@ -56,14 +56,22 @@ function createServer(botToken: string) {
 
 const app = new Hono();
 
-function protectedResourceMetadataUrl(requestUrl: string, botToken: string) {
-  return new URL(`/.well-known/oauth-protected-resource/${botToken}/mcp`, requestUrl).toString();
+function externalUrl(c: Context, path: string) {
+  const requestUrl = new URL(c.req.url);
+  const proto = c.req.header("x-forwarded-proto") ?? requestUrl.protocol.replace(":", "");
+  const host = c.req.header("x-forwarded-host") ?? c.req.header("host") ?? requestUrl.host;
+
+  return new URL(path, `${proto}://${host}`).toString();
+}
+
+function protectedResourceMetadataUrl(c: Context, botToken: string) {
+  return externalUrl(c, `/.well-known/oauth-protected-resource/${botToken}/mcp`);
 }
 
 function unauthorizedMcpResponse(c: Context, botToken: string) {
   c.header(
     "WWW-Authenticate",
-    `Bearer resource_metadata=${protectedResourceMetadataUrl(c.req.url, botToken)}`,
+    `Bearer resource_metadata="${protectedResourceMetadataUrl(c, botToken)}"`,
   );
   return c.json({ error: "Unauthorized" }, 401);
 }
@@ -72,7 +80,7 @@ app.get("/.well-known/oauth-protected-resource/:botToken/mcp", (c) => {
   return c.json(
     generateClerkProtectedResourceMetadata({
       publishableKey: clerkPublishableKey,
-      resourceUrl: new URL(`/${c.req.param("botToken")}/mcp`, c.req.url).toString(),
+      resourceUrl: externalUrl(c, `/${c.req.param("botToken")}/mcp`),
     }),
   );
 });
