@@ -172,15 +172,29 @@ This repository includes a remote MCP HTTP server, but MessageKit does not provi
 
 For remote MCP usage, deploy your own copy of `apps/remote-mcp`. The server exposes `POST /:botToken/mcp`, where `botToken` is the URL-encoded Telegram bot token for that request.
 
-For ChatGPT connectors using `Authentication: None`, include your Telegram bot token in the MCP server URL:
+The remote MCP app can be protected with Clerk OAuth while keeping the Telegram bot token in the MCP URL:
 
 ```text
 https://your-messagekit-host.example.com/<telegram-bot-token>/mcp
 ```
 
-Treat this URL like a secret. Anyone with the URL can use the Telegram bot token. If it is exposed, revoke and rotate the token with BotFather.
+Treat this URL like a secret. The URL still contains the Telegram bot token. If it is exposed, revoke and rotate the token with BotFather.
 
-This follows the Firecrawl-style no-auth connector pattern and is intended for tutorial and developer-mode setup.
+Set Clerk environment variables before starting the remote MCP app:
+
+```bash
+CLERK_PUBLISHABLE_KEY="<publishable-key>" \
+CLERK_SECRET_KEY="<secret-key>" \
+bun run dev:remote-mcp
+```
+
+For MCP OAuth clients, unauthenticated requests receive `401 Unauthorized` with `WWW-Authenticate` metadata. The MCP client is responsible for opening the Clerk login flow.
+
+In the Clerk Dashboard, enable **Dynamic client registration** for OAuth applications before testing with MCP clients that require automatic OAuth client registration.
+
+This tutorial step demonstrates OAuth-protected MCP access. Clerk does not manage the Telegram bot token in this example; the token still comes from the URL.
+
+ChatGPT web and Claude web support can vary by current MCP OAuth client behavior.
 
 ChatGPT connector configuration:
 
@@ -188,7 +202,7 @@ ChatGPT connector configuration:
 Name: MessageKit
 Description: Send Telegram messages through MessageKit MCP.
 MCP Server URL: https://your-messagekit-host.example.com/<telegram-bot-token>/mcp
-Authentication: None
+Authentication: OAuth
 ```
 
 Example OpenCode remote MCP config after you deploy your own server:
@@ -315,10 +329,12 @@ Example MCP client config from the repository root:
 Start the remote MCP HTTP server from source:
 
 ```bash
+CLERK_PUBLISHABLE_KEY="<publishable-key>" \
+CLERK_SECRET_KEY="<secret-key>" \
 bun run dev:remote-mcp
 ```
 
-Expected behavior: the server listens on `PORT` or `3000` by default and exposes `POST /:botToken/mcp`.
+Expected behavior: the server listens on `PORT` or `3000` by default, exposes public protected resource metadata at `GET /.well-known/oauth-protected-resource/:botToken/mcp`, and protects `POST /:botToken/mcp` with Clerk OAuth.
 
 ### Local Linked Binary
 
@@ -359,10 +375,10 @@ bun run dev:cli init --telegram-bot-token "<bot-token>"
 bun run dev:cli telegram "<chat-id>" "Hello from MessageKit"
 bun run dev:cli telegram "<chat-id>" "Hello from MessageKit" --json
 TELEGRAM_BOT_TOKEN="<bot-token>" bun run dev:local-mcp
-bun run dev:remote-mcp
+CLERK_PUBLISHABLE_KEY="<publishable-key>" CLERK_SECRET_KEY="<secret-key>" bun run dev:remote-mcp
 ```
 
-Manual remote verification should confirm the server starts on `PORT` or `3000`, `POST /mcp` returns `404`, `POST /<telegram-bot-token>/mcp` reaches MCP initialization, and the remote `telegram` MCP tool calls `@codewithantonio/messagekit-core` without exposing `botToken` in the tool input schema.
+Manual remote verification should confirm the server fails clearly without Clerk env vars, the metadata route returns public Clerk protected resource metadata, missing or invalid `Authorization` returns `401` with `WWW-Authenticate`, valid Clerk OAuth reaches MCP initialization, and the remote `telegram` MCP tool calls `@codewithantonio/messagekit-core` without exposing `botToken` in the tool input schema.
 
 ## Architecture Details
 

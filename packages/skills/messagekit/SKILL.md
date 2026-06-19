@@ -1,6 +1,6 @@
 ---
 name: messagekit
-description: Use MessageKit to send Telegram messages from agents through the MessageKit MCP tool or CLI fallback. Use when a user asks to send a Telegram message, use MessageKit, interact with the messagekit toolset, verify MessageKit manually, or choose between MessageKit MCP and CLI workflows.
+description: Use MessageKit to send Telegram messages from agents through the MessageKit MCP tool or CLI fallback. Use when a user asks to send a Telegram message, use MessageKit, interact with the MessageKit toolset, verify MessageKit manually, or choose between MessageKit MCP and CLI workflows.
 ---
 
 # MessageKit
@@ -24,13 +24,15 @@ Required tool input:
 
 Do not include Telegram bot tokens in MCP tool arguments. Local MCP clients should provide `TELEGRAM_BOT_TOKEN` through the MessageKit MCP server environment.
 
-For remote MCP clients such as ChatGPT connectors using `Authentication: None`, configure the MCP server URL with the Telegram bot token in the path:
+For remote MCP clients, configure the MCP server URL with the Telegram bot token in the path:
 
 ```text
 https://your-messagekit-host.example.com/<telegram-bot-token>/mcp
 ```
 
-Treat the full remote MCP URL like a secret. Anyone with the URL can use the embedded Telegram bot token.
+Remote MessageKit servers may require Clerk OAuth. If the MCP endpoint returns `401 Unauthorized` with `WWW-Authenticate`, let the MCP client complete its OAuth login flow instead of sending users to a browser redirect manually.
+
+Treat the full remote MCP URL like a secret because it contains the embedded Telegram bot token.
 
 ## CLI Fallback
 
